@@ -1,8 +1,9 @@
 {
     "version": 2,
     "framework": null,
-    "buildCommand": "",
-    "outputDirectory": ".",
+    "installCommand": "composer install --no-interaction --prefer-dist --no-progress && npm install",
+    "buildCommand": "composer install --no-interaction --prefer-dist --no-progress && npm run build",
+    "outputDirectory": "public",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.8.0"
