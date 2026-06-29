@@ -15,6 +15,7 @@ use App\Models\UnitActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -43,7 +44,7 @@ class DashboardController extends Controller
             'selectedSemester' => $semesterId,
             'selectedProdi' => $prodiId,
             'cards' => $this->summaryCards($request),
-            'achievementQuotas' => AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get(),
+            'achievementQuotas' => $this->achievementQuotas(),
         ]);
     }
 
@@ -214,6 +215,15 @@ class DashboardController extends Controller
             'Pengembangan Ormawa' => $this->unitCount('pengembangan-ormawa', $semesterId, $prodiId),
             'Alumni dan Pusat Karir' => $this->unitCount('alumni-pusat-karir', $semesterId, $prodiId),
         ];
+    }
+
+    private function achievementQuotas()
+    {
+        if (! Schema::hasTable('achievement_quotas')) {
+            return collect();
+        }
+
+        return AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get();
     }
 
     private function applyFilters(Builder $query, ?int $semesterId, ?int $prodiId): Builder
