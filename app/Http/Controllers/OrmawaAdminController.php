@@ -35,7 +35,11 @@ class OrmawaAdminController extends Controller
 
     private function dataOrmawa()
     {
-        $query = $this->hasTable('ormawas') ? Ormawa::with('user')->orderBy('nama') : null;
+        $query = $this->hasTable('ormawas') ? Ormawa::query()->orderBy('nama') : null;
+
+        if ($query && $this->hasOrmawaUserColumn()) {
+            $query->with('user');
+        }
 
         if ($query && $this->hasUnitOrmawaColumn()) {
             $query->withCount('activities');
@@ -49,7 +53,8 @@ class OrmawaAdminController extends Controller
 
         return view('master.ormawa.index', [
             'ormawas' => $query ? $query->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
-            'users' => $this->hasTable('roles') ? User::role('ormawa')->orderBy('name')->get() : collect(),
+            'users' => $this->hasOrmawaUserColumn() && $this->hasPermissionTables() ? User::role('ormawa')->orderBy('name')->get() : collect(),
+            'canLinkUser' => $this->hasOrmawaUserColumn(),
             'sectionShell' => $this->sectionShell('data-ormawa', 'Data Ormawa', 'Kelola profil, akun, dan overview organisasi mahasiswa.'),
         ]);
     }
@@ -147,6 +152,19 @@ class OrmawaAdminController extends Controller
     private function countModel(string $table, string $model): int
     {
         return $this->hasTable($table) ? $model::count() : 0;
+    }
+
+    private function hasOrmawaUserColumn(): bool
+    {
+        return $this->hasTable('ormawas')
+            && $this->hasTable('users')
+            && Schema::hasColumn('ormawas', 'user_id');
+    }
+
+    private function hasPermissionTables(): bool
+    {
+        return $this->hasTable('roles')
+            && $this->hasTable('model_has_roles');
     }
 
     private function hasUnitOrmawaColumn(): bool

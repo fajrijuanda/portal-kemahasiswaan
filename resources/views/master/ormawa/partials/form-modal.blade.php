@@ -12,15 +12,17 @@
                     <div class="col-md-6"><label class="form-label">Jenis</label><input name="jenis" class="form-control ubp-control" value="{{ old('jenis', $ormawa?->jenis) }}"></div>
                     <div class="col-md-6"><label class="form-label">Pembina/PIC</label><input name="pembina" class="form-control ubp-control" value="{{ old('pembina', $ormawa?->pembina) }}"></div>
                     <div class="col-md-6"><label class="form-label">Kontak</label><input name="kontak" class="form-control ubp-control" value="{{ old('kontak', $ormawa?->kontak) }}"></div>
-                    <div class="col-md-6">
-                        <label class="form-label">Akun Login Ormawa</label>
-                        <select name="user_id" class="form-select ubp-control">
-                            <option value="">Belum ditautkan</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}" @selected(old('user_id', $ormawa?->user_id) == $user->id)>{{ $user->name }} - {{ $user->email }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @if($canLinkUser ?? true)
+                        <div class="col-md-6">
+                            <label class="form-label">Akun Login Ormawa</label>
+                            <select name="user_id" class="form-select ubp-control">
+                                <option value="">Belum ditautkan</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" @selected(old('user_id', $ormawa?->user_id) == $user->id)>{{ $user->name }} - {{ $user->email }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                     <div class="col-md-6">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select ubp-control" required>

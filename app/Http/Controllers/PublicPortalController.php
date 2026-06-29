@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\CareerPost;
 use App\Models\PressRelease;
+use Illuminate\Support\Facades\Schema;
 
 class PublicPortalController extends Controller
 {
     public function index()
     {
         return view('public.index', [
-            'pressReleases' => PressRelease::where('status', 'Published')->latest('published_at')->take(6)->get(),
-            'careerPosts' => CareerPost::where('status', 'Published')->latest('published_at')->take(8)->get(),
+            'pressReleases' => Schema::hasTable('press_releases')
+                ? PressRelease::where('status', 'Published')->latest('published_at')->take(6)->get()
+                : collect(),
+            'careerPosts' => Schema::hasTable('career_posts')
+                ? CareerPost::where('status', 'Published')->latest('published_at')->take(8)->get()
+                : collect(),
         ]);
     }
 

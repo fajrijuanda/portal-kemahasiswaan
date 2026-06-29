@@ -3,52 +3,152 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Portal Publik Kemahasiswaan</title>
+    <title>Portal Kemahasiswaan UBP Karawang</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="portal-theme-scope" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-    <main class="ubp-portal-content ubp-portal-content-wide">
-        <section class="ubp-hero-panel">
-            <span class="ubp-auth-eyebrow">Portal Kemahasiswaan</span>
-            <h1 class="ubp-title">Informasi Kemahasiswaan UBP Karawang</h1>
-            <p class="ubp-subtitle">Press release, lowongan kerja, dan job fair yang sudah dipublikasikan.</p>
-            <a class="ubp-btn ubp-btn-primary" href="{{ route('login') }}">Masuk Panel</a>
+<body class="portal-theme-scope ubp-public-body" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+    @php
+        $loginUrl = auth()->check() ? route('home') : route('login');
+        $loginLabel = auth()->check() ? 'Masuk Portal' : 'Login';
+        $services = [
+            ['title' => 'Prestasi Mahasiswa', 'desc' => 'Informasi prestasi, lomba, dan capaian mahasiswa lintas prodi.', 'icon' => 'prestasi'],
+            ['title' => 'Beasiswa', 'desc' => 'Kanal informasi jenis beasiswa dan pengajuan dukungan mahasiswa.', 'icon' => 'beasiswa'],
+            ['title' => 'Ormawa', 'desc' => 'Ruang informasi organisasi mahasiswa, kegiatan, dan pengajuan proposal.', 'icon' => 'user'],
+            ['title' => 'Karir & Alumni', 'desc' => 'Lowongan kerja, job fair, tracer study, dan jejaring alumni.', 'icon' => 'access'],
+        ];
+        $stats = [
+            ['value' => '12+', 'label' => 'Layanan'],
+            ['value' => '4', 'label' => 'Unit Aktif'],
+            ['value' => '24/7', 'label' => 'Portal Digital'],
+        ];
+    @endphp
+
+    <header class="ubp-public-nav">
+        <a class="ubp-public-brand" href="{{ route('public.index') }}">
+            <span><img src="{{ asset('images/logo-ubp.png') }}" alt="Logo UBP Karawang"></span>
+            <strong>Portal Kemahasiswaan<small>Universitas Buana Perjuangan Karawang</small></strong>
+        </a>
+        <nav class="ubp-public-links" aria-label="Navigasi publik">
+            <a href="#layanan">Layanan</a>
+            <a href="#publikasi">Publikasi</a>
+            <a href="#karir">Karir</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <a class="ubp-public-login" href="{{ $loginUrl }}">{{ $loginLabel }}</a>
+    </header>
+
+    <main>
+        <section class="ubp-public-hero">
+            <div class="ubp-public-hero-media">
+                <img src="{{ asset('images/logo-ubp.png') }}" alt="Logo UBP Karawang">
+            </div>
+            <div class="ubp-public-hero-copy">
+                <span class="ubp-auth-eyebrow">Kemahasiswaan UBP Karawang</span>
+                <h1>Layanan kemahasiswaan terpadu untuk prestasi, organisasi, beasiswa, dan karir.</h1>
+                <p>Portal publik ini menjadi etalase informasi resmi kemahasiswaan. Mahasiswa, Ormawa, alumni, dan mitra dapat melihat publikasi terbaru, peluang karir, serta kanal layanan yang tersedia.</p>
+                <div class="ubp-public-actions">
+                    <a class="ubp-btn ubp-btn-primary" href="{{ $loginUrl }}">{{ $loginLabel }} Panel</a>
+                    <a class="ubp-table-action" href="#publikasi">Lihat Publikasi</a>
+                </div>
+                <div class="ubp-public-statline">
+                    @foreach($stats as $stat)
+                        <span><strong>{{ $stat['value'] }}</strong><small>{{ $stat['label'] }}</small></span>
+                    @endforeach
+                </div>
+            </div>
         </section>
 
-        <x-ui.table-shell class="mt-4" title="Press Release" subtitle="Berita terbaru dari bagian kemahasiswaan.">
-            <div class="row g-3">
-                @forelse($pressReleases as $item)
-                    <div class="col-md-4">
-                        <a class="ubp-service-card d-block text-decoration-none h-100" href="{{ route('public.press.show', $item) }}">
-                            <span class="ubp-service-icon"><x-ui.app-icon name="grid" /></span>
-                            <strong>{{ $item->title }}</strong>
-                            <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 110) }}</small>
-                        </a>
-                    </div>
-                @empty
-                    <p class="text-muted mb-0">Belum ada press release published.</p>
-                @endforelse
+        <section id="layanan" class="ubp-public-section">
+            <div class="ubp-public-section-head">
+                <span>Student Affairs Services</span>
+                <h2>Layanan utama kemahasiswaan.</h2>
+                <p>Setiap layanan terhubung dengan workflow internal portal agar data, pengajuan, dan publikasi tetap rapi.</p>
             </div>
-        </x-ui.table-shell>
+            <div class="ubp-public-service-grid">
+                @foreach($services as $service)
+                    <article class="ubp-public-service-card">
+                        <i><x-ui.app-icon :name="$service['icon']" /></i>
+                        <strong>{{ $service['title'] }}</strong>
+                        <small>{{ $service['desc'] }}</small>
+                    </article>
+                @endforeach
+            </div>
+        </section>
 
-        <x-ui.table-shell class="mt-4" title="Karir" subtitle="Lowongan kerja dan job fair terbaru.">
-            <div class="row g-3">
-                @forelse($careerPosts as $item)
-                    <div class="col-md-3">
-                        <article class="ubp-service-card h-100">
-                            <span class="ubp-service-icon"><x-ui.app-icon name="access" /></span>
-                            <strong>{{ $item->title }}</strong>
-                            <small>{{ $item->type }}{{ $item->company ? ' - '.$item->company : '' }}</small>
-                            @if($item->external_url)
-                                <a class="ubp-table-link mt-2 d-inline-block" href="{{ $item->external_url }}" target="_blank">Buka link</a>
-                            @endif
-                        </article>
-                    </div>
+        <section id="publikasi" class="ubp-public-split">
+            <div class="ubp-public-feature">
+                <span>Press Release</span>
+                <h2>Kabar terbaru kemahasiswaan.</h2>
+                <p>Berita dan pengumuman yang sudah dipublikasikan oleh bagian terkait akan tampil di sini.</p>
+            </div>
+            <div class="ubp-public-news-list">
+                @forelse($pressReleases as $item)
+                    <a class="ubp-public-news-card" href="{{ route('public.press.show', $item) }}">
+                        <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
+                        <strong>{{ $item->title }}</strong>
+                        <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 128) }}</small>
+                    </a>
                 @empty
-                    <p class="text-muted mb-0">Belum ada informasi karir published.</p>
+                    <article class="ubp-public-empty">
+                        <strong>Belum ada press release published.</strong>
+                        <small>Konten publik akan tampil setelah kabag/admin mempublikasikan press release.</small>
+                    </article>
                 @endforelse
             </div>
-        </x-ui.table-shell>
+        </section>
+
+        <section id="karir" class="ubp-public-section">
+            <div class="ubp-public-section-head">
+                <span>Career Center</span>
+                <h2>Lowongan kerja dan job fair.</h2>
+                <p>Informasi karir yang dikurasi untuk mahasiswa dan alumni UBP Karawang.</p>
+            </div>
+            <div class="ubp-public-career-grid">
+                @forelse($careerPosts as $item)
+                    <article class="ubp-public-career-card">
+                        <span>{{ $item->type }}</span>
+                        <strong>{{ $item->title }}</strong>
+                        <small>{{ $item->company ?: 'Mitra Karir' }}{{ $item->location ? ' - '.$item->location : '' }}</small>
+                        @if($item->deadline)
+                            <em>Deadline {{ $item->deadline->format('d M Y') }}</em>
+                        @endif
+                        @if($item->external_url)
+                            <a href="{{ $item->external_url }}" target="_blank" rel="noreferrer">Buka link</a>
+                        @endif
+                    </article>
+                @empty
+                    <article class="ubp-public-empty">
+                        <strong>Belum ada informasi karir published.</strong>
+                        <small>Loker dan job fair akan tampil setelah dipublikasikan admin.</small>
+                    </article>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="ubp-public-band">
+            <div>
+                <span>Portal Internal</span>
+                <h2>Mahasiswa, Ormawa, dan admin dapat melanjutkan proses pengajuan melalui panel login.</h2>
+            </div>
+            <a class="ubp-btn ubp-btn-primary" href="{{ $loginUrl }}">{{ $loginLabel }}</a>
+        </section>
+
+        <section id="faq" class="ubp-public-section ubp-public-faq">
+            <div class="ubp-public-section-head">
+                <span>FAQ</span>
+                <h2>Pertanyaan umum.</h2>
+            </div>
+            <div class="ubp-public-faq-grid">
+                <article><strong>Apakah halaman ini perlu login?</strong><small>Tidak. Halaman publik bisa dibuka langsung dari route `/`.</small></article>
+                <article><strong>Di mana mengajukan beasiswa atau proposal?</strong><small>Pengajuan dilakukan lewat panel sesuai role setelah login.</small></article>
+                <article><strong>Siapa yang mengelola publikasi?</strong><small>Press release, loker, dan job fair dikelola admin/kabag melalui portal internal.</small></article>
+            </div>
+        </section>
     </main>
+
+    <footer class="ubp-public-footer">
+        <strong>Portal Kemahasiswaan UBP Karawang</strong>
+        <span>Prestasi, beasiswa, Ormawa, tracer study, publikasi, dan karir.</span>
+    </footer>
 </body>
 </html>

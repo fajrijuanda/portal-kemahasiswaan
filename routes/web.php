@@ -20,11 +20,8 @@ use App\Http\Controllers\UnitActivityController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('home');
-});
-
-Route::get('/publik', [PublicPortalController::class, 'index'])->name('public.index');
+Route::get('/', [PublicPortalController::class, 'index'])->name('public.index');
+Route::get('/publik', fn () => redirect()->route('public.index'));
 Route::get('/publik/press-release/{pressRelease}', [PublicPortalController::class, 'pressRelease'])->name('public.press.show');
 
 Route::middleware('auth')->group(function () {

@@ -10,9 +10,17 @@ class ExampleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_root_redirects_to_home(): void
+    public function test_root_shows_public_landing_page(): void
     {
-        $this->get('/')->assertRedirect('/home');
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Portal Kemahasiswaan UBP Karawang')
+            ->assertSee('Login');
+    }
+
+    public function test_old_public_route_redirects_to_root(): void
+    {
+        $this->get('/publik')->assertRedirect('/');
     }
 
     public function test_admin_can_open_home_and_dashboard_rekap(): void

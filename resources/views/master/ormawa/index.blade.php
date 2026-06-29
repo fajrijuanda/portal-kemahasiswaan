@@ -23,13 +23,15 @@
             <button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#ormawaCreateModal">+ Tambah Ormawa</button>
         </x-slot:toolbar>
         <table class="table align-middle ubp-table ubp-data-table">
-            <thead><tr><th>Ormawa</th><th>Jenis</th><th>Akun</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+            <thead><tr><th>Ormawa</th><th>Jenis</th>@if($canLinkUser ?? true)<th>Akun</th>@endif<th>Status</th><th class="text-end">Aksi</th></tr></thead>
             <tbody>
                 @forelse($ormawas as $ormawa)
                     <tr>
                         <td><span class="ubp-table-primary">{{ $ormawa->nama }}</span><span class="ubp-table-muted">{{ $ormawa->pembina ?: 'Pembina belum diisi' }}</span></td>
                         <td>{{ $ormawa->jenis ?: '-' }}</td>
-                        <td>{{ $ormawa->user?->email ?? '-' }}</td>
+                        @if($canLinkUser ?? true)
+                            <td>{{ $ormawa->user?->email ?? '-' }}</td>
+                        @endif
                         <td><x-ui.status-badge :status="$ormawa->status" /></td>
                         <td class="text-end">
                             <button class="ubp-table-action" type="button" data-bs-toggle="modal" data-bs-target="#ormawaOverviewModal{{ $ormawa->id }}">Overview</button>
@@ -38,7 +40,7 @@
                         </td>
                     </tr>
                 @empty
-                    <x-ui.table-empty-row :colspan="5" title="Belum ada Ormawa" message="Tambahkan master Ormawa pertama." />
+                    <x-ui.table-empty-row :colspan="($canLinkUser ?? true) ? 5 : 4" title="Belum ada Ormawa" message="Tambahkan master Ormawa pertama." />
                 @endforelse
             </tbody>
         </table>
@@ -57,7 +59,9 @@
                             <div class="col-md-6"><small class="text-muted d-block">Jenis</small><strong>{{ $ormawa->jenis ?: '-' }}</strong></div>
                             <div class="col-md-6"><small class="text-muted d-block">Kontak</small><strong>{{ $ormawa->kontak ?: '-' }}</strong></div>
                             <div class="col-md-6"><small class="text-muted d-block">Pembina/PIC</small><strong>{{ $ormawa->pembina ?: '-' }}</strong></div>
-                            <div class="col-md-6"><small class="text-muted d-block">Akun Login</small><strong>{{ $ormawa->user?->email ?? '-' }}</strong></div>
+                            @if($canLinkUser ?? true)
+                                <div class="col-md-6"><small class="text-muted d-block">Akun Login</small><strong>{{ $ormawa->user?->email ?? '-' }}</strong></div>
+                            @endif
                             <div class="col-12"><small class="text-muted d-block">Deskripsi</small><strong>{{ $ormawa->deskripsi ?: '-' }}</strong></div>
                             <div class="col-md-4"><small class="text-muted d-block">Kegiatan</small><strong>{{ $ormawa->activities_count ?? 0 }}</strong></div>
                             <div class="col-md-4"><small class="text-muted d-block">Proposal</small><strong>{{ $ormawa->proposals_count ?? 0 }}</strong></div>
