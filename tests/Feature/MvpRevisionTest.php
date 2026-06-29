@@ -142,7 +142,11 @@ class MvpRevisionTest extends TestCase
         $ormawaUser = $this->userWithRole('ormawa', ['prodi_id' => $setup['prodi']->id]);
         Ormawa::create(['user_id' => $ormawaUser->id, 'nama' => 'HIMA Test', 'status' => 'Aktif']);
 
-        $this->actingAs($admin)->get(route('data.index', 'prestasi'))->assertOk();
+        $this->actingAs($admin)->get(route('prestasi.index'))->assertOk();
+        $this->actingAs($admin)->get(route('prestasi.table'))->assertOk();
+        $this->actingAs($admin)->get(route('event.index'))->assertOk();
+        $this->actingAs($admin)->get(route('event.table'))->assertOk();
+        $this->actingAs($admin)->get(route('reimburse.table'))->assertOk();
         $this->actingAs($admin)->get(route('unit-data.index', 'humas-marketing'))->assertOk();
         $this->actingAs($admin)->get(route('ormawa-admin.index', 'data-ormawa'))->assertOk();
         $this->actingAs($admin)->get(route('master-data.index', 'competitions'))->assertOk();
@@ -159,8 +163,10 @@ class MvpRevisionTest extends TestCase
         $this->setupAcademicData();
         $admin = $this->userWithRole('admin');
 
-        $this->actingAs($admin)->get('/prestasi')->assertRedirect(route('data.index', 'prestasi'));
-        $this->actingAs($admin)->get('/event')->assertRedirect(route('data.index', 'event'));
+        $this->actingAs($admin)->get('/prestasi')->assertOk()->assertSee('Pilih tabel');
+        $this->actingAs($admin)->get('/event')->assertOk()->assertSee('Event dan Reimbursement');
+        $this->actingAs($admin)->get('/data/prestasi')->assertRedirect(route('prestasi.table'));
+        $this->actingAs($admin)->get('/data/event')->assertRedirect(route('event.table'));
         $this->actingAs($admin)->get('/master-ormawa')->assertRedirect(route('ormawa-admin.index', 'data-ormawa'));
         $this->actingAs($admin)->get('/karir')->assertRedirect(route('publications.index', 'careers'));
     }

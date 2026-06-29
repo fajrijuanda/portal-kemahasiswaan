@@ -124,8 +124,8 @@ class DashboardController extends Controller
                 $this->countFor(Event::query()->where('jenis_reimbursement', 'Fasilitas'), $semesterId, $prodiId),
             ],
             'links' => [
-                route('data.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
-                route('data.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
+                route('reimburse.table', ['semester_id' => $semesterId, 'prodi_id' => $prodiId]),
+                route('reimburse.table', ['semester_id' => $semesterId, 'prodi_id' => $prodiId]),
             ],
         ]);
     }
@@ -152,7 +152,7 @@ class DashboardController extends Controller
         return response()->json([
             'labels' => $rows->pluck('nama'),
             'data' => $rows->pluck('total'),
-            'links' => $rows->map(fn ($row) => route('data.index', ['module' => 'tracer-study', 'prodi_id' => $row->id, 'semester_id' => $semesterId])),
+            'links' => $rows->map(fn ($row) => route('tracer.table', ['prodi_id' => $row->id, 'semester_id' => $semesterId])),
         ]);
     }
 
@@ -181,8 +181,12 @@ class DashboardController extends Controller
     {
         $module = trim($path, '/');
 
-        return route('data.index', array_filter([
-            'module' => $module,
+        return route(match ($module) {
+            'prestasi' => 'prestasi.table',
+            'beasiswa' => 'beasiswa.table',
+            'tracer-study' => 'tracer.table',
+            default => 'prestasi.table',
+        }, array_filter([
             $column => $id,
             'semester_id' => $semesterId,
         ]));

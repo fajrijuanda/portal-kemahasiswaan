@@ -4,10 +4,10 @@
     @php
         $filterParams = array_filter(['semester_id' => $selectedSemester, 'prodi_id' => $selectedProdi]);
         $cardMeta = [
-            'Prestasi' => ['icon' => 'prestasi', 'tone' => 'blue', 'caption' => 'Capaian dan lomba mahasiswa', 'href' => route('data.index', array_merge(['module' => 'prestasi'], $filterParams))],
-            'Event/Reimbursement' => ['icon' => 'event', 'tone' => 'teal', 'caption' => 'Event, transport, dan fasilitas', 'href' => route('data.index', array_merge(['module' => 'event'], $filterParams))],
-            'Tracer Study Input' => ['icon' => 'tracer', 'tone' => 'violet', 'caption' => 'Input tracer yang terkumpul', 'href' => route('data.index', array_merge(['module' => 'tracer-study'], $filterParams))],
-            'Beasiswa' => ['icon' => 'beasiswa', 'tone' => 'emerald', 'caption' => 'Data penerima beasiswa', 'href' => route('data.index', array_merge(['module' => 'beasiswa'], $filterParams))],
+            'Prestasi' => ['icon' => 'prestasi', 'tone' => 'blue', 'caption' => 'Capaian dan lomba mahasiswa', 'href' => route('prestasi.table', $filterParams)],
+            'Event/Reimbursement' => ['icon' => 'event', 'tone' => 'teal', 'caption' => 'Event, transport, dan fasilitas', 'href' => route('event.table', $filterParams)],
+            'Tracer Study Input' => ['icon' => 'tracer', 'tone' => 'violet', 'caption' => 'Input tracer yang terkumpul', 'href' => route('tracer.table', $filterParams)],
+            'Beasiswa' => ['icon' => 'beasiswa', 'tone' => 'emerald', 'caption' => 'Data penerima beasiswa', 'href' => route('beasiswa.table', $filterParams)],
             'Humas Marketing' => ['icon' => 'grid', 'tone' => 'rose', 'caption' => 'Aktivitas promosi dan publikasi', 'href' => route('unit-data.index', array_merge(['unit' => 'humas-marketing'], $filterParams))],
             'Science Center' => ['icon' => 'prodi', 'tone' => 'cyan', 'caption' => 'Program science center', 'href' => route('unit-data.index', array_merge(['unit' => 'science-center'], $filterParams))],
             'Pengembangan Ormawa' => ['icon' => 'user', 'tone' => 'amber-soft', 'caption' => 'Kegiatan dan pembinaan ormawa', 'href' => route('ormawa-admin.index', array_merge(['section' => 'kegiatan'], $filterParams))],

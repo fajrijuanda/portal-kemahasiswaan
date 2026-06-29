@@ -44,7 +44,28 @@ class RecordController extends Controller
             ],
         ],
         'event' => [
-            'title' => 'Event & Reimbursement',
+            'title' => 'Event Kegiatan',
+            'model' => Event::class,
+            'with' => ['semester', 'prodi', 'ormawa', 'creator'],
+            'fields' => [
+                'nama_pengaju' => ['label' => 'Nama Pengaju/Mahasiswa', 'type' => 'text', 'required' => true],
+                'nim' => ['label' => 'NIM', 'type' => 'text'],
+                'ormawa_id' => ['label' => 'Ormawa', 'type' => 'select', 'options' => [], 'relation' => 'ormawa.nama', 'rules' => ['nullable', 'exists:ormawas,id']],
+                'jenis_reimbursement' => ['label' => 'Jenis Reimbursement', 'type' => 'select', 'options' => ['Akomodasi', 'Pendaftaran', 'Transport', 'Fasilitas', 'Lainnya'], 'required' => true],
+                'nama_kegiatan' => ['label' => 'Nama Kegiatan', 'type' => 'text', 'required' => true],
+                'tanggal' => ['label' => 'Tanggal', 'type' => 'date'],
+                'nominal' => ['label' => 'Nominal', 'type' => 'number'],
+                'bukti_path' => ['label' => 'Bukti/Foto', 'type' => 'file'],
+                'foto_path' => ['label' => 'Foto Kegiatan', 'type' => 'file'],
+                'surat_tugas_path' => ['label' => 'Surat Tugas', 'type' => 'file'],
+                'sertifikat_path' => ['label' => 'Sertifikat', 'type' => 'file'],
+                'link_penyelenggara' => ['label' => 'Link Penyelenggara', 'type' => 'url'],
+                'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Diajukan', 'Diproses', 'Disetujui', 'Ditolak']],
+                'catatan' => ['label' => 'Catatan', 'type' => 'textarea'],
+            ],
+        ],
+        'reimburse' => [
+            'title' => 'Reimbursement',
             'model' => Event::class,
             'with' => ['semester', 'prodi', 'ormawa', 'creator'],
             'fields' => [
@@ -119,6 +140,23 @@ class RecordController extends Controller
         ],
     ];
 
+    public function overview(Request $request, string $group)
+    {
+        $overview = $this->groupOverview($group);
+        abort_unless($overview, 404);
+
+        return view('records.overview', [
+            'overview' => $overview,
+            'stats' => collect($overview['items'])->map(fn ($item) => [
+                'label' => $item['label'],
+                'value' => number_format($this->moduleCount($item['module'])),
+                'caption' => 'data',
+                'icon' => $item['icon'],
+                'tone' => $item['tone'] ?? 'blue',
+            ])->values()->all(),
+        ]);
+    }
+
     public function index(Request $request, string $module)
     {
         $config = $this->config($module);
@@ -129,6 +167,7 @@ class RecordController extends Controller
         return view('records.index', [
             'module' => $module,
             'config' => $config,
+            'canonicalRoute' => $this->canonicalRoute($module),
             'records' => $query->paginate(request('limit', 10))->withQueryString(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
@@ -142,7 +181,7 @@ class RecordController extends Controller
                 'items' => $this->dataSectionItems($module),
                 'stats' => [
                     ['label' => 'Total Data', 'value' => number_format($query->toBase()->getCountForPagination()), 'caption' => $config['title'], 'icon' => 'grid', 'tone' => 'blue'],
-                    ['label' => 'Lingkup', 'value' => count($this->dataSectionItems($module)), 'caption' => 'menu terkait', 'icon' => 'semester', 'tone' => 'emerald'],
+                    ['label' => 'Lingkup', 'value' => count($this->dataSectionItems($module)), 'caption' => 'tabel terkait', 'icon' => 'semester', 'tone' => 'emerald'],
                 ],
             ],
         ]);
@@ -167,7 +206,7 @@ class RecordController extends Controller
         $record = $config['model']::create($data);
         $this->syncComputedFields($module, $record);
 
-        return redirect()->route('data.index', $module)->with('status', $config['title'].' berhasil ditambahkan.');
+        return redirect()->route($this->canonicalRoute($module))->with('status', $config['title'].' berhasil ditambahkan.');
     }
 
     public function edit(string $module, int $id)
@@ -198,7 +237,7 @@ class RecordController extends Controller
             $this->syncPrestasiQuota($oldSemesterId, $oldProdiId);
         }
 
-        return redirect()->route('data.index', $module)->with('status', $config['title'].' berhasil diperbarui.');
+        return redirect()->route($this->canonicalRoute($module))->with('status', $config['title'].' berhasil diperbarui.');
     }
 
     public function destroy(string|int $module, string|int $id)
@@ -317,7 +356,7 @@ class RecordController extends Controller
             }
         }
 
-        if ($module === 'event') {
+        if (in_array($module, ['event', 'reimburse'], true)) {
             if (Schema::hasTable('ormawas')) {
                 $config['fields']['ormawa_id']['options'] = Ormawa::where('status', 'Aktif')->orderBy('nama')->pluck('nama', 'id')->all();
             } else {
@@ -410,11 +449,14 @@ class RecordController extends Controller
         $groups = [
             'prestasi' => [
                 'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
-                'event' => ['label' => 'Event/Reimburse', 'icon' => 'event'],
             ],
             'event' => [
-                'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
-                'event' => ['label' => 'Event/Reimburse', 'icon' => 'event'],
+                'event' => ['label' => 'Event', 'icon' => 'event'],
+                'reimburse' => ['label' => 'Reimburse', 'icon' => 'beasiswa'],
+            ],
+            'reimburse' => [
+                'event' => ['label' => 'Event', 'icon' => 'event'],
+                'reimburse' => ['label' => 'Reimburse', 'icon' => 'beasiswa'],
             ],
             'beasiswa' => [
                 'beasiswa' => ['label' => 'Beasiswa', 'icon' => 'beasiswa'],
@@ -431,7 +473,7 @@ class RecordController extends Controller
             return [
                 'label' => $item['label'],
                 'icon' => $item['icon'],
-                'href' => route('data.index', $module),
+                'href' => route($this->canonicalRoute($module)),
                 'active' => $module === $activeModule,
                 'count' => $model::count(),
             ];
@@ -441,9 +483,13 @@ class RecordController extends Controller
     private function dataSectionMeta(string $module): array
     {
         return match ($module) {
-            'prestasi', 'event' => [
-                'eyebrow' => 'Prestasi & Reimbursement',
-                'subtitle' => 'Kelola prestasi lomba, event, dan reimbursement mahasiswa dalam satu lingkup.',
+            'prestasi' => [
+                'eyebrow' => 'Prestasi',
+                'subtitle' => 'Kelola prestasi lomba mahasiswa dan data pendukungnya.',
+            ],
+            'event', 'reimburse' => [
+                'eyebrow' => 'Event & Reimbursement',
+                'subtitle' => 'Kelola event kegiatan dan pengajuan reimbursement dalam satu lingkup.',
             ],
             'beasiswa' => [
                 'eyebrow' => 'Beasiswa',
@@ -458,5 +504,64 @@ class RecordController extends Controller
                 'subtitle' => 'Kelola modul layanan kemahasiswaan dari satu halaman dengan navigasi ringkas.',
             ],
         };
+    }
+
+    private function groupOverview(string $group): ?array
+    {
+        return match ($group) {
+            'prestasi' => [
+                'eyebrow' => 'Prestasi',
+                'title' => 'Prestasi Mahasiswa',
+                'subtitle' => 'Pilih tabel prestasi yang ingin dibuka. Halaman ini menjadi overview sebelum masuk ke data detail.',
+                'items' => [
+                    ['label' => 'Prestasi Mahasiswa', 'module' => 'prestasi', 'icon' => 'prestasi', 'tone' => 'blue', 'href' => route('prestasi.table'), 'description' => 'Data lomba, kategori, scope, juara, dan verifikasi prestasi.'],
+                ],
+            ],
+            'event' => [
+                'eyebrow' => 'Event & Reimbursement',
+                'title' => 'Event dan Reimbursement',
+                'subtitle' => 'Pilih tabel Event atau Reimburse terlebih dulu. Keduanya berada dalam satu lingkup layanan kegiatan mahasiswa.',
+                'items' => [
+                    ['label' => 'Event', 'module' => 'event', 'icon' => 'event', 'tone' => 'teal', 'href' => route('event.table'), 'description' => 'Daftar kegiatan/event mahasiswa dan status pelaksanaannya.'],
+                    ['label' => 'Reimburse', 'module' => 'reimburse', 'icon' => 'beasiswa', 'tone' => 'emerald', 'href' => route('reimburse.table'), 'description' => 'Pengajuan akomodasi, pendaftaran, transport, fasilitas, dan bukti pendukung.'],
+                ],
+            ],
+            'beasiswa' => [
+                'eyebrow' => 'Beasiswa',
+                'title' => 'Beasiswa',
+                'subtitle' => 'Overview data beasiswa sebelum membuka tabel penerima dan pengajuan.',
+                'items' => [
+                    ['label' => 'Data Beasiswa', 'module' => 'beasiswa', 'icon' => 'beasiswa', 'tone' => 'pink', 'href' => route('beasiswa.table'), 'description' => 'Nama mahasiswa, jenis beasiswa, nominal, prodi, dan status.'],
+                ],
+            ],
+            'tracer' => [
+                'eyebrow' => 'Tracer Study',
+                'title' => 'Tracer Study',
+                'subtitle' => 'Overview input tracer study sebelum membuka tabel progres per prodi.',
+                'items' => [
+                    ['label' => 'Data Tracer', 'module' => 'tracer-study', 'icon' => 'tracer', 'tone' => 'violet', 'href' => route('tracer.table'), 'description' => 'Jumlah mahasiswa, jumlah input, periode yudisium, dan status follow up.'],
+                ],
+            ],
+            default => null,
+        };
+    }
+
+    private function canonicalRoute(string $module): string
+    {
+        return match ($module) {
+            'prestasi' => 'prestasi.table',
+            'event' => 'event.table',
+            'reimburse' => 'reimburse.table',
+            'beasiswa' => 'beasiswa.table',
+            'tracer-study' => 'tracer.table',
+            default => 'prestasi.index',
+        };
+    }
+
+    private function moduleCount(string $module): int
+    {
+        $config = $this->config($module);
+
+        return $config['model']::count();
     }
 }

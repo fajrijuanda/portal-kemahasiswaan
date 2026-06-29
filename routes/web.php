@@ -40,10 +40,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/charts/unit/{unit}', [DashboardController::class, 'unitActivityChart'])->name('charts.unit-activities');
 
     Route::middleware('role:super user|admin|kaprodi|kabag|warek')->group(function () {
-        Route::get('/data/{module}', [RecordController::class, 'index'])->name('data.index');
+        Route::get('/prestasi', [RecordController::class, 'overview'])->defaults('group', 'prestasi')->name('prestasi.index');
+        Route::get('/prestasi/mahasiswa', [RecordController::class, 'index'])->defaults('module', 'prestasi')->name('prestasi.table');
+        Route::get('/event', [RecordController::class, 'overview'])->defaults('group', 'event')->name('event.index');
+        Route::get('/event/kegiatan', [RecordController::class, 'index'])->defaults('module', 'event')->name('event.table');
+        Route::get('/event/reimburse', [RecordController::class, 'index'])->defaults('module', 'reimburse')->name('reimburse.table');
+        Route::get('/reimburse', fn () => redirect()->route('event.table'))->name('reimburse.index');
+        Route::get('/beasiswa', [RecordController::class, 'overview'])->defaults('group', 'beasiswa')->name('beasiswa.index');
+        Route::get('/beasiswa/data', [RecordController::class, 'index'])->defaults('module', 'beasiswa')->name('beasiswa.table');
+        Route::get('/tracer', [RecordController::class, 'overview'])->defaults('group', 'tracer')->name('tracer.index');
+        Route::get('/tracer/data', [RecordController::class, 'index'])->defaults('module', 'tracer-study')->name('tracer.table');
+        Route::get('/tracer-study', fn () => redirect()->route('tracer.index'))->name('tracer-study.index');
+        Route::get('/data/{module}', fn (string $module) => redirect()->route(match ($module) {
+            'prestasi' => 'prestasi.table',
+            'event' => 'event.table',
+            'reimburse' => 'reimburse.table',
+            'beasiswa' => 'beasiswa.table',
+            'tracer-study' => 'tracer.table',
+            default => 'prestasi.index',
+        }, request()->query()))->name('data.index');
 
         foreach (['prestasi', 'event', 'tracer-study', 'beasiswa'] as $module) {
-            Route::get("/{$module}", fn () => redirect()->route('data.index', $module))->name($module.'.index');
             Route::get("/{$module}/create", fn () => redirect()->route('data.index', $module))->name($module.'.create');
             Route::post("/{$module}", [RecordController::class, 'store'])->defaults('module', $module)->name($module.'.store');
             Route::get("/{$module}/{id}/edit", fn () => redirect()->route('data.index', $module))->name($module.'.edit');
@@ -51,8 +68,8 @@ Route::middleware('auth')->group(function () {
             Route::delete("/{$module}/{id}", [RecordController::class, 'destroy'])->defaults('module', $module)->name($module.'.destroy');
         }
 
-        Route::redirect('/claim-transport', '/data/event')->name('claim-transport.index');
-        Route::redirect('/claim-fasilitas', '/data/event')->name('claim-fasilitas.index');
+        Route::redirect('/claim-transport', '/event/reimburse')->name('claim-transport.index');
+        Route::redirect('/claim-fasilitas', '/event/reimburse')->name('claim-fasilitas.index');
 
         Route::prefix('records/{module}')->name('records.')->group(function () {
             Route::get('/', fn (string $module) => redirect()->route('data.index', $module))->name('index');

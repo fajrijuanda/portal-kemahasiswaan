@@ -38,7 +38,7 @@ class PrestasiEventInputTest extends TestCase
             'foto_path' => UploadedFile::fake()->image('prestasi.jpg'),
             'publikasi_url' => 'https://ubpkarawang.ac.id/prestasi/raka',
             'status' => 'Draft',
-        ])->assertRedirect('/data/prestasi');
+        ])->assertRedirect('/prestasi/mahasiswa');
 
         $prestasi = Prestasi::where('nama_mahasiswa', 'Raka Prestasi')->firstOrFail();
 
@@ -67,7 +67,7 @@ class PrestasiEventInputTest extends TestCase
             'nominal' => 750000,
             'bukti_path' => UploadedFile::fake()->image('bukti.jpg'),
             'status' => 'Diajukan',
-        ])->assertRedirect('/data/event');
+        ])->assertRedirect('/event/kegiatan');
 
         $event = Event::where('nama_pengaju', 'Nadia Event')->firstOrFail();
 

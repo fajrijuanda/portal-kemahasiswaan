@@ -18,10 +18,15 @@ class DashboardKemahasiswaanTest extends TestCase
 
         foreach ([
             '/dashboard',
-            '/data/prestasi',
-            '/data/event',
-            '/data/tracer-study',
-            '/data/beasiswa',
+            '/prestasi',
+            '/prestasi/mahasiswa',
+            '/event',
+            '/event/kegiatan',
+            '/event/reimburse',
+            '/tracer',
+            '/tracer/data',
+            '/beasiswa',
+            '/beasiswa/data',
             '/master-data/prodi',
             '/master-data/semester',
         ] as $path) {
@@ -29,10 +34,11 @@ class DashboardKemahasiswaanTest extends TestCase
         }
 
         $this->actingAs($admin)->get('/management-user')->assertForbidden();
-        $this->actingAs($admin)->get('/prestasi')->assertRedirect('/data/prestasi');
+        $this->actingAs($admin)->get('/data/prestasi')->assertRedirect('/prestasi/mahasiswa');
+        $this->actingAs($admin)->get('/data/event')->assertRedirect('/event/kegiatan');
         $this->actingAs($admin)->get('/master/prodi')->assertRedirect('/master-data/prodi');
-        $this->actingAs($admin)->get('/claim-transport')->assertRedirect('/data/event');
-        $this->actingAs($admin)->get('/claim-fasilitas')->assertRedirect('/data/event');
+        $this->actingAs($admin)->get('/claim-transport')->assertRedirect('/event/reimburse');
+        $this->actingAs($admin)->get('/claim-fasilitas')->assertRedirect('/event/reimburse');
 
         foreach ([
             '/dashboard/charts/prestasi-by-semester',
@@ -56,10 +62,11 @@ class DashboardKemahasiswaanTest extends TestCase
 
         $this->actingAs($kaprodi)
             ->get('/prestasi')
-            ->assertRedirect('/data/prestasi');
+            ->assertOk()
+            ->assertSee('Pilih tabel');
 
         $this->actingAs($kaprodi)
-            ->get('/data/prestasi')
+            ->get('/prestasi/mahasiswa')
             ->assertOk()
             ->assertSee($kaprodi->prodi->nama);
 

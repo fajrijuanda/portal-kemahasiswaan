@@ -4,9 +4,10 @@
     @php
         $services = [
             ['title' => 'Dashboard Rekap', 'count' => count($cards), 'desc' => 'Ringkasan data dan grafik kemahasiswaan.', 'href' => route('dashboard'), 'icon' => 'grid', 'tone' => 'cyan'],
-            ['title' => 'Prestasi & Reimburse', 'count' => ($cards['Prestasi'] ?? 0) + ($cards['Event/Reimbursement'] ?? 0), 'desc' => 'Prestasi lomba, event, dan reimbursement mahasiswa.', 'href' => route('data.index', 'prestasi'), 'icon' => 'prestasi', 'tone' => 'blue'],
-            ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('data.index', 'beasiswa'), 'icon' => 'beasiswa', 'tone' => 'pink'],
-            ['title' => 'Tracer Study', 'count' => $cards['Tracer Study Input'] ?? 0, 'desc' => 'Monitoring input tracer sebelum yudisium.', 'href' => route('data.index', 'tracer-study'), 'icon' => 'tracer', 'tone' => 'violet'],
+            ['title' => 'Prestasi', 'count' => $cards['Prestasi'] ?? 0, 'desc' => 'Prestasi lomba dan verifikasi capaian mahasiswa.', 'href' => route('prestasi.index'), 'icon' => 'prestasi', 'tone' => 'blue'],
+            ['title' => 'Event & Reimburse', 'count' => $cards['Event/Reimbursement'] ?? 0, 'desc' => 'Event kegiatan dan pengajuan reimbursement.', 'href' => route('event.index'), 'icon' => 'event', 'tone' => 'teal'],
+            ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
+            ['title' => 'Tracer Study', 'count' => $cards['Tracer Study Input'] ?? 0, 'desc' => 'Monitoring input tracer sebelum yudisium.', 'href' => route('tracer.index'), 'icon' => 'tracer', 'tone' => 'violet'],
             ['title' => 'Unit Kemahasiswaan', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'desc' => 'Humas, Science Center, Alumni, dan Pusat Karir.', 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
             ['title' => 'Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Data ormawa, kegiatan, proposal, dan reimbursement.', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
         ];
@@ -31,7 +32,7 @@
                 <a class="ubp-hero-action" href="#layanan">Buka katalog layanan <span>-&gt;</span></a>
             </div>
             <div class="ubp-hero-actions-grid">
-                <a href="{{ route('data.index', 'prestasi') }}">
+                <a href="{{ route('prestasi.index') }}">
                     <i><x-ui.app-icon name="prestasi" /></i>
                     <strong>Prestasi</strong>
                     <small>Prestasi lomba dan reimbursement mahasiswa.</small>

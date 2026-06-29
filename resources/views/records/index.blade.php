@@ -23,9 +23,12 @@
             'beasiswa' => 'emerald',
             default => 'slate',
         };
-        $tableFields = $module === 'beasiswa'
-            ? array_intersect_key($config['fields'], array_flip(['nama_mahasiswa', 'scholarship_type_id', 'nominal', 'status']))
-            : array_slice($config['fields'], 0, 4, true);
+        $tableFields = match($module) {
+            'beasiswa' => array_intersect_key($config['fields'], array_flip(['nama_mahasiswa', 'scholarship_type_id', 'nominal', 'status'])),
+            'event' => array_intersect_key($config['fields'], array_flip(['nama_kegiatan', 'tanggal', 'ormawa_id', 'status'])),
+            'reimburse' => array_intersect_key($config['fields'], array_flip(['nama_pengaju', 'jenis_reimbursement', 'nominal', 'status'])),
+            default => array_slice($config['fields'], 0, 4, true),
+        };
         $columnCount = count($tableFields) + 3;
     @endphp
 
@@ -110,7 +113,7 @@
                 </select>
                 <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter</button>
                 @if(request('q') || request('semester_id') || request('prodi_id'))
-                    <a href="{{ route('data.index', $module) }}" class="ubp-table-action">Reset</a>
+                    <a href="{{ route($canonicalRoute) }}" class="ubp-table-action">Reset</a>
                 @endif
             </form>
         </x-slot:controls>

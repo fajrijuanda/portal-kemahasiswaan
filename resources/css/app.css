@@ -2820,6 +2820,50 @@ body {
     display: none;
 }
 
+.ubp-record-overview-panel {
+    margin-top: 22px;
+}
+
+.ubp-overview-launcher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    padding-top: 8px;
+}
+
+.ubp-overview-launcher {
+    display: grid;
+    min-height: 190px;
+    align-content: start;
+    gap: 12px;
+    padding: 22px;
+    border: 1px solid var(--portal-border);
+    border-radius: 18px;
+    background: #fff;
+    color: var(--portal-ink);
+    text-decoration: none;
+    box-shadow: 0 18px 46px rgba(15, 23, 42, .06);
+    transition: .18s ease;
+}
+
+.ubp-overview-launcher:hover {
+    transform: translateY(-2px);
+    border-color: rgba(14, 165, 233, .34);
+    box-shadow: 0 24px 60px rgba(14, 165, 233, .12);
+}
+
+.ubp-overview-launcher strong {
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.ubp-overview-launcher small {
+    color: var(--portal-muted);
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.55;
+}
+
 .ubp-section-content > .ubp-table-shell:first-child,
 .ubp-section-content > .ubp-table-shell-omnia:first-child {
     border-radius: 0;
