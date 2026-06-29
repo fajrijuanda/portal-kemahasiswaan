@@ -21,7 +21,7 @@
         </div>
     @endunless
 
-    @if(($unit ?? null) === 'pengembangan-ormawa')
+    @if(($unit ?? null) === 'pengembangan-ormawa' && ($canUseOrmawa ?? true))
         <div class="col-md-6">
             <label class="form-label" for="{{ $prefix }}-ormawa_id">Ormawa</label>
             <select id="{{ $prefix }}-ormawa_id" name="ormawa_id" class="form-select ubp-control">

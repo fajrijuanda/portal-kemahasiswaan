@@ -7,6 +7,7 @@ use App\Models\Prodi;
 use App\Models\Semester;
 use App\Models\UnitActivity;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;
 
 class UnitActivityController extends Controller
@@ -41,36 +42,44 @@ class UnitActivityController extends Controller
     public function index(Request $request, string $unit)
     {
         $config = $this->config($unit);
-        $query = UnitActivity::with(['semester', 'prodi', 'ormawa', 'creator'])
-            ->where('unit', $unit)
-            ->latest();
+        $relations = ['semester', 'prodi', 'creator'];
+        if ($this->hasOrmawaColumn()) {
+            $relations[] = 'ormawa';
+        }
 
-        $this->applyScopeAndFilters($query, $request);
+        $query = $this->hasTable('unit_activities')
+            ? UnitActivity::with($relations)->where('unit', $unit)->latest()
+            : null;
 
-        $baseQuery = UnitActivity::query()->where('unit', $unit);
+        if ($query) {
+            $this->applyScopeAndFilters($query, $request);
+        }
+
+        $baseQuery = $this->hasTable('unit_activities') ? UnitActivity::query()->where('unit', $unit) : null;
         if ($request->user()->hasRole('kaprodi')) {
-            $baseQuery->where('prodi_id', $request->user()->prodi_id);
+            $baseQuery?->where('prodi_id', $request->user()->prodi_id);
         }
 
         return view('unit-activities.index', [
             'unit' => $unit,
             'config' => $config,
-            'records' => $query->paginate(request('limit', 10))->withQueryString(),
-            'totalRecords' => (clone $baseQuery)->count(),
-            'completedRecords' => (clone $baseQuery)->where('status', 'Selesai')->count(),
-            'semesters' => Semester::orderByDesc('id')->get(),
-            'prodis' => Prodi::orderBy('nama')->get(),
-            'ormawas' => Schema::hasTable('ormawas') ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
+            'records' => $query ? $query->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+            'totalRecords' => $baseQuery ? (clone $baseQuery)->count() : 0,
+            'completedRecords' => $baseQuery ? (clone $baseQuery)->where('status', 'Selesai')->count() : 0,
+            'semesters' => $this->hasTable('semesters') ? Semester::orderByDesc('id')->get() : collect(),
+            'prodis' => $this->hasTable('prodis') ? Prodi::orderBy('nama')->get() : collect(),
+            'ormawas' => $this->hasOrmawaColumn() ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
+            'canUseOrmawa' => $this->hasOrmawaColumn(),
             'sectionShell' => [
                 'eyebrow' => 'Unit Data',
                 'title' => $config['title'],
                 'subtitle' => 'Kelola data unit layanan khusus dari satu halaman ringkas.',
                 'items' => $this->unitSectionItems($unit),
                 'stats' => [
-                    ['label' => 'Total Aktivitas', 'value' => number_format((clone $baseQuery)->count()), 'caption' => $config['title'], 'icon' => $config['icon'], 'tone' => $config['tone']],
-                    ['label' => 'Berjalan', 'value' => number_format((clone $baseQuery)->where('status', 'Berjalan')->count()), 'caption' => 'aktif', 'icon' => 'event', 'tone' => 'blue'],
-                    ['label' => 'Selesai', 'value' => number_format((clone $baseQuery)->where('status', 'Selesai')->count()), 'caption' => 'aktivitas tuntas', 'icon' => 'prestasi', 'tone' => 'emerald'],
-                    ['label' => 'Draft/Tertunda', 'value' => number_format((clone $baseQuery)->whereIn('status', ['Draft', 'Tertunda'])->count()), 'caption' => 'perlu tindak lanjut', 'icon' => 'grid', 'tone' => 'amber'],
+                    ['label' => 'Total Aktivitas', 'value' => number_format($baseQuery ? (clone $baseQuery)->count() : 0), 'caption' => $config['title'], 'icon' => $config['icon'], 'tone' => $config['tone']],
+                    ['label' => 'Berjalan', 'value' => number_format($baseQuery ? (clone $baseQuery)->where('status', 'Berjalan')->count() : 0), 'caption' => 'aktif', 'icon' => 'event', 'tone' => 'blue'],
+                    ['label' => 'Selesai', 'value' => number_format($baseQuery ? (clone $baseQuery)->where('status', 'Selesai')->count() : 0), 'caption' => 'aktivitas tuntas', 'icon' => 'prestasi', 'tone' => 'emerald'],
+                    ['label' => 'Draft/Tertunda', 'value' => number_format($baseQuery ? (clone $baseQuery)->whereIn('status', ['Draft', 'Tertunda'])->count() : 0), 'caption' => 'perlu tindak lanjut', 'icon' => 'grid', 'tone' => 'amber'],
                 ],
             ],
         ]);
@@ -121,7 +130,7 @@ class UnitActivityController extends Controller
         return $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
             'prodi_id' => [$request->user()->hasRole('kaprodi') ? 'nullable' : 'required', 'nullable', 'exists:prodis,id'],
-            'ormawa_id' => ['nullable', 'exists:ormawas,id'],
+            'ormawa_id' => $this->hasOrmawaColumn() ? ['nullable', 'exists:ormawas,id'] : ['exclude'],
             'judul' => ['required', 'string', 'max:255'],
             'penanggung_jawab' => ['nullable', 'string', 'max:255'],
             'tanggal' => ['nullable', 'date'],
@@ -180,7 +189,7 @@ class UnitActivityController extends Controller
                 'icon' => $config['icon'],
                 'href' => route('unit-activities.index', $unit),
                 'active' => $unit === $activeUnit,
-                'count' => UnitActivity::where('unit', $unit)->count(),
+                'count' => $this->hasTable('unit_activities') ? UnitActivity::where('unit', $unit)->count() : 0,
             ])
             ->values()
             ->all();
@@ -193,5 +202,22 @@ class UnitActivityController extends Controller
         }
 
         return route('unit-activities.index', $unit);
+    }
+
+    private function hasTable(string $table): bool
+    {
+        return Schema::hasTable($table);
+    }
+
+    private function hasOrmawaColumn(): bool
+    {
+        return $this->hasTable('ormawas')
+            && $this->hasTable('unit_activities')
+            && Schema::hasColumn('unit_activities', 'ormawa_id');
+    }
+
+    private function emptyPaginator(): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(collect(), 0, request('limit', 10), 1, ['path' => request()->url()]);
     }
 }

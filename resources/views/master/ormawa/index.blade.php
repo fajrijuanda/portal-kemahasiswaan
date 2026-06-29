@@ -59,9 +59,9 @@
                             <div class="col-md-6"><small class="text-muted d-block">Pembina/PIC</small><strong>{{ $ormawa->pembina ?: '-' }}</strong></div>
                             <div class="col-md-6"><small class="text-muted d-block">Akun Login</small><strong>{{ $ormawa->user?->email ?? '-' }}</strong></div>
                             <div class="col-12"><small class="text-muted d-block">Deskripsi</small><strong>{{ $ormawa->deskripsi ?: '-' }}</strong></div>
-                            <div class="col-md-4"><small class="text-muted d-block">Kegiatan</small><strong>{{ $ormawa->activities->count() }}</strong></div>
-                            <div class="col-md-4"><small class="text-muted d-block">Proposal</small><strong>{{ $ormawa->proposals->count() }}</strong></div>
-                            <div class="col-md-4"><small class="text-muted d-block">Reimbursement</small><strong>{{ $ormawa->reimbursements->count() }}</strong></div>
+                            <div class="col-md-4"><small class="text-muted d-block">Kegiatan</small><strong>{{ $ormawa->activities_count ?? 0 }}</strong></div>
+                            <div class="col-md-4"><small class="text-muted d-block">Proposal</small><strong>{{ $ormawa->proposals_count ?? 0 }}</strong></div>
+                            <div class="col-md-4"><small class="text-muted d-block">Reimbursement</small><strong>{{ $ormawa->reimbursements_count ?? 0 }}</strong></div>
                         </div>
                     </div>
                 </div>

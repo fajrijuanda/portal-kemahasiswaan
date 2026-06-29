@@ -35,16 +35,20 @@ class OrmawaAdminController extends Controller
 
     private function dataOrmawa()
     {
-        $relations = ['user', 'activities'];
-        if ($this->hasTable('ormawa_proposals')) {
-            $relations[] = 'proposals';
+        $query = $this->hasTable('ormawas') ? Ormawa::with('user')->orderBy('nama') : null;
+
+        if ($query && $this->hasUnitOrmawaColumn()) {
+            $query->withCount('activities');
         }
-        if ($this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id')) {
-            $relations[] = 'reimbursements';
+        if ($query && $this->hasTable('ormawa_proposals')) {
+            $query->withCount('proposals');
+        }
+        if ($query && $this->hasEventOrmawaColumn()) {
+            $query->withCount('reimbursements');
         }
 
         return view('master.ormawa.index', [
-            'ormawas' => $this->hasTable('ormawas') ? Ormawa::with($relations)->orderBy('nama')->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+            'ormawas' => $query ? $query->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
             'users' => $this->hasTable('roles') ? User::role('ormawa')->orderBy('name')->get() : collect(),
             'sectionShell' => $this->sectionShell('data-ormawa', 'Data Ormawa', 'Kelola profil, akun, dan overview organisasi mahasiswa.'),
         ]);
@@ -59,18 +63,24 @@ class OrmawaAdminController extends Controller
             'icon' => 'event',
             'tone' => 'amber',
         ];
-        $query = UnitActivity::with(['semester', 'prodi', 'ormawa', 'creator'])->where('unit', $unit)->latest();
-        $baseQuery = UnitActivity::query()->where('unit', $unit);
+        $relations = ['semester', 'prodi', 'creator'];
+        if ($this->hasUnitOrmawaColumn()) {
+            $relations[] = 'ormawa';
+        }
+
+        $query = $this->hasTable('unit_activities') ? UnitActivity::with($relations)->where('unit', $unit)->latest() : null;
+        $baseQuery = $this->hasTable('unit_activities') ? UnitActivity::query()->where('unit', $unit) : null;
 
         return view('unit-activities.index', [
             'unit' => $unit,
             'config' => $config,
-            'records' => $query->paginate(request('limit', 10))->withQueryString(),
-            'totalRecords' => (clone $baseQuery)->count(),
-            'completedRecords' => (clone $baseQuery)->where('status', 'Selesai')->count(),
-            'semesters' => Semester::orderByDesc('id')->get(),
-            'prodis' => Prodi::orderBy('nama')->get(),
-            'ormawas' => $this->hasTable('ormawas') ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
+            'records' => $query ? $query->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+            'totalRecords' => $baseQuery ? (clone $baseQuery)->count() : 0,
+            'completedRecords' => $baseQuery ? (clone $baseQuery)->where('status', 'Selesai')->count() : 0,
+            'semesters' => $this->hasTable('semesters') ? Semester::orderByDesc('id')->get() : collect(),
+            'prodis' => $this->hasTable('prodis') ? Prodi::orderBy('nama')->get() : collect(),
+            'ormawas' => $this->hasUnitOrmawaColumn() ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
+            'canUseOrmawa' => $this->hasUnitOrmawaColumn(),
             'sectionShell' => $this->sectionShell('kegiatan', 'Kegiatan Ormawa', 'Aktivitas Ormawa berada dalam satu ruang dengan data dan pengajuan Ormawa.'),
         ]);
     }
@@ -92,7 +102,7 @@ class OrmawaAdminController extends Controller
             'section' => 'reimbursement',
             'title' => 'Reimbursement Ormawa',
             'subtitle' => 'Pantau reimbursement acara yang memiliki relasi Ormawa.',
-            'records' => $this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::with(['ormawa', 'semester', 'prodi', 'creator'])->whereNotNull('ormawa_id')->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+            'records' => $this->hasEventOrmawaColumn() ? Event::with(['ormawa', 'semester', 'prodi', 'creator'])->whereNotNull('ormawa_id')->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
             'sectionShell' => $this->sectionShell('reimbursement', 'Reimbursement Ormawa', 'Reimbursement acara Ormawa beserta file syarat pendukung.'),
         ]);
     }
@@ -112,9 +122,9 @@ class OrmawaAdminController extends Controller
             ])->values()->all(),
             'stats' => [
                 ['label' => 'Ormawa', 'value' => number_format($this->countModel('ormawas', Ormawa::class)), 'caption' => 'terdaftar', 'icon' => 'user', 'tone' => 'amber'],
-                ['label' => 'Kegiatan', 'value' => number_format(UnitActivity::where('unit', 'pengembangan-ormawa')->count()), 'caption' => 'aktivitas', 'icon' => 'event', 'tone' => 'teal'],
+                ['label' => 'Kegiatan', 'value' => number_format($this->hasTable('unit_activities') ? UnitActivity::where('unit', 'pengembangan-ormawa')->count() : 0), 'caption' => 'aktivitas', 'icon' => 'event', 'tone' => 'teal'],
                 ['label' => 'Proposal', 'value' => number_format($this->countModel('ormawa_proposals', OrmawaProposal::class)), 'caption' => 'pengajuan', 'icon' => 'grid', 'tone' => 'blue'],
-                ['label' => 'Reimbursement', 'value' => number_format($this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::whereNotNull('ormawa_id')->count() : 0), 'caption' => 'ormawa', 'icon' => 'beasiswa', 'tone' => 'emerald'],
+                ['label' => 'Reimbursement', 'value' => number_format($this->hasEventOrmawaColumn() ? Event::whereNotNull('ormawa_id')->count() : 0), 'caption' => 'ormawa', 'icon' => 'beasiswa', 'tone' => 'emerald'],
             ],
         ];
     }
@@ -123,9 +133,9 @@ class OrmawaAdminController extends Controller
     {
         return match ($section) {
             'data-ormawa' => $this->countModel('ormawas', Ormawa::class),
-            'kegiatan' => UnitActivity::where('unit', 'pengembangan-ormawa')->count(),
+            'kegiatan' => $this->hasTable('unit_activities') ? UnitActivity::where('unit', 'pengembangan-ormawa')->count() : 0,
             'proposal' => $this->countModel('ormawa_proposals', OrmawaProposal::class),
-            'reimbursement' => $this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::whereNotNull('ormawa_id')->count() : 0,
+            'reimbursement' => $this->hasEventOrmawaColumn() ? Event::whereNotNull('ormawa_id')->count() : 0,
         };
     }
 
@@ -137,6 +147,20 @@ class OrmawaAdminController extends Controller
     private function countModel(string $table, string $model): int
     {
         return $this->hasTable($table) ? $model::count() : 0;
+    }
+
+    private function hasUnitOrmawaColumn(): bool
+    {
+        return $this->hasTable('ormawas')
+            && $this->hasTable('unit_activities')
+            && Schema::hasColumn('unit_activities', 'ormawa_id');
+    }
+
+    private function hasEventOrmawaColumn(): bool
+    {
+        return $this->hasTable('ormawas')
+            && $this->hasTable('events')
+            && Schema::hasColumn('events', 'ormawa_id');
     }
 
     private function emptyPaginator(): LengthAwarePaginator
