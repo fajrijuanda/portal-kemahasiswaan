@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'Portal Kemahasiswaan') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="portal-theme-scope" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+    <body class="portal-theme-scope">
         <div class="ubp-app-shell">
             <div class="ubp-color-strip"></div>
             @include('layouts.navigation')

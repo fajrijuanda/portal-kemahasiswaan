@@ -1,5 +1,6 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'tom-select/dist/css/tom-select.bootstrap5.css';
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,13 +24,47 @@
     --ubp-line: #e7edf5;
     --ubp-surface: #ffffff;
     --ubp-page: #f8fafc;
+    --portal-font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --portal-font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
 }
 
 body {
+    font-family: var(--portal-font-sans);
     color: var(--ubp-ink);
     background:
         radial-gradient(circle at top left, rgba(0, 174, 239, .22), transparent 30rem),
         linear-gradient(180deg, #fbfeff 0%, var(--ubp-page) 100%);
+}
+
+button,
+input,
+select,
+textarea,
+.form-control,
+.form-select,
+.dropdown-menu,
+.ts-control,
+.ts-dropdown {
+    font-family: var(--portal-font-sans);
+}
+
+.ubp-title,
+.ubp-hero-panel h1,
+.ubp-auth-copy h1,
+.ubp-panel-heading h2,
+.ubp-omnia-catalog-head h2,
+.ubp-section-hero h1,
+.ubp-section-main-title,
+.ubp-table-shell-title,
+.ubp-rekap-dashboard-hero h2,
+.ubp-dashboard-hero h2,
+.ubp-public-hero-copy h1,
+.ubp-public-section-head h2,
+.ubp-public-feature h2,
+.ubp-public-band h2,
+.modal-title {
+    font-family: var(--portal-font-display);
+    letter-spacing: 0;
 }
 
 .ubp-navbar {

@@ -6,7 +6,7 @@
     <title>Portal Kemahasiswaan UBP Karawang</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="portal-theme-scope ubp-public-body" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+<body class="portal-theme-scope ubp-public-body">
     @php
         $loginUrl = auth()->check() ? route('home') : route('login');
         $loginLabel = auth()->check() ? 'Masuk Portal' : 'Login';

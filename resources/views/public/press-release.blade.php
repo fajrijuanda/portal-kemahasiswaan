@@ -6,7 +6,7 @@
     <title>{{ $pressRelease->title }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="portal-theme-scope" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+<body class="portal-theme-scope">
     <main class="ubp-portal-content ubp-portal-content-wide">
         <a class="ubp-table-action mb-3 d-inline-flex" href="{{ route('public.index') }}">Kembali</a>
         <article class="ubp-table-shell">

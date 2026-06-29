@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'Portal Kemahasiswaan') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="portal-theme-scope ubp-auth-screen" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+    <body class="portal-theme-scope ubp-auth-screen">
         <main class="ubp-auth-shell">
             <section class="ubp-auth-showcase">
                 <div class="ubp-color-strip"></div>
