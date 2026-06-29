@@ -24,24 +24,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const cursorRing = document.querySelector('.ubp-cursor-ring');
-    const canUseCursorRing = cursorRing
-        && window.matchMedia('(hover: hover)').matches
-        && window.matchMedia('(pointer: fine)').matches
-        && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (canUseCursorRing) {
-        window.addEventListener('mousemove', (event) => {
-            cursorRing.classList.add('is-visible');
-            cursorRing.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
-        }, {passive: true});
-
-        window.addEventListener('mouseout', () => cursorRing.classList.remove('is-visible'), {passive: true});
-
-        document.querySelectorAll('a, button, input, select, textarea, [role="button"], .ts-control').forEach((el) => {
-            el.addEventListener('mouseenter', () => cursorRing.classList.add('is-active'));
-            el.addEventListener('mouseleave', () => cursorRing.classList.remove('is-active'));
-        });
-    }
 });
 // End of file

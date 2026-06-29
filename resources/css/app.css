@@ -886,39 +886,6 @@ body {
     background: linear-gradient(180deg, #0ea5e9, #0284c7);
 }
 
-.ubp-cursor-ring {
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 26px;
-    height: 26px;
-    pointer-events: none;
-    border: 2px solid rgba(14, 165, 233, .42);
-    border-radius: 999px;
-    box-shadow: 0 0 0 6px rgba(14, 165, 233, .08);
-    opacity: 0;
-    transform: translate3d(-50%, -50%, 0);
-    transition: width .16s ease, height .16s ease, opacity .18s ease, border-color .16s ease, box-shadow .16s ease;
-}
-
-.ubp-cursor-ring.is-visible {
-    opacity: 1;
-}
-
-.ubp-cursor-ring.is-active {
-    width: 34px;
-    height: 34px;
-    border-color: rgba(14, 165, 233, .68);
-    box-shadow: 0 0 0 9px rgba(14, 165, 233, .12);
-}
-
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-    .ubp-cursor-ring {
-        display: none;
-    }
-}
-
 .ubp-app-shell {
     position: relative;
     min-height: 100vh;
@@ -1256,8 +1223,9 @@ body {
 .ubp-omnia-home-grid {
     grid-template-columns: minmax(0, 1.55fr) minmax(310px, 1fr);
     gap: 16px;
-    max-width: 1500px;
-    margin: 0 auto 22px;
+    width: 100%;
+    max-width: none;
+    margin: 0 0 22px;
 }
 
 .ubp-hero-panel {
