@@ -1,10 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h1 class="ubp-title">{{ $config['title'] }}</h1>
-            <p class="ubp-subtitle">Input, filter, dan verifikasi data {{ strtolower($config['title']) }}.</p>
-        </div>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <div>
+                <h1 class="ubp-title">{{ $config['title'] }}</h1>
+                <p class="ubp-subtitle">Input, filter, dan verifikasi data {{ strtolower($config['title']) }}.</p>
+            </div>
+        </x-slot>
+    @endunless
 
     @php
         $moduleIcon = match($module) {

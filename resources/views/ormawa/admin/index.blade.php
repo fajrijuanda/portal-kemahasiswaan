@@ -1,10 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h1 class="ubp-title">{{ $title }}</h1>
-            <p class="ubp-subtitle">{{ $subtitle }}</p>
-        </div>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <div>
+                <h1 class="ubp-title">{{ $title }}</h1>
+                <p class="ubp-subtitle">{{ $subtitle }}</p>
+            </div>
+        </x-slot>
+    @endunless
 
     <x-ui.section-shell
         :eyebrow="$sectionShell['eyebrow']"

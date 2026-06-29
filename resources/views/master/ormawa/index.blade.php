@@ -1,10 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h1 class="ubp-title">Master Ormawa</h1>
-            <p class="ubp-subtitle">Kelola profil Ormawa dan relasi akun login masing-masing.</p>
-        </div>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <div>
+                <h1 class="ubp-title">Master Ormawa</h1>
+                <p class="ubp-subtitle">Kelola profil Ormawa dan relasi akun login masing-masing.</p>
+            </div>
+        </x-slot>
+    @endunless
 
     @isset($sectionShell)
         <x-ui.section-shell

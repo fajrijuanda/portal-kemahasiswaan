@@ -1,8 +1,10 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h1 class="ubp-title">Master Semester</h1>
-        <p class="ubp-subtitle">Atur semester aktif dan periode akademik.</p>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <h1 class="ubp-title">Master Semester</h1>
+            <p class="ubp-subtitle">Atur semester aktif dan periode akademik.</p>
+        </x-slot>
+    @endunless
 
     @isset($sectionShell)
         <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">

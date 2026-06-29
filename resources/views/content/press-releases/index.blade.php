@@ -1,10 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h1 class="ubp-title">Press Release</h1>
-            <p class="ubp-subtitle">Kabag dapat membuat dan mempublikasikan berita untuk halaman publik.</p>
-        </div>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <div>
+                <h1 class="ubp-title">Press Release</h1>
+                <p class="ubp-subtitle">Kabag dapat membuat dan mempublikasikan berita untuk halaman publik.</p>
+            </div>
+        </x-slot>
+    @endunless
 
     @isset($sectionShell)
         <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">

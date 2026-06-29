@@ -1,10 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h1 class="ubp-title">Kuota Prestasi Prodi</h1>
-            <p class="ubp-subtitle">Atur slot dukungan prestasi tiap prodi dan pantau pemakaian terverifikasi.</p>
-        </div>
-    </x-slot>
+    @unless(isset($sectionShell))
+        <x-slot name="header">
+            <div>
+                <h1 class="ubp-title">Kuota Prestasi Prodi</h1>
+                <p class="ubp-subtitle">Atur slot dukungan prestasi tiap prodi dan pantau pemakaian terverifikasi.</p>
+            </div>
+        </x-slot>
+    @endunless
 
     @isset($sectionShell)
         <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
