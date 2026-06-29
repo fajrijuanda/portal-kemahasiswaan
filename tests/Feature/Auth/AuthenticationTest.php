@@ -27,7 +27,22 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_login_redirects_to_home_even_with_intended_dashboard(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->withSession(['url.intended' => route('dashboard', absolute: false)])
+            ->post('/login', [
+                'email' => $user->email,
+                'password' => 'password',
+            ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
