@@ -85,6 +85,25 @@
         @endforeach
     </section>
 
+    @if($achievementQuotas->isNotEmpty())
+        <x-ui.table-shell class="mt-4" title="Kuota Prestasi Prodi" subtitle="Pantauan slot dukungan prestasi dan jumlah yang sudah terpakai.">
+            <table class="table align-middle ubp-table ubp-data-table">
+                <thead><tr><th>Semester</th><th>Prodi</th><th>Slot</th><th>Terpakai</th><th>Sisa</th></tr></thead>
+                <tbody>
+                    @foreach($achievementQuotas as $quota)
+                        <tr>
+                            <td>{{ $quota->semester?->nama ?? '-' }}</td>
+                            <td>{{ $quota->prodi?->nama ?? '-' }}</td>
+                            <td>{{ $quota->slot_prestasi }}</td>
+                            <td>{{ $quota->terpakai }}</td>
+                            <td>{{ max(0, $quota->slot_prestasi - $quota->terpakai) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </x-ui.table-shell>
+    @endif
+
     <section class="ubp-chart-grid ubp-rekap-chart-grid">
         @foreach([
             ['prestasiSemester', 'Prestasi by Semester', 'semester', route('charts.prestasi.semester')],

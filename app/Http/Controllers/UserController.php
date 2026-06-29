@@ -84,6 +84,7 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.($userId ?: 'NULL').',id'],
             'password' => [$passwordRequired ? 'required' : 'nullable', 'string', 'min:8'],
             'prodi_id' => ['nullable', 'exists:prodis,id'],
+            'nim' => ['nullable', 'string', 'max:255'],
             'role' => ['required', 'exists:roles,name'],
         ]);
     }

@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'prodi_id'])]
+#[Fillable(['name', 'email', 'password', 'prodi_id', 'nim'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -21,6 +21,11 @@ class User extends Authenticatable
     public function prodi()
     {
         return $this->belongsTo(Prodi::class);
+    }
+
+    public function ormawa()
+    {
+        return $this->hasOne(Ormawa::class);
     }
 
     /**

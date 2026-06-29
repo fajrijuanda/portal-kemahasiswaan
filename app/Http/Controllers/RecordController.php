@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AchievementQuota;
 use App\Models\Beasiswa;
 use App\Models\ClaimFasilitas;
 use App\Models\ClaimTransport;
+use App\Models\Competition;
 use App\Models\Event;
+use App\Models\Ormawa;
 use App\Models\Prestasi;
 use App\Models\Prodi;
+use App\Models\ScholarshipType;
 use App\Models\Semester;
 use App\Models\TracerStudy;
 use Illuminate\Http\Request;
@@ -19,31 +23,42 @@ class RecordController extends Controller
         'prestasi' => [
             'title' => 'Prestasi Mahasiswa',
             'model' => Prestasi::class,
+            'with' => ['semester', 'prodi', 'competition', 'creator'],
             'fields' => [
                 'nama_mahasiswa' => ['label' => 'Nama Mahasiswa', 'type' => 'text', 'required' => true],
                 'nim' => ['label' => 'NIM', 'type' => 'text'],
+                'competition_id' => ['label' => 'Nama Lomba', 'type' => 'select', 'options' => [], 'relation' => 'competition.nama', 'rules' => ['nullable', 'exists:competitions,id']],
                 'nama_kegiatan' => ['label' => 'Nama Kegiatan', 'type' => 'text', 'required' => true],
-                'tingkat' => ['label' => 'Tingkat', 'type' => 'select', 'options' => ['Nasional', 'Internasional'], 'required' => true],
-                'peringkat' => ['label' => 'Peringkat', 'type' => 'text'],
+                'kategori_event' => ['label' => 'Kategori Event', 'type' => 'select', 'options' => ['Kelompok', 'Perorangan']],
+                'scope' => ['label' => 'Scope', 'type' => 'select', 'options' => ['Lokal', 'Regional', 'Nasional', 'Internasional']],
+                'juara' => ['label' => 'Juara', 'type' => 'select', 'options' => ['1', '2', '3', 'Favorit', 'Finalis', 'Harapan']],
+                'tingkat' => ['label' => 'Tingkat Lama', 'type' => 'select', 'options' => ['Lokal', 'Regional', 'Nasional', 'Internasional']],
+                'peringkat' => ['label' => 'Peringkat Lama', 'type' => 'text'],
                 'penyelenggara' => ['label' => 'Penyelenggara', 'type' => 'text'],
                 'tanggal' => ['label' => 'Tanggal', 'type' => 'date'],
                 'foto_path' => ['label' => 'Foto Prestasi', 'type' => 'file'],
                 'publikasi_url' => ['label' => 'Link Publikasi', 'type' => 'url'],
-                'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Draft', 'Terverifikasi', 'Ditolak']],
+                'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Diajukan', 'Draft', 'Terverifikasi', 'Ditolak']],
                 'catatan' => ['label' => 'Catatan', 'type' => 'textarea'],
             ],
         ],
         'event' => [
             'title' => 'Event & Reimbursement',
             'model' => Event::class,
+            'with' => ['semester', 'prodi', 'ormawa', 'creator'],
             'fields' => [
                 'nama_pengaju' => ['label' => 'Nama Pengaju/Mahasiswa', 'type' => 'text', 'required' => true],
                 'nim' => ['label' => 'NIM', 'type' => 'text'],
+                'ormawa_id' => ['label' => 'Ormawa', 'type' => 'select', 'options' => [], 'relation' => 'ormawa.nama', 'rules' => ['nullable', 'exists:ormawas,id']],
                 'jenis_reimbursement' => ['label' => 'Jenis Reimbursement', 'type' => 'select', 'options' => ['Akomodasi', 'Pendaftaran', 'Transport', 'Fasilitas', 'Lainnya'], 'required' => true],
                 'nama_kegiatan' => ['label' => 'Nama Kegiatan', 'type' => 'text', 'required' => true],
                 'tanggal' => ['label' => 'Tanggal', 'type' => 'date'],
                 'nominal' => ['label' => 'Nominal', 'type' => 'number'],
                 'bukti_path' => ['label' => 'Bukti/Foto', 'type' => 'file'],
+                'foto_path' => ['label' => 'Foto Kegiatan', 'type' => 'file'],
+                'surat_tugas_path' => ['label' => 'Surat Tugas', 'type' => 'file'],
+                'sertifikat_path' => ['label' => 'Sertifikat', 'type' => 'file'],
+                'link_penyelenggara' => ['label' => 'Link Penyelenggara', 'type' => 'url'],
                 'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Diajukan', 'Diproses', 'Disetujui', 'Ditolak']],
                 'catatan' => ['label' => 'Catatan', 'type' => 'textarea'],
             ],
@@ -89,13 +104,15 @@ class RecordController extends Controller
         'beasiswa' => [
             'title' => 'Beasiswa',
             'model' => Beasiswa::class,
+            'with' => ['semester', 'prodi', 'scholarshipType', 'creator'],
             'fields' => [
                 'nama_mahasiswa' => ['label' => 'Nama Mahasiswa', 'type' => 'text', 'required' => true],
-                'nim' => ['label' => 'NIM', 'type' => 'text'],
-                'jenis_beasiswa' => ['label' => 'Jenis Beasiswa', 'type' => 'text', 'required' => true],
-                'sumber' => ['label' => 'Sumber', 'type' => 'text'],
+                'scholarship_type_id' => ['label' => 'Jenis Beasiswa', 'type' => 'select', 'options' => [], 'relation' => 'scholarshipType.nama', 'rules' => ['required', 'exists:scholarship_types,id']],
                 'nominal' => ['label' => 'Nominal', 'type' => 'number'],
-                'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Aktif', 'Selesai', 'Ditolak']],
+                'status' => ['label' => 'Status', 'type' => 'select', 'options' => ['Diajukan', 'Aktif', 'Selesai', 'Ditolak']],
+                'nim' => ['label' => 'NIM', 'type' => 'text'],
+                'jenis_beasiswa' => ['label' => 'Jenis Beasiswa Lainnya', 'type' => 'text'],
+                'sumber' => ['label' => 'Sumber', 'type' => 'text'],
                 'catatan' => ['label' => 'Catatan', 'type' => 'textarea'],
             ],
         ],
@@ -105,7 +122,7 @@ class RecordController extends Controller
     {
         $config = $this->config($module);
         $model = $config['model'];
-        $query = $model::with(['semester', 'prodi'])->latest();
+        $query = $model::with($config['with'] ?? ['semester', 'prodi'])->latest();
         $this->applyScopeAndFilters($query, $request, $config);
 
         return view('records.index', [
@@ -114,6 +131,9 @@ class RecordController extends Controller
             'records' => $query->paginate(request('limit', 10))->withQueryString(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
+            'achievementQuotas' => $module === 'prestasi'
+                ? AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get()
+                : collect(),
         ]);
     }
 
@@ -133,7 +153,8 @@ class RecordController extends Controller
             $data['prodi_id'] = $request->user()->prodi_id;
         }
 
-        $config['model']::create($data);
+        $record = $config['model']::create($data);
+        $this->syncComputedFields($module, $record);
 
         return redirect()->route('records.index', $module)->with('status', $config['title'].' berhasil ditambahkan.');
     }
@@ -146,10 +167,13 @@ class RecordController extends Controller
         return view('records.form', $this->formData($module, $record));
     }
 
-    public function update(Request $request, string $module, int $id)
+    public function update(Request $request, string|int $module, string|int $id)
     {
+        [$module, $id] = $this->normalizeModuleAndId($module, $id);
         $config = $this->config($module);
         $record = $this->scopedFind($config['model'], $id);
+        $oldSemesterId = $record->semester_id ?? null;
+        $oldProdiId = $record->prodi_id ?? null;
         $data = $this->validated($request, $config);
         $this->handleUploads($request, $config, $data, $record);
 
@@ -158,21 +182,31 @@ class RecordController extends Controller
         }
 
         $record->update($data);
+        $this->syncComputedFields($module, $record);
+        if ($module === 'prestasi' && $oldSemesterId && $oldProdiId && ($oldSemesterId !== $record->semester_id || $oldProdiId !== $record->prodi_id)) {
+            $this->syncPrestasiQuota($oldSemesterId, $oldProdiId);
+        }
 
         return redirect()->route('records.index', $module)->with('status', $config['title'].' berhasil diperbarui.');
     }
 
-    public function destroy(string $module, int $id)
+    public function destroy(string|int $module, string|int $id)
     {
+        [$module, $id] = $this->normalizeModuleAndId($module, $id);
         $config = $this->config($module);
         $record = $this->scopedFind($config['model'], $id);
         $this->deleteUploads($config, $record);
+        $semesterId = $record->semester_id;
+        $prodiId = $record->prodi_id;
         $record->delete();
+        if ($module === 'prestasi') {
+            $this->syncPrestasiQuota($semesterId, $prodiId);
+        }
 
         return back()->with('status', $config['title'].' berhasil dihapus.');
     }
 
-    private function formData(string $module, \Illuminate\Database\Eloquent\Model $record = null): array
+    private function formData(string $module, ?\Illuminate\Database\Eloquent\Model $record = null): array
     {
         return [
             'module' => $module,
@@ -191,11 +225,16 @@ class RecordController extends Controller
         ];
 
         foreach ($config['fields'] as $name => $field) {
+            if (isset($field['rules'])) {
+                $rules[$name] = $field['rules'];
+                continue;
+            }
+
             $rules[$name] = [($field['required'] ?? false) ? 'required' : 'nullable'];
             $rules[$name] = array_merge($rules[$name], match ($field['type']) {
                 'number' => ['numeric'],
                 'date' => ['date'],
-                'file' => ['image', 'max:2048'],
+                'file' => ['file', 'mimes:pdf,jpg,jpeg,png', 'max:2048'],
                 'url' => ['url'],
                 default => ['string'],
             });
@@ -247,7 +286,30 @@ class RecordController extends Controller
     {
         abort_unless(isset($this->modules[$module]), 404);
 
-        return $this->modules[$module];
+        $config = $this->modules[$module];
+
+        if ($module === 'prestasi') {
+            $config['fields']['competition_id']['options'] = Competition::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+        }
+
+        if ($module === 'beasiswa') {
+            $config['fields']['scholarship_type_id']['options'] = ScholarshipType::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+        }
+
+        if ($module === 'event') {
+            $config['fields']['ormawa_id']['options'] = Ormawa::where('status', 'Aktif')->orderBy('nama')->pluck('nama', 'id')->all();
+        }
+
+        return $config;
+    }
+
+    private function normalizeModuleAndId(string|int $module, string|int $id): array
+    {
+        if (is_numeric($module) && ! is_numeric($id)) {
+            return [(string) $id, (int) $module];
+        }
+
+        return [(string) $module, (int) $id];
     }
 
     private function handleUploads(Request $request, array $config, array &$data, $record = null): void
@@ -269,6 +331,36 @@ class RecordController extends Controller
 
             $data[$name] = $request->file($name)->store($name, 'public');
         }
+    }
+
+    private function syncComputedFields(string $module, $record): void
+    {
+        if ($module === 'beasiswa' && $record->scholarshipType) {
+            $record->forceFill(['jenis_beasiswa' => $record->scholarshipType->nama])->save();
+        }
+
+        if ($module === 'prestasi') {
+            $record->forceFill([
+                'tingkat' => $record->scope ?: $record->tingkat,
+                'peringkat' => $record->juara ? 'Juara '.$record->juara : $record->peringkat,
+            ])->save();
+            $this->syncPrestasiQuota($record->semester_id, $record->prodi_id);
+        }
+    }
+
+    private function syncPrestasiQuota(int $semesterId, int $prodiId): void
+    {
+        $quota = AchievementQuota::firstOrCreate([
+            'semester_id' => $semesterId,
+            'prodi_id' => $prodiId,
+        ]);
+
+        $quota->update([
+            'terpakai' => Prestasi::where('semester_id', $semesterId)
+                ->where('prodi_id', $prodiId)
+                ->where('status', 'Terverifikasi')
+                ->count(),
+        ]);
     }
 
     private function deleteUploads(array $config, \Illuminate\Database\Eloquent\Model $record): void

@@ -60,6 +60,7 @@
                     <th>Email</th>
                     <th>Role</th>
                     <th>Prodi</th>
+                    <th>NIM</th>
                     <th class="text-end">Aksi</th>
                 </tr>
             </thead>
@@ -70,6 +71,7 @@
                         <td data-label="Email">{{ $user->email }}</td>
                         <td data-label="Role"><x-ui.status-badge :status="ucfirst($user->roles->first()?->name ?? 'user')" /></td>
                         <td data-label="Prodi">{{ $user->prodi?->nama ?? '-' }}</td>
+                        <td data-label="NIM">{{ $user->nim ?: '-' }}</td>
                         <td class="text-end" data-label="Aksi">
                             <div class="ubp-table-action-group justify-content-end">
                                 <button class="ubp-table-action ubp-table-action-primary" type="button" data-bs-toggle="modal" data-bs-target="#userEditModal{{ $user->id }}">Edit</button>
@@ -82,7 +84,7 @@
                         </td>
                     </tr>
                 @empty
-                    <x-ui.table-empty-row colspan="5" title="Belum ada user" message="User baru akan muncul setelah ditambahkan." />
+                    <x-ui.table-empty-row colspan="6" title="Belum ada user" message="User baru akan muncul setelah ditambahkan." />
                 @endforelse
             </tbody>
         </table>
@@ -130,6 +132,9 @@
                         <div class="col-md-6">
                             <x-ui.select-field name="prodi_id" label="Prodi" :options="$prodis->pluck('nama', 'id')->all()" placeholder="-" />
                         </div>
+                        <div class="col-md-6">
+                            <x-ui.form-field name="nim" label="NIM" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -174,6 +179,9 @@
                                         <option value="{{ $prodi->id }}" @selected($user->prodi_id === $prodi->id)>{{ $prodi->nama }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="col-md-6">
+                                <x-ui.form-field name="nim" label="NIM" :value="$user->nim" />
                             </div>
                             <div class="col-md-6">
                                 <x-ui.form-field name="password" label="Password Baru" type="password" placeholder="Kosongkan jika tetap" />

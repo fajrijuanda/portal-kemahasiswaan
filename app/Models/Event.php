@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['semester_id', 'prodi_id', 'nama_pengaju', 'nim', 'jenis_reimbursement', 'nama_kegiatan', 'tanggal', 'nominal', 'bukti_path', 'status', 'catatan', 'created_by'])]
+#[Fillable(['semester_id', 'prodi_id', 'ormawa_id', 'nama_pengaju', 'nim', 'jenis_reimbursement', 'nama_kegiatan', 'tanggal', 'nominal', 'bukti_path', 'foto_path', 'surat_tugas_path', 'sertifikat_path', 'link_penyelenggara', 'status', 'catatan', 'created_by'])]
 class Event extends Model
 {
     protected function casts(): array
@@ -15,5 +15,6 @@ class Event extends Model
 
     public function semester() { return $this->belongsTo(Semester::class); }
     public function prodi() { return $this->belongsTo(Prodi::class); }
+    public function ormawa() { return $this->belongsTo(Ormawa::class); }
     public function creator() { return $this->belongsTo(User::class, 'created_by'); }
 }

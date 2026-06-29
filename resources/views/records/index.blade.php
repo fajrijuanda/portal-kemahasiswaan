@@ -21,7 +21,9 @@
             'beasiswa' => 'emerald',
             default => 'slate',
         };
-        $tableFields = array_slice($config['fields'], 0, 4, true);
+        $tableFields = $module === 'beasiswa'
+            ? array_intersect_key($config['fields'], array_flip(['nama_mahasiswa', 'scholarship_type_id', 'nominal', 'status']))
+            : array_slice($config['fields'], 0, 4, true);
         $columnCount = count($tableFields) + 3;
     @endphp
 
@@ -43,6 +45,25 @@
             <span class="ubp-stat-icon"><x-ui.app-icon name="prodi" /></span>
         </article>
     </div>
+
+    @if($module === 'prestasi' && $achievementQuotas->isNotEmpty())
+        <x-ui.table-shell class="mb-4" title="Kuota Prestasi Prodi" subtitle="Slot dukungan dan pemakaian prestasi terverifikasi.">
+            <table class="table align-middle ubp-table ubp-data-table">
+                <thead><tr><th>Semester</th><th>Prodi</th><th>Slot</th><th>Terpakai</th><th>Sisa</th></tr></thead>
+                <tbody>
+                    @foreach($achievementQuotas as $quota)
+                        <tr>
+                            <td>{{ $quota->semester?->nama ?? '-' }}</td>
+                            <td>{{ $quota->prodi?->nama ?? '-' }}</td>
+                            <td>{{ $quota->slot_prestasi }}</td>
+                            <td>{{ $quota->terpakai }}</td>
+                            <td>{{ max(0, $quota->slot_prestasi - $quota->terpakai) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </x-ui.table-shell>
+    @endif
 
     <x-ui.table-shell class="ubp-table-shell-omnia" :title="'Daftar '.$config['title']" subtitle="Data terbaru tersaji dalam format ringkas untuk verifikasi cepat.">
         <x-slot:toolbar>
@@ -100,7 +121,9 @@
                         <td data-label="Prodi">{{ $record->prodi?->nama ?? '-' }}</td>
                         @foreach($tableFields as $name => $field)
                             <td data-label="{{ $field['label'] }}">
-                                @if($field['type'] === 'file' && $record->{$name})
+                                @if(isset($field['relation']))
+                                    {{ data_get($record, $field['relation']) ?: '-' }}
+                                @elseif($field['type'] === 'file' && $record->{$name})
                                     <a class="ubp-table-link" href="{{ asset('storage/'.$record->{$name}) }}" target="_blank">Lihat file</a>
                                 @elseif($field['type'] === 'url' && $record->{$name})
                                     <a class="ubp-table-link" href="{{ $record->{$name} }}" target="_blank">Publikasi</a>
@@ -113,6 +136,7 @@
                         @endforeach
                         <td class="text-end" data-label="Aksi">
                             <div class="ubp-table-action-group justify-content-end">
+                                <button class="ubp-table-action" type="button" data-bs-toggle="modal" data-bs-target="#recordOverviewModal{{ $record->id }}">Overview</button>
                                 <button class="ubp-table-action ubp-table-action-primary" type="button" data-bs-toggle="modal" data-bs-target="#recordEditModal{{ $record->id }}">Edit</button>
                                 <button class="ubp-table-action ubp-table-action-danger" type="button" onclick="triggerDeleteModal(`{{ route('records.destroy', [$module, $record]) }}`, `Hapus data {{ $config['title'] }} ini?`)">Hapus</button>
                             </div>
@@ -161,6 +185,40 @@
     </div>
 
     @foreach($records as $record)
+        <div class="modal fade ubp-record-modal" id="recordOverviewModal{{ $record->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div><span class="ubp-auth-eyebrow">Overview</span><h5 class="modal-title">{{ $config['title'] }}</h5></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6"><small class="text-muted d-block">Semester</small><strong>{{ $record->semester?->nama ?? '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Prodi</small><strong>{{ $record->prodi?->nama ?? '-' }}</strong></div>
+                            @foreach($config['fields'] as $name => $field)
+                                <div class="{{ $field['type'] === 'textarea' ? 'col-12' : 'col-md-6' }}">
+                                    <small class="text-muted d-block">{{ $field['label'] }}</small>
+                                    @if(isset($field['relation']))
+                                        <strong>{{ data_get($record, $field['relation']) ?: '-' }}</strong>
+                                    @elseif($field['type'] === 'file' && $record->{$name})
+                                        <a class="ubp-table-link" href="{{ asset('storage/'.$record->{$name}) }}" target="_blank">Lihat file</a>
+                                    @elseif($field['type'] === 'url' && $record->{$name})
+                                        <a class="ubp-table-link" href="{{ $record->{$name} }}" target="_blank">{{ $record->{$name} }}</a>
+                                    @elseif($name === 'status')
+                                        <x-ui.status-badge :status="$record->{$name} ?? 'Draft'" />
+                                    @else
+                                        <strong>{{ filled($record->{$name}) ? $record->{$name} : '-' }}</strong>
+                                    @endif
+                                </div>
+                            @endforeach
+                            <div class="col-12"><small class="text-muted d-block">Dibuat oleh</small><strong>{{ $record->creator?->name ?? '-' }}</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade ubp-record-modal" id="recordEditModal{{ $record->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
                 <form class="modal-content" method="POST" enctype="multipart/form-data" action="{{ route('records.update', [$module, $record]) }}">

@@ -11,6 +11,7 @@ class UnitActivity extends Model
 
     protected $fillable = [
         'unit',
+        'ormawa_id',
         'semester_id',
         'prodi_id',
         'judul',
@@ -33,6 +34,11 @@ class UnitActivity extends Model
     public function prodi()
     {
         return $this->belongsTo(Prodi::class);
+    }
+
+    public function ormawa()
+    {
+        return $this->belongsTo(Ormawa::class);
     }
 
     public function creator()

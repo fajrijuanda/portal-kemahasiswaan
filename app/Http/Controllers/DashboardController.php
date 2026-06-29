@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AchievementQuota;
 use App\Models\Beasiswa;
 use App\Models\ClaimFasilitas;
 use App\Models\ClaimTransport;
@@ -42,6 +43,7 @@ class DashboardController extends Controller
             'selectedSemester' => $semesterId,
             'selectedProdi' => $prodiId,
             'cards' => $this->summaryCards($request),
+            'achievementQuotas' => AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get(),
         ]);
     }
 

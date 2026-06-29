@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ormawa;
 use App\Models\Prodi;
 use App\Models\Semester;
 use App\Models\UnitActivity;
@@ -39,7 +40,7 @@ class UnitActivityController extends Controller
     public function index(Request $request, string $unit)
     {
         $config = $this->config($unit);
-        $query = UnitActivity::with(['semester', 'prodi'])
+        $query = UnitActivity::with(['semester', 'prodi', 'ormawa', 'creator'])
             ->where('unit', $unit)
             ->latest();
 
@@ -58,6 +59,7 @@ class UnitActivityController extends Controller
             'completedRecords' => (clone $baseQuery)->where('status', 'Selesai')->count(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
+            'ormawas' => Ormawa::where('status', 'Aktif')->orderBy('nama')->get(),
         ]);
     }
 
@@ -106,6 +108,7 @@ class UnitActivityController extends Controller
         return $request->validate([
             'semester_id' => ['required', 'exists:semesters,id'],
             'prodi_id' => [$request->user()->hasRole('kaprodi') ? 'nullable' : 'required', 'nullable', 'exists:prodis,id'],
+            'ormawa_id' => ['nullable', 'exists:ormawas,id'],
             'judul' => ['required', 'string', 'max:255'],
             'penanggung_jawab' => ['nullable', 'string', 'max:255'],
             'tanggal' => ['nullable', 'date'],

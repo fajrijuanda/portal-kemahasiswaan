@@ -21,6 +21,18 @@
         </div>
     @endunless
 
+    @if(($unit ?? null) === 'pengembangan-ormawa')
+        <div class="col-md-6">
+            <label class="form-label" for="{{ $prefix }}-ormawa_id">Ormawa</label>
+            <select id="{{ $prefix }}-ormawa_id" name="ormawa_id" class="form-select ubp-control">
+                <option value="">Pilih Ormawa</option>
+                @foreach($ormawas as $ormawa)
+                    <option value="{{ $ormawa->id }}" @selected(old('ormawa_id', $record?->ormawa_id) == $ormawa->id)>{{ $ormawa->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+    @endif
+
     <div class="col-md-8">
         <label class="form-label" for="{{ $prefix }}-judul">Nama Kegiatan</label>
         <input id="{{ $prefix }}-judul" name="judul" class="form-control ubp-control" value="{{ old('judul', $record?->judul) }}" required>

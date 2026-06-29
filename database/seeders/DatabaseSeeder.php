@@ -2,12 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\Models\AchievementQuota;
 use App\Models\Beasiswa;
 use App\Models\ClaimFasilitas;
 use App\Models\ClaimTransport;
+use App\Models\CareerPost;
+use App\Models\Competition;
 use App\Models\Event;
+use App\Models\Ormawa;
 use App\Models\Prestasi;
+use App\Models\PressRelease;
 use App\Models\Prodi;
+use App\Models\ScholarshipType;
 use App\Models\Semester;
 use App\Models\TracerStudy;
 use App\Models\User;
@@ -25,7 +31,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = collect(['super user', 'admin', 'kaprodi', 'kabag', 'warek'])->map(fn ($role) => Role::firstOrCreate(['name' => $role]));
+        $roles = collect(['super user', 'admin', 'kaprodi', 'kabag', 'warek', 'mahasiswa', 'ormawa'])->map(fn ($role) => Role::firstOrCreate(['name' => $role]));
+
+        collect(['KIP', 'Kacer', 'Tahfidz', 'Lainnya'])->each(fn ($nama) => ScholarshipType::firstOrCreate(['nama' => $nama], ['is_active' => true]));
+        collect(range(1, 23))->each(fn ($index) => Competition::firstOrCreate(['nama' => 'Lomba Prestasi '.$index], ['is_active' => true]));
 
         $prodis = collect([
             ['nama' => 'Manajemen', 'kode' => 'MNJ', 'fakultas' => 'Ekonomi dan Bisnis'],
@@ -62,6 +71,31 @@ class DatabaseSeeder extends Seeder
             'email' => 'kabag@ubpkarawang.ac.id',
             'password' => Hash::make('password'),
         ])->assignRole('kabag');
+
+        $mahasiswa = User::create([
+            'name' => 'Mahasiswa Demo',
+            'email' => 'mahasiswa@ubpkarawang.ac.id',
+            'password' => Hash::make('password'),
+            'prodi_id' => $prodis->first()->id,
+            'nim' => '202600001',
+        ])->assignRole('mahasiswa');
+
+        $ormawaUser = User::create([
+            'name' => 'BEM UBP',
+            'email' => 'bem@ubpkarawang.ac.id',
+            'password' => Hash::make('password'),
+            'prodi_id' => $prodis->first()->id,
+        ])->assignRole('ormawa');
+
+        $bem = Ormawa::create([
+            'user_id' => $ormawaUser->id,
+            'nama' => 'BEM UBP Karawang',
+            'jenis' => 'BEM',
+            'pembina' => 'Kabag Kemahasiswaan',
+            'kontak' => 'bem@ubpkarawang.ac.id',
+            'deskripsi' => 'Organisasi eksekutif mahasiswa tingkat universitas.',
+            'status' => 'Aktif',
+        ]);
 
         $prodis->take(3)->each(function (Prodi $prodi) {
             User::create([
@@ -138,6 +172,7 @@ class DatabaseSeeder extends Seeder
             Beasiswa::create([
                 'semester_id' => $genap->id,
                 'prodi_id' => $prodi->id,
+                'scholarship_type_id' => ScholarshipType::where('nama', $index % 2 === 0 ? 'KIP' : 'Lainnya')->value('id'),
                 'nama_mahasiswa' => 'Penerima Beasiswa '.$prodi->kode,
                 'nim' => '2026'.str_pad((string) ($index + 40), 4, '0', STR_PAD_LEFT),
                 'jenis_beasiswa' => $index % 2 === 0 ? 'KIP Kuliah' : 'Prestasi',
@@ -146,6 +181,35 @@ class DatabaseSeeder extends Seeder
                 'status' => 'Aktif',
                 'created_by' => $admin->id,
             ]);
+
+            AchievementQuota::create([
+                'semester_id' => $ganjil->id,
+                'prodi_id' => $prodi->id,
+                'slot_prestasi' => 5,
+                'terpakai' => 1,
+            ]);
         }
+
+        PressRelease::create([
+            'title' => 'Mahasiswa UBP Raih Prestasi Nasional',
+            'slug' => 'mahasiswa-ubp-raih-prestasi-nasional',
+            'excerpt' => 'Rangkuman prestasi mahasiswa yang dipublikasikan oleh bagian kemahasiswaan.',
+            'content' => 'Konten press release dapat diperbarui oleh kabag melalui panel admin.',
+            'status' => 'Published',
+            'published_at' => now(),
+            'created_by' => $admin->id,
+        ]);
+
+        CareerPost::create([
+            'type' => 'Loker',
+            'title' => 'Lowongan Management Trainee',
+            'company' => 'Mitra Industri Karawang',
+            'location' => 'Karawang',
+            'deadline' => now()->addMonth(),
+            'content' => 'Informasi lowongan kerja untuk alumni dan mahasiswa tingkat akhir.',
+            'status' => 'Published',
+            'published_at' => now(),
+            'created_by' => $admin->id,
+        ]);
     }
 }

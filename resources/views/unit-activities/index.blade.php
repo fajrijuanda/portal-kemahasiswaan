@@ -84,12 +84,13 @@
                     <tr>
                         <td data-label="Semester"><span class="ubp-table-primary">{{ $record->semester?->nama ?? '-' }}</span><span class="ubp-table-muted">{{ $record->semester?->tahun_akademik }}</span></td>
                         <td data-label="Prodi">{{ $record->prodi?->nama ?? '-' }}</td>
-                        <td data-label="Kegiatan"><span class="ubp-table-primary">{{ $record->judul }}</span><span class="ubp-table-muted">{{ $record->catatan ? \Illuminate\Support\Str::limit($record->catatan, 54) : 'Tanpa catatan' }}</span></td>
+                        <td data-label="Kegiatan"><span class="ubp-table-primary">{{ $record->judul }}</span><span class="ubp-table-muted">{{ $record->ormawa?->nama ?: ($record->catatan ? \Illuminate\Support\Str::limit($record->catatan, 54) : 'Tanpa catatan') }}</span></td>
                         <td data-label="PIC">{{ $record->penanggung_jawab ?: '-' }}</td>
                         <td data-label="Tanggal">{{ $record->tanggal?->format('d M Y') ?? '-' }}</td>
                         <td data-label="Status"><x-ui.status-badge :status="$record->status" /></td>
                         <td class="text-end" data-label="Aksi">
                             <div class="ubp-table-action-group justify-content-end">
+                                <button class="ubp-table-action" type="button" data-bs-toggle="modal" data-bs-target="#unitOverviewModal{{ $record->id }}">Overview</button>
                                 <button class="ubp-table-action ubp-table-action-primary" type="button" data-bs-toggle="modal" data-bs-target="#unitEditModal{{ $record->id }}">Edit</button>
                                 <button class="ubp-table-action ubp-table-action-danger" type="button" onclick="triggerDeleteModal(`{{ route('unit-activities.destroy', [$unit, $record]) }}`, `Hapus aktivitas {{ $config['title'] }} ini?`)">Hapus</button>
                             </div>
@@ -128,7 +129,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @include('unit-activities.partials.fields', ['record' => null, 'prefix' => 'create'])
+                    @include('unit-activities.partials.fields', ['record' => null, 'prefix' => 'create', 'unit' => $unit])
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ubp-table-action" data-bs-dismiss="modal">Batal</button>
@@ -139,6 +140,30 @@
     </div>
 
     @foreach($records as $record)
+        <div class="modal fade ubp-record-modal" id="unitOverviewModal{{ $record->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div><span class="ubp-auth-eyebrow">Overview</span><h5 class="modal-title">{{ $record->judul }}</h5></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6"><small class="text-muted d-block">Unit</small><strong>{{ $config['title'] }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Ormawa</small><strong>{{ $record->ormawa?->nama ?? '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Semester</small><strong>{{ $record->semester?->nama ?? '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Prodi</small><strong>{{ $record->prodi?->nama ?? '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">PIC</small><strong>{{ $record->penanggung_jawab ?: '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Tanggal</small><strong>{{ $record->tanggal?->format('d M Y') ?? '-' }}</strong></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Status</small><x-ui.status-badge :status="$record->status" /></div>
+                            <div class="col-md-6"><small class="text-muted d-block">Dibuat oleh</small><strong>{{ $record->creator?->name ?? '-' }}</strong></div>
+                            <div class="col-12"><small class="text-muted d-block">Catatan</small><strong>{{ $record->catatan ?: '-' }}</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade ubp-record-modal" id="unitEditModal{{ $record->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
                 <form class="modal-content" method="POST" action="{{ route('unit-activities.update', [$unit, $record]) }}">
@@ -149,7 +174,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @include('unit-activities.partials.fields', ['record' => $record, 'prefix' => 'edit-'.$record->id])
+                        @include('unit-activities.partials.fields', ['record' => $record, 'prefix' => 'edit-'.$record->id, 'unit' => $unit])
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="ubp-table-action" data-bs-dismiss="modal">Batal</button>
