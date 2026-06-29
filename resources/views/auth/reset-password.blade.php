@@ -1,6 +1,6 @@
 <x-guest-layout>
     <x-ui.card title="Buat Password Baru" subtitle="Gunakan password yang mudah diingat dan aman.">
-        <form method="POST" action="{{ route('password.store') }}" class="d-grid gap-3">
+        <form method="POST" action="{{ route('password.store', absolute: false) }}" class="d-grid gap-3">
             @csrf
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
 

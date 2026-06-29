@@ -2,7 +2,7 @@
     <x-ui.card title="Masuk ke Portal" subtitle="Gunakan akun internal UBP Karawang.">
         <x-auth-session-status class="alert alert-success" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}" class="d-grid gap-3">
+        <form method="POST" action="{{ route('login', absolute: false) }}" class="d-grid gap-3">
             @csrf
 
             <x-ui.form-field name="email" label="Email" type="email" :value="old('email')" required />
