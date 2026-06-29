@@ -7,6 +7,7 @@ use App\Models\Prodi;
 use App\Models\Semester;
 use App\Models\UnitActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class UnitActivityController extends Controller
 {
@@ -59,7 +60,7 @@ class UnitActivityController extends Controller
             'completedRecords' => (clone $baseQuery)->where('status', 'Selesai')->count(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
-            'ormawas' => Ormawa::where('status', 'Aktif')->orderBy('nama')->get(),
+            'ormawas' => Schema::hasTable('ormawas') ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
             'sectionShell' => [
                 'eyebrow' => 'Unit Data',
                 'title' => $config['title'],
@@ -177,7 +178,7 @@ class UnitActivityController extends Controller
             ->map(fn ($config, $unit) => [
                 'label' => $config['title'],
                 'icon' => $config['icon'],
-                'href' => route('unit-data.index', $unit),
+                'href' => route('unit-activities.index', $unit),
                 'active' => $unit === $activeUnit,
                 'count' => UnitActivity::where('unit', $unit)->count(),
             ])
@@ -191,6 +192,6 @@ class UnitActivityController extends Controller
             return route('ormawa-admin.index', 'kegiatan');
         }
 
-        return route('unit-data.index', $unit);
+        return route('unit-activities.index', $unit);
     }
 }

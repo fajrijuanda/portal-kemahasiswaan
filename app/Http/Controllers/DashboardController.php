@@ -204,7 +204,7 @@ class DashboardController extends Controller
             return route('ormawa-admin.index', array_merge(['section' => 'kegiatan'], $params));
         }
 
-        return route('unit-data.index', array_merge(['unit' => $unit], $params));
+        return route('unit-activities.index', array_merge(['unit' => $unit], $params));
     }
 
     private function miniDataset(int $value, string $label, string $emptyLabel): array
@@ -266,7 +266,7 @@ class DashboardController extends Controller
             ['label' => 'Reimburse', 'desc' => 'Pengajuan biaya kegiatan', 'count' => $cards['Event/Reimbursement'] ?? 0, 'href' => route('reimburse.table'), 'icon' => 'beasiswa', 'tone' => 'emerald'],
             ['label' => 'Beasiswa', 'desc' => 'Penerima dan pengajuan', 'count' => $cards['Beasiswa'] ?? 0, 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
             ['label' => 'Tracer', 'desc' => 'Progress input tracer', 'count' => $cards['Tracer Study Input'] ?? 0, 'href' => route('tracer.index'), 'icon' => 'tracer', 'tone' => 'violet'],
-            ['label' => 'Unit', 'desc' => 'Humas, science, alumni', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
+            ['label' => 'Unit', 'desc' => 'Humas, science, alumni', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'href' => route('unit-activities.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
             ['label' => 'Ormawa', 'desc' => 'Kegiatan dan proposal', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
         ];
 

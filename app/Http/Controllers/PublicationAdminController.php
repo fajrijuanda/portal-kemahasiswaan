@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CareerPost;
 use App\Models\PressRelease;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 
 class PublicationAdminController extends Controller
 {
@@ -19,11 +21,11 @@ class PublicationAdminController extends Controller
 
         return match ($section) {
             'press-releases' => view('content.press-releases.index', [
-                'records' => PressRelease::with('creator')->latest()->paginate(request('limit', 10))->withQueryString(),
+                'records' => $this->hasTable('press_releases') ? PressRelease::with('creator')->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
                 'sectionShell' => $this->sectionShell($section, 'Press Release', 'Publikasi berita dari bagian kemahasiswaan.'),
             ]),
             'careers' => view('content.careers.index', [
-                'records' => CareerPost::with('creator')->latest()->paginate(request('limit', 10))->withQueryString(),
+                'records' => $this->hasTable('career_posts') ? CareerPost::with('creator')->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
                 'sectionShell' => $this->sectionShell($section, 'Karir', 'Kelola lowongan kerja dan job fair untuk halaman publik.'),
             ]),
         };
@@ -40,14 +42,29 @@ class PublicationAdminController extends Controller
                 'icon' => $item['icon'],
                 'href' => route('publications.index', $section),
                 'active' => $section === $active,
-                'count' => $section === 'press-releases' ? PressRelease::count() : CareerPost::count(),
+                'count' => $section === 'press-releases' ? $this->countModel('press_releases', PressRelease::class) : $this->countModel('career_posts', CareerPost::class),
             ])->values()->all(),
             'stats' => [
-                ['label' => 'Press Release', 'value' => number_format(PressRelease::count()), 'caption' => 'konten', 'icon' => 'grid', 'tone' => 'blue'],
-                ['label' => 'Press Published', 'value' => number_format(PressRelease::where('status', 'Published')->count()), 'caption' => 'tampil publik', 'icon' => 'event', 'tone' => 'emerald'],
-                ['label' => 'Karir', 'value' => number_format(CareerPost::count()), 'caption' => 'loker/job fair', 'icon' => 'access', 'tone' => 'emerald'],
-                ['label' => 'Karir Published', 'value' => number_format(CareerPost::where('status', 'Published')->count()), 'caption' => 'tampil publik', 'icon' => 'prestasi', 'tone' => 'teal'],
+                ['label' => 'Press Release', 'value' => number_format($this->countModel('press_releases', PressRelease::class)), 'caption' => 'konten', 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Press Published', 'value' => number_format($this->hasTable('press_releases') ? PressRelease::where('status', 'Published')->count() : 0), 'caption' => 'tampil publik', 'icon' => 'event', 'tone' => 'emerald'],
+                ['label' => 'Karir', 'value' => number_format($this->countModel('career_posts', CareerPost::class)), 'caption' => 'loker/job fair', 'icon' => 'access', 'tone' => 'emerald'],
+                ['label' => 'Karir Published', 'value' => number_format($this->hasTable('career_posts') ? CareerPost::where('status', 'Published')->count() : 0), 'caption' => 'tampil publik', 'icon' => 'prestasi', 'tone' => 'teal'],
             ],
         ];
+    }
+
+    private function hasTable(string $table): bool
+    {
+        return Schema::hasTable($table);
+    }
+
+    private function countModel(string $table, string $model): int
+    {
+        return $this->hasTable($table) ? $model::count() : 0;
+    }
+
+    private function emptyPaginator(): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(collect(), 0, request('limit', 10), 1, ['path' => request()->url()]);
     }
 }

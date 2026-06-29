@@ -9,6 +9,8 @@ use App\Models\Prodi;
 use App\Models\Semester;
 use App\Models\UnitActivity;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 
 class OrmawaAdminController extends Controller
 {
@@ -33,9 +35,17 @@ class OrmawaAdminController extends Controller
 
     private function dataOrmawa()
     {
+        $relations = ['user', 'activities'];
+        if ($this->hasTable('ormawa_proposals')) {
+            $relations[] = 'proposals';
+        }
+        if ($this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id')) {
+            $relations[] = 'reimbursements';
+        }
+
         return view('master.ormawa.index', [
-            'ormawas' => Ormawa::with(['user', 'activities', 'proposals', 'reimbursements'])->orderBy('nama')->paginate(request('limit', 10))->withQueryString(),
-            'users' => User::role('ormawa')->orderBy('name')->get(),
+            'ormawas' => $this->hasTable('ormawas') ? Ormawa::with($relations)->orderBy('nama')->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+            'users' => $this->hasTable('roles') ? User::role('ormawa')->orderBy('name')->get() : collect(),
             'sectionShell' => $this->sectionShell('data-ormawa', 'Data Ormawa', 'Kelola profil, akun, dan overview organisasi mahasiswa.'),
         ]);
     }
@@ -60,7 +70,7 @@ class OrmawaAdminController extends Controller
             'completedRecords' => (clone $baseQuery)->where('status', 'Selesai')->count(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
-            'ormawas' => Ormawa::where('status', 'Aktif')->orderBy('nama')->get(),
+            'ormawas' => $this->hasTable('ormawas') ? Ormawa::where('status', 'Aktif')->orderBy('nama')->get() : collect(),
             'sectionShell' => $this->sectionShell('kegiatan', 'Kegiatan Ormawa', 'Aktivitas Ormawa berada dalam satu ruang dengan data dan pengajuan Ormawa.'),
         ]);
     }
@@ -71,7 +81,7 @@ class OrmawaAdminController extends Controller
             'section' => 'proposal',
             'title' => 'Proposal Ormawa',
             'subtitle' => 'Pantau proposal kegiatan yang diajukan akun Ormawa.',
-            'records' => OrmawaProposal::with(['ormawa', 'semester', 'creator'])->latest()->paginate(request('limit', 10))->withQueryString(),
+            'records' => $this->hasTable('ormawa_proposals') ? OrmawaProposal::with(['ormawa', 'semester', 'creator'])->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
             'sectionShell' => $this->sectionShell('proposal', 'Proposal Ormawa', 'Pengajuan proposal kegiatan Ormawa untuk review admin/kabag.'),
         ]);
     }
@@ -82,7 +92,7 @@ class OrmawaAdminController extends Controller
             'section' => 'reimbursement',
             'title' => 'Reimbursement Ormawa',
             'subtitle' => 'Pantau reimbursement acara yang memiliki relasi Ormawa.',
-            'records' => Event::with(['ormawa', 'semester', 'prodi', 'creator'])->whereNotNull('ormawa_id')->latest()->paginate(request('limit', 10))->withQueryString(),
+            'records' => $this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::with(['ormawa', 'semester', 'prodi', 'creator'])->whereNotNull('ormawa_id')->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
             'sectionShell' => $this->sectionShell('reimbursement', 'Reimbursement Ormawa', 'Reimbursement acara Ormawa beserta file syarat pendukung.'),
         ]);
     }
@@ -101,10 +111,10 @@ class OrmawaAdminController extends Controller
                 'count' => $this->count($section),
             ])->values()->all(),
             'stats' => [
-                ['label' => 'Ormawa', 'value' => number_format(Ormawa::count()), 'caption' => 'terdaftar', 'icon' => 'user', 'tone' => 'amber'],
+                ['label' => 'Ormawa', 'value' => number_format($this->countModel('ormawas', Ormawa::class)), 'caption' => 'terdaftar', 'icon' => 'user', 'tone' => 'amber'],
                 ['label' => 'Kegiatan', 'value' => number_format(UnitActivity::where('unit', 'pengembangan-ormawa')->count()), 'caption' => 'aktivitas', 'icon' => 'event', 'tone' => 'teal'],
-                ['label' => 'Proposal', 'value' => number_format(OrmawaProposal::count()), 'caption' => 'pengajuan', 'icon' => 'grid', 'tone' => 'blue'],
-                ['label' => 'Reimbursement', 'value' => number_format(Event::whereNotNull('ormawa_id')->count()), 'caption' => 'ormawa', 'icon' => 'beasiswa', 'tone' => 'emerald'],
+                ['label' => 'Proposal', 'value' => number_format($this->countModel('ormawa_proposals', OrmawaProposal::class)), 'caption' => 'pengajuan', 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Reimbursement', 'value' => number_format($this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::whereNotNull('ormawa_id')->count() : 0), 'caption' => 'ormawa', 'icon' => 'beasiswa', 'tone' => 'emerald'],
             ],
         ];
     }
@@ -112,10 +122,25 @@ class OrmawaAdminController extends Controller
     private function count(string $section): int
     {
         return match ($section) {
-            'data-ormawa' => Ormawa::count(),
+            'data-ormawa' => $this->countModel('ormawas', Ormawa::class),
             'kegiatan' => UnitActivity::where('unit', 'pengembangan-ormawa')->count(),
-            'proposal' => OrmawaProposal::count(),
-            'reimbursement' => Event::whereNotNull('ormawa_id')->count(),
+            'proposal' => $this->countModel('ormawa_proposals', OrmawaProposal::class),
+            'reimbursement' => $this->hasTable('events') && Schema::hasColumn('events', 'ormawa_id') ? Event::whereNotNull('ormawa_id')->count() : 0,
         };
+    }
+
+    private function hasTable(string $table): bool
+    {
+        return Schema::hasTable($table);
+    }
+
+    private function countModel(string $table, string $model): int
+    {
+        return $this->hasTable($table) ? $model::count() : 0;
+    }
+
+    private function emptyPaginator(): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(collect(), 0, request('limit', 10), 1, ['path' => request()->url()]);
     }
 }

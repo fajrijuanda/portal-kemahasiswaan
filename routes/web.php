@@ -80,20 +80,21 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [RecordController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get('/unit-data/{unit}', [UnitActivityController::class, 'index'])->name('unit-data.index');
+        Route::get('/unit-data/{unit}', fn (string $unit) => redirect()->route('unit-activities.index', array_merge(['unit' => $unit], request()->query())))->name('unit-data.index');
 
         Route::prefix('unit/{unit}')->name('unit-activities.')->group(function () {
             Route::get('/', function (string $unit) {
                 return $unit === 'pengembangan-ormawa'
                     ? redirect()->route('ormawa-admin.index', 'data-ormawa')
-                    : redirect()->route('unit-data.index', $unit);
+                    : app(UnitActivityController::class)->index(request(), $unit);
             })->name('index');
             Route::post('/', [UnitActivityController::class, 'store'])->name('store');
             Route::put('/{activity}', [UnitActivityController::class, 'update'])->name('update');
             Route::delete('/{activity}', [UnitActivityController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get('/ormawa-admin/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
+        Route::get('/ormawa/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
+        Route::get('/ormawa-admin/{section?}', fn (?string $section = 'data-ormawa') => redirect()->route('ormawa-admin.index', array_merge(['section' => $section], request()->query())));
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('student.')->group(function () {
@@ -109,19 +110,24 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:super user|admin')->group(function () {
-        Route::get('/master-data/{section?}', [MasterDataController::class, 'index'])->name('master-data.index');
+        Route::get('/master', [MasterDataController::class, 'index'])->defaults('section', 'prodi')->name('master-data.home');
+        Route::get('/master-data/{section?}', fn (?string $section = 'prodi') => redirect()->route('master-data.index', array_merge(['section' => $section], request()->query())));
 
-        Route::get('/master/prodi', fn () => redirect()->route('master-data.index', 'prodi'))->name('master.prodi.index');
+        Route::get('/master/prodi', [MasterDataController::class, 'index'])->defaults('section', 'prodi')->name('master.prodi.index');
+        Route::get('/master/semester', [MasterDataController::class, 'index'])->defaults('section', 'semester')->name('master.semester.index');
+        Route::get('/master/competitions', [MasterDataController::class, 'index'])->defaults('section', 'competitions')->name('master.competitions.index');
+        Route::get('/master/scholarship-types', [MasterDataController::class, 'index'])->defaults('section', 'scholarship-types')->name('master.scholarship-types.index');
+        Route::get('/master/quotas', [MasterDataController::class, 'index'])->defaults('section', 'quotas')->name('master.quotas.page');
+        Route::get('/master/{section}', [MasterDataController::class, 'index'])->name('master-data.index');
+
         Route::post('/master/prodi', [ProdiController::class, 'store'])->name('master.prodi.store');
         Route::put('/master/prodi/{prodi}', [ProdiController::class, 'update'])->name('master.prodi.update');
         Route::delete('/master/prodi/{prodi}', [ProdiController::class, 'destroy'])->name('master.prodi.destroy');
 
-        Route::get('/master/semester', fn () => redirect()->route('master-data.index', 'semester'))->name('master.semester.index');
         Route::post('/master/semester', [SemesterController::class, 'store'])->name('master.semester.store');
         Route::put('/master/semester/{semester}', [SemesterController::class, 'update'])->name('master.semester.update');
         Route::delete('/master/semester/{semester}', [SemesterController::class, 'destroy'])->name('master.semester.destroy');
 
-        Route::get('/master/{master}', fn (string $master) => redirect()->route('master-data.index', $master))->name('master.simple.index');
         Route::post('/master/{master}', [SimpleMasterController::class, 'store'])->name('master.simple.store');
         Route::put('/master/{master}/{id}', [SimpleMasterController::class, 'update'])->name('master.simple.update');
         Route::delete('/master/{master}/{id}', [SimpleMasterController::class, 'destroy'])->name('master.simple.destroy');

@@ -8,7 +8,7 @@
             ['title' => 'Event & Reimburse', 'count' => $cards['Event/Reimbursement'] ?? 0, 'desc' => 'Event kegiatan dan pengajuan reimbursement.', 'href' => route('event.index'), 'icon' => 'event', 'tone' => 'teal'],
             ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
             ['title' => 'Tracer Study', 'count' => $cards['Tracer Study Input'] ?? 0, 'desc' => 'Monitoring input tracer sebelum yudisium.', 'href' => route('tracer.index'), 'icon' => 'tracer', 'tone' => 'violet'],
-            ['title' => 'Unit Kemahasiswaan', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'desc' => 'Humas, Science Center, Alumni, dan Pusat Karir.', 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
+            ['title' => 'Unit Kemahasiswaan', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'desc' => 'Humas, Science Center, Alumni, dan Pusat Karir.', 'href' => route('unit-activities.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
             ['title' => 'Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Data ormawa, kegiatan, proposal, dan reimbursement.', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
         ];
 
@@ -37,7 +37,7 @@
                     <strong>Prestasi</strong>
                     <small>Prestasi lomba dan reimbursement mahasiswa.</small>
                 </a>
-                <a href="{{ route('unit-data.index', 'humas-marketing') }}">
+                <a href="{{ route('unit-activities.index', 'humas-marketing') }}">
                     <i><x-ui.app-icon name="grid" /></i>
                     <strong>Unit</strong>
                     <small>Humas, Science Center, Alumni, dan karir.</small>
@@ -64,7 +64,7 @@
                 <small>Data grafik kemahasiswaan</small>
                 <em>Unlocked</em>
             </a>
-            <a href="{{ route('unit-data.index', 'alumni-pusat-karir') }}" class="ubp-gradient-card blue">
+            <a href="{{ route('unit-activities.index', 'alumni-pusat-karir') }}" class="ubp-gradient-card blue">
                 <span><x-ui.app-icon name="access" /></span>
                 <strong>Unit Kemahasiswaan</strong>
                 <small>Humas, science, alumni, dan karir</small>

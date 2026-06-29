@@ -27,8 +27,10 @@ class DashboardKemahasiswaanTest extends TestCase
             '/tracer/data',
             '/beasiswa',
             '/beasiswa/data',
-            '/master-data/prodi',
-            '/master-data/semester',
+            '/unit/humas-marketing',
+            '/ormawa/data-ormawa',
+            '/master/prodi',
+            '/master/semester',
         ] as $path) {
             $this->actingAs($admin)->get($path)->assertOk();
         }
@@ -36,7 +38,8 @@ class DashboardKemahasiswaanTest extends TestCase
         $this->actingAs($admin)->get('/management-user')->assertForbidden();
         $this->actingAs($admin)->get('/data/prestasi')->assertRedirect('/prestasi/mahasiswa');
         $this->actingAs($admin)->get('/data/event')->assertRedirect('/event/kegiatan');
-        $this->actingAs($admin)->get('/master/prodi')->assertRedirect('/master-data/prodi');
+        $this->actingAs($admin)->get('/unit-data/humas-marketing')->assertRedirect('/unit/humas-marketing');
+        $this->actingAs($admin)->get('/master-data/prodi')->assertRedirect('/master/prodi');
         $this->actingAs($admin)->get('/claim-transport')->assertRedirect('/event/reimburse');
         $this->actingAs($admin)->get('/claim-fasilitas')->assertRedirect('/event/reimburse');
 

@@ -22,12 +22,12 @@ class UnitActivityInputTest extends TestCase
         $prodi = Prodi::firstOrFail();
 
         $this->actingAs($admin)->get('/unit/humas-marketing')
-            ->assertRedirect('/unit-data/humas-marketing');
-
-        $this->actingAs($admin)->get('/unit-data/humas-marketing')
             ->assertOk()
             ->assertSee('Humas Marketing')
             ->assertSee('Tambah Data');
+
+        $this->actingAs($admin)->get('/unit-data/humas-marketing')
+            ->assertRedirect('/unit/humas-marketing');
 
         $this->actingAs($admin)->post('/unit/humas-marketing', [
             'semester_id' => $semester->id,
@@ -37,7 +37,7 @@ class UnitActivityInputTest extends TestCase
             'tanggal' => '2026-06-20',
             'status' => 'Berjalan',
             'catatan' => 'Konten promosi untuk kanal digital.',
-        ])->assertRedirect('/unit-data/humas-marketing');
+        ])->assertRedirect('/unit/humas-marketing');
 
         $activity = UnitActivity::where('unit', 'humas-marketing')->firstOrFail();
         $this->assertSame('Publikasi Kampus Baru', $activity->judul);
