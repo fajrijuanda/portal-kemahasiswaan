@@ -60,6 +60,16 @@ class UnitActivityController extends Controller
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
             'ormawas' => Ormawa::where('status', 'Aktif')->orderBy('nama')->get(),
+            'sectionShell' => [
+                'eyebrow' => 'Unit Data',
+                'title' => $config['title'],
+                'subtitle' => 'Kelola data unit layanan khusus dari satu halaman ringkas.',
+                'items' => $this->unitSectionItems($unit),
+                'stats' => [
+                    ['label' => 'Total Data', 'value' => number_format((clone $baseQuery)->count()), 'caption' => $config['title'], 'icon' => $config['icon'], 'tone' => $config['tone']],
+                    ['label' => 'Selesai', 'value' => number_format((clone $baseQuery)->where('status', 'Selesai')->count()), 'caption' => 'aktivitas tuntas', 'icon' => 'event', 'tone' => 'emerald'],
+                ],
+            ],
         ]);
     }
 
@@ -76,7 +86,7 @@ class UnitActivityController extends Controller
 
         UnitActivity::create($data);
 
-        return redirect()->route('unit-activities.index', $unit)->with('status', $config['title'].' berhasil ditambahkan.');
+        return redirect($this->indexUrl($unit))->with('status', $config['title'].' berhasil ditambahkan.');
     }
 
     public function update(Request $request, string $unit, UnitActivity $activity)
@@ -91,7 +101,7 @@ class UnitActivityController extends Controller
 
         $activity->update($data);
 
-        return redirect()->route('unit-activities.index', $unit)->with('status', $config['title'].' berhasil diperbarui.');
+        return redirect($this->indexUrl($unit))->with('status', $config['title'].' berhasil diperbarui.');
     }
 
     public function destroy(string $unit, UnitActivity $activity)
@@ -156,5 +166,29 @@ class UnitActivityController extends Controller
         abort_unless(isset($this->units[$unit]), 404);
 
         return $this->units[$unit];
+    }
+
+    private function unitSectionItems(string $activeUnit): array
+    {
+        return collect($this->units)
+            ->except('pengembangan-ormawa')
+            ->map(fn ($config, $unit) => [
+                'label' => $config['title'],
+                'icon' => $config['icon'],
+                'href' => route('unit-data.index', $unit),
+                'active' => $unit === $activeUnit,
+                'count' => UnitActivity::where('unit', $unit)->count(),
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function indexUrl(string $unit): string
+    {
+        if ($unit === 'pengembangan-ormawa') {
+            return route('ormawa-admin.index', 'kegiatan');
+        }
+
+        return route('unit-data.index', $unit);
     }
 }

@@ -27,6 +27,16 @@
         $columnCount = count($tableFields) + 3;
     @endphp
 
+    @isset($sectionShell)
+        <x-ui.section-shell
+            :eyebrow="$sectionShell['eyebrow']"
+            :title="$sectionShell['title']"
+            :subtitle="$sectionShell['subtitle']"
+            :items="$sectionShell['items']"
+            :stats="$sectionShell['stats']"
+        >
+    @endisset
+
     <div class="ubp-stat-grid">
         <article class="ubp-stat-card tone-{{ $moduleTone }}">
             <div><small>Total Data</small><strong>{{ number_format($records->total()) }}</strong><em>{{ $config['title'] }}</em></div>
@@ -98,7 +108,7 @@
                 </select>
                 <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter</button>
                 @if(request('q') || request('semester_id') || request('prodi_id'))
-                    <a href="{{ route('records.index', $module) }}" class="ubp-table-action">Reset</a>
+                    <a href="{{ route('data.index', $module) }}" class="ubp-table-action">Reset</a>
                 @endif
             </form>
         </x-slot:controls>
@@ -239,4 +249,8 @@
             </div>
         </div>
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

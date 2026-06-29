@@ -6,6 +6,10 @@
         </div>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <x-ui.table-shell class="ubp-table-shell-omnia" title="Loker dan Job Fair" subtitle="Konten Published akan tampil di landing publik.">
         <x-slot:toolbar><button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#careerCreateModal">+ Tambah Konten</button></x-slot:toolbar>
         <table class="table align-middle ubp-table ubp-data-table">
@@ -35,4 +39,8 @@
     @foreach($records as $record)
         @include('content.careers.partials.form-modal', ['id' => 'careerEditModal'.$record->id, 'title' => 'Edit Konten Karir', 'action' => route('careers.update', $record), 'method' => 'PUT', 'record' => $record])
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

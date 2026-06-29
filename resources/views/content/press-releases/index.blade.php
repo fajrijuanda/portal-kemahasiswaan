@@ -6,6 +6,10 @@
         </div>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <x-ui.table-shell class="ubp-table-shell-omnia" title="Daftar Press Release" subtitle="Status Published akan tampil di halaman publik.">
         <x-slot:toolbar><button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#pressCreateModal">+ Tambah Press Release</button></x-slot:toolbar>
         <table class="table align-middle ubp-table ubp-data-table">
@@ -34,4 +38,8 @@
     @foreach($records as $record)
         @include('content.press-releases.partials.form-modal', ['id' => 'pressEditModal'.$record->id, 'title' => 'Edit Press Release', 'action' => route('press-releases.update', $record), 'method' => 'PUT', 'record' => $record])
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

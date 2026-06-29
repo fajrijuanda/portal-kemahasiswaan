@@ -89,7 +89,7 @@ class DashboardController extends Controller
             return response()->json([
                 'labels' => ['Belum ada data'],
                 'data' => [1],
-                'links' => [route('unit-activities.index', ['unit' => $unit, 'semester_id' => $semesterId, 'prodi_id' => $prodiId])],
+                'links' => [$this->unitLink($unit, $semesterId, $prodiId)],
                 'empty' => true,
             ]);
         }
@@ -97,7 +97,7 @@ class DashboardController extends Controller
         return response()->json([
             'labels' => $rows->pluck('status'),
             'data' => $rows->pluck('total'),
-            'links' => $rows->map(fn () => route('unit-activities.index', ['unit' => $unit, 'semester_id' => $semesterId, 'prodi_id' => $prodiId])),
+            'links' => $rows->map(fn () => $this->unitLink($unit, $semesterId, $prodiId)),
             'empty' => false,
         ]);
     }
@@ -124,8 +124,8 @@ class DashboardController extends Controller
                 $this->countFor(Event::query()->where('jenis_reimbursement', 'Fasilitas'), $semesterId, $prodiId),
             ],
             'links' => [
-                route('records.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
-                route('records.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
+                route('data.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
+                route('data.index', ['module' => 'event', 'semester_id' => $semesterId, 'prodi_id' => $prodiId]),
             ],
         ]);
     }
@@ -152,7 +152,7 @@ class DashboardController extends Controller
         return response()->json([
             'labels' => $rows->pluck('nama'),
             'data' => $rows->pluck('total'),
-            'links' => $rows->map(fn ($row) => route('records.index', ['module' => 'tracer-study', 'prodi_id' => $row->id, 'semester_id' => $semesterId])),
+            'links' => $rows->map(fn ($row) => route('data.index', ['module' => 'tracer-study', 'prodi_id' => $row->id, 'semester_id' => $semesterId])),
         ]);
     }
 
@@ -173,8 +173,33 @@ class DashboardController extends Controller
         return response()->json([
             'labels' => $rows->pluck($label),
             'data' => $rows->pluck('total'),
-            'links' => $rows->map(fn ($row) => url($path).'?'.$column.'='.$row->id.($semesterId ? '&semester_id='.$semesterId : '')),
+            'links' => $rows->map(fn ($row) => $this->recordLink($path, $row->id, $column, $semesterId)),
         ]);
+    }
+
+    private function recordLink(string $path, int $id, string $column, ?int $semesterId): string
+    {
+        $module = trim($path, '/');
+
+        return route('data.index', array_filter([
+            'module' => $module,
+            $column => $id,
+            'semester_id' => $semesterId,
+        ]));
+    }
+
+    private function unitLink(string $unit, ?int $semesterId, ?int $prodiId): string
+    {
+        $params = array_filter([
+            'semester_id' => $semesterId,
+            'prodi_id' => $prodiId,
+        ]);
+
+        if ($unit === 'pengembangan-ormawa') {
+            return route('ormawa-admin.index', array_merge(['section' => 'kegiatan'], $params));
+        }
+
+        return route('unit-data.index', array_merge(['unit' => $unit], $params));
     }
 
     private function miniDataset(int $value, string $label, string $emptyLabel): array

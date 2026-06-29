@@ -4,6 +4,10 @@
         <p class="ubp-subtitle">Kelola daftar program studi dan fakultas.</p>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <div class="ubp-stat-grid">
         <article class="ubp-stat-card tone-blue">
             <div><small>Total Prodi</small><strong>{{ number_format($prodis->total()) }}</strong><em>Program studi</em></div>
@@ -141,4 +145,8 @@
             </div>
         </div>
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

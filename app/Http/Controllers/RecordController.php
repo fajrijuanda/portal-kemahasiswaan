@@ -134,6 +134,16 @@ class RecordController extends Controller
             'achievementQuotas' => $module === 'prestasi'
                 ? AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get()
                 : collect(),
+            'sectionShell' => [
+                'eyebrow' => 'Data Layanan',
+                'title' => $config['title'],
+                'subtitle' => 'Kelola modul layanan kemahasiswaan dari satu halaman dengan navigasi ringkas.',
+                'items' => $this->dataSectionItems($module),
+                'stats' => [
+                    ['label' => 'Total Data', 'value' => number_format($query->toBase()->getCountForPagination()), 'caption' => $config['title'], 'icon' => 'grid', 'tone' => 'blue'],
+                    ['label' => 'Modul', 'value' => '4', 'caption' => 'layanan aktif', 'icon' => 'semester', 'tone' => 'emerald'],
+                ],
+            ],
         ]);
     }
 
@@ -156,7 +166,7 @@ class RecordController extends Controller
         $record = $config['model']::create($data);
         $this->syncComputedFields($module, $record);
 
-        return redirect()->route('records.index', $module)->with('status', $config['title'].' berhasil ditambahkan.');
+        return redirect()->route('data.index', $module)->with('status', $config['title'].' berhasil ditambahkan.');
     }
 
     public function edit(string $module, int $id)
@@ -187,7 +197,7 @@ class RecordController extends Controller
             $this->syncPrestasiQuota($oldSemesterId, $oldProdiId);
         }
 
-        return redirect()->route('records.index', $module)->with('status', $config['title'].' berhasil diperbarui.');
+        return redirect()->route('data.index', $module)->with('status', $config['title'].' berhasil diperbarui.');
     }
 
     public function destroy(string|int $module, string|int $id)
@@ -370,5 +380,28 @@ class RecordController extends Controller
                 Storage::disk('public')->delete($record->{$name});
             }
         }
+    }
+
+    private function dataSectionItems(string $activeModule): array
+    {
+        $items = [
+            'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
+            'event' => ['label' => 'Event/Reimbursement', 'icon' => 'event'],
+            'tracer-study' => ['label' => 'Tracer Study', 'icon' => 'tracer'],
+            'beasiswa' => ['label' => 'Beasiswa', 'icon' => 'beasiswa'],
+        ];
+
+        return collect($items)->map(function ($item, $module) use ($activeModule) {
+            $config = $this->config($module);
+            $model = $config['model'];
+
+            return [
+                'label' => $item['label'],
+                'icon' => $item['icon'],
+                'href' => route('data.index', $module),
+                'active' => $module === $activeModule,
+                'count' => $model::count(),
+            ];
+        })->values()->all();
     }
 }

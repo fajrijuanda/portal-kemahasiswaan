@@ -3,13 +3,16 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CareerPostController;
 use App\Http\Controllers\Master\AchievementQuotaController;
+use App\Http\Controllers\Master\MasterDataController;
 use App\Http\Controllers\Master\OrmawaController;
 use App\Http\Controllers\Master\ProdiController;
 use App\Http\Controllers\Master\SemesterController;
 use App\Http\Controllers\Master\SimpleMasterController;
 use App\Http\Controllers\OrmawaPanelController;
+use App\Http\Controllers\OrmawaAdminController;
 use App\Http\Controllers\PressReleaseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicationAdminController;
 use App\Http\Controllers\PublicPortalController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentSubmissionController;
@@ -36,33 +39,43 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/charts/unit/{unit}', [DashboardController::class, 'unitActivityChart'])->name('charts.unit-activities');
 
     Route::middleware('role:super user|admin|kaprodi|kabag|warek')->group(function () {
+        Route::get('/data/{module}', [RecordController::class, 'index'])->name('data.index');
+
         foreach (['prestasi', 'event', 'tracer-study', 'beasiswa'] as $module) {
-            Route::get("/{$module}", [RecordController::class, 'index'])->defaults('module', $module)->name($module.'.index');
-            Route::get("/{$module}/create", fn () => redirect()->route('records.index', $module))->name($module.'.create');
+            Route::get("/{$module}", fn () => redirect()->route('data.index', $module))->name($module.'.index');
+            Route::get("/{$module}/create", fn () => redirect()->route('data.index', $module))->name($module.'.create');
             Route::post("/{$module}", [RecordController::class, 'store'])->defaults('module', $module)->name($module.'.store');
-            Route::get("/{$module}/{id}/edit", fn () => redirect()->route('records.index', $module))->name($module.'.edit');
+            Route::get("/{$module}/{id}/edit", fn () => redirect()->route('data.index', $module))->name($module.'.edit');
             Route::put("/{$module}/{id}", [RecordController::class, 'update'])->defaults('module', $module)->name($module.'.update');
             Route::delete("/{$module}/{id}", [RecordController::class, 'destroy'])->defaults('module', $module)->name($module.'.destroy');
         }
 
-        Route::redirect('/claim-transport', '/event')->name('claim-transport.index');
-        Route::redirect('/claim-fasilitas', '/event')->name('claim-fasilitas.index');
+        Route::redirect('/claim-transport', '/data/event')->name('claim-transport.index');
+        Route::redirect('/claim-fasilitas', '/data/event')->name('claim-fasilitas.index');
 
         Route::prefix('records/{module}')->name('records.')->group(function () {
-            Route::get('/', [RecordController::class, 'index'])->name('index');
-            Route::get('/create', fn (string $module) => redirect()->route('records.index', $module))->name('create');
+            Route::get('/', fn (string $module) => redirect()->route('data.index', $module))->name('index');
+            Route::get('/create', fn (string $module) => redirect()->route('data.index', $module))->name('create');
             Route::post('/', [RecordController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', fn (string $module) => redirect()->route('records.index', $module))->name('edit');
+            Route::get('/{id}/edit', fn (string $module) => redirect()->route('data.index', $module))->name('edit');
             Route::put('/{id}', [RecordController::class, 'update'])->name('update');
             Route::delete('/{id}', [RecordController::class, 'destroy'])->name('destroy');
         });
 
+        Route::get('/unit-data/{unit}', [UnitActivityController::class, 'index'])->name('unit-data.index');
+
         Route::prefix('unit/{unit}')->name('unit-activities.')->group(function () {
-            Route::get('/', [UnitActivityController::class, 'index'])->name('index');
+            Route::get('/', function (string $unit) {
+                return $unit === 'pengembangan-ormawa'
+                    ? redirect()->route('ormawa-admin.index', 'data-ormawa')
+                    : redirect()->route('unit-data.index', $unit);
+            })->name('index');
             Route::post('/', [UnitActivityController::class, 'store'])->name('store');
             Route::put('/{activity}', [UnitActivityController::class, 'update'])->name('update');
             Route::delete('/{activity}', [UnitActivityController::class, 'destroy'])->name('destroy');
         });
+
+        Route::get('/ormawa-admin/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('student.')->group(function () {
@@ -78,41 +91,44 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:super user|admin')->group(function () {
-        Route::get('/master/prodi', [ProdiController::class, 'index'])->name('master.prodi.index');
+        Route::get('/master-data/{section?}', [MasterDataController::class, 'index'])->name('master-data.index');
+
+        Route::get('/master/prodi', fn () => redirect()->route('master-data.index', 'prodi'))->name('master.prodi.index');
         Route::post('/master/prodi', [ProdiController::class, 'store'])->name('master.prodi.store');
         Route::put('/master/prodi/{prodi}', [ProdiController::class, 'update'])->name('master.prodi.update');
         Route::delete('/master/prodi/{prodi}', [ProdiController::class, 'destroy'])->name('master.prodi.destroy');
 
-        Route::get('/master/semester', [SemesterController::class, 'index'])->name('master.semester.index');
+        Route::get('/master/semester', fn () => redirect()->route('master-data.index', 'semester'))->name('master.semester.index');
         Route::post('/master/semester', [SemesterController::class, 'store'])->name('master.semester.store');
         Route::put('/master/semester/{semester}', [SemesterController::class, 'update'])->name('master.semester.update');
         Route::delete('/master/semester/{semester}', [SemesterController::class, 'destroy'])->name('master.semester.destroy');
 
-        Route::get('/master/{master}', [SimpleMasterController::class, 'index'])->name('master.simple.index');
+        Route::get('/master/{master}', fn (string $master) => redirect()->route('master-data.index', $master))->name('master.simple.index');
         Route::post('/master/{master}', [SimpleMasterController::class, 'store'])->name('master.simple.store');
         Route::put('/master/{master}/{id}', [SimpleMasterController::class, 'update'])->name('master.simple.update');
         Route::delete('/master/{master}/{id}', [SimpleMasterController::class, 'destroy'])->name('master.simple.destroy');
 
-        Route::get('/master-ormawa', [OrmawaController::class, 'index'])->name('master.ormawa.index');
+        Route::get('/master-ormawa', fn () => redirect()->route('ormawa-admin.index', 'data-ormawa'))->name('master.ormawa.index');
         Route::post('/master-ormawa', [OrmawaController::class, 'store'])->name('master.ormawa.store');
         Route::put('/master-ormawa/{ormawa}', [OrmawaController::class, 'update'])->name('master.ormawa.update');
         Route::delete('/master-ormawa/{ormawa}', [OrmawaController::class, 'destroy'])->name('master.ormawa.destroy');
 
-        Route::get('/master-kuota-prestasi', [AchievementQuotaController::class, 'index'])->name('master.quotas.index');
+        Route::get('/master-kuota-prestasi', fn () => redirect()->route('master-data.index', 'quotas'))->name('master.quotas.index');
         Route::post('/master-kuota-prestasi', [AchievementQuotaController::class, 'store'])->name('master.quotas.store');
         Route::put('/master-kuota-prestasi/{quota}', [AchievementQuotaController::class, 'update'])->name('master.quotas.update');
         Route::delete('/master-kuota-prestasi/{quota}', [AchievementQuotaController::class, 'destroy'])->name('master.quotas.destroy');
     });
 
     Route::middleware('role:super user|admin|kabag')->group(function () {
-        Route::get('/press-releases', [PressReleaseController::class, 'index'])->name('press-releases.index');
+        Route::get('/publikasi/{section?}', [PublicationAdminController::class, 'index'])->name('publications.index');
+        Route::get('/press-releases', fn () => redirect()->route('publications.index', 'press-releases'))->name('press-releases.index');
         Route::post('/press-releases', [PressReleaseController::class, 'store'])->name('press-releases.store');
         Route::put('/press-releases/{pressRelease}', [PressReleaseController::class, 'update'])->name('press-releases.update');
         Route::delete('/press-releases/{pressRelease}', [PressReleaseController::class, 'destroy'])->name('press-releases.destroy');
     });
 
     Route::middleware('role:super user|admin')->group(function () {
-        Route::get('/karir', [CareerPostController::class, 'index'])->name('careers.index');
+        Route::get('/karir', fn () => redirect()->route('publications.index', 'careers'))->name('careers.index');
         Route::post('/karir', [CareerPostController::class, 'store'])->name('careers.store');
         Route::put('/karir/{careerPost}', [CareerPostController::class, 'update'])->name('careers.update');
         Route::delete('/karir/{careerPost}', [CareerPostController::class, 'destroy'])->name('careers.destroy');

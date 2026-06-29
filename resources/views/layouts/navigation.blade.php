@@ -6,14 +6,9 @@
 
     if (auth()->user()->hasAnyRole(['super user', 'admin', 'kaprodi', 'kabag', 'warek'])) {
         $items = array_merge($items, [
-            ['label' => 'Prestasi', 'href' => route('records.index', 'prestasi'), 'active' => request()->is('prestasi*') || request()->is('records/prestasi*'), 'icon' => 'prestasi'],
-            ['label' => 'Event', 'href' => route('records.index', 'event'), 'active' => request()->is('event*') || request()->is('records/event*'), 'icon' => 'event'],
-            ['label' => 'Tracer', 'href' => route('records.index', 'tracer-study'), 'active' => request()->is('tracer-study*') || request()->is('records/tracer-study*'), 'icon' => 'tracer'],
-            ['label' => 'Beasiswa', 'href' => route('records.index', 'beasiswa'), 'active' => request()->is('beasiswa*') || request()->is('records/beasiswa*'), 'icon' => 'beasiswa'],
-            ['label' => 'Humas', 'href' => route('unit-activities.index', 'humas-marketing'), 'active' => request()->is('unit/humas-marketing*'), 'icon' => 'grid'],
-            ['label' => 'Science', 'href' => route('unit-activities.index', 'science-center'), 'active' => request()->is('unit/science-center*'), 'icon' => 'prodi'],
-            ['label' => 'Ormawa', 'href' => route('unit-activities.index', 'pengembangan-ormawa'), 'active' => request()->is('unit/pengembangan-ormawa*'), 'icon' => 'user'],
-            ['label' => 'Alumni', 'href' => route('unit-activities.index', 'alumni-pusat-karir'), 'active' => request()->is('unit/alumni-pusat-karir*'), 'icon' => 'access'],
+            ['label' => 'Data Layanan', 'href' => route('data.index', 'prestasi'), 'active' => request()->is('data*') || request()->is('records/*') || request()->is('prestasi*') || request()->is('event*') || request()->is('tracer-study*') || request()->is('beasiswa*'), 'icon' => 'grid'],
+            ['label' => 'Unit', 'href' => route('unit-data.index', 'humas-marketing'), 'active' => request()->is('unit-data*') || request()->is('unit/humas-marketing*') || request()->is('unit/science-center*') || request()->is('unit/alumni-pusat-karir*'), 'icon' => 'prodi'],
+            ['label' => 'Ormawa', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'active' => request()->is('ormawa-admin*') || request()->is('unit/pengembangan-ormawa*') || request()->is('master-ormawa*'), 'icon' => 'user'],
         ]);
     }
 
@@ -26,17 +21,11 @@
     }
 
     if (auth()->user()->hasAnyRole(['super user', 'admin'])) {
-        $items[] = ['label' => 'Prodi', 'href' => route('master.prodi.index'), 'active' => request()->routeIs('master.prodi.*'), 'icon' => 'prodi'];
-        $items[] = ['label' => 'Semester', 'href' => route('master.semester.index'), 'active' => request()->routeIs('master.semester.*'), 'icon' => 'semester'];
-        $items[] = ['label' => 'Lomba', 'href' => route('master.simple.index', 'competitions'), 'active' => request()->is('master/competitions*'), 'icon' => 'prestasi'];
-        $items[] = ['label' => 'Jenis Beasiswa', 'href' => route('master.simple.index', 'scholarship-types'), 'active' => request()->is('master/scholarship-types*'), 'icon' => 'beasiswa'];
-        $items[] = ['label' => 'Master Ormawa', 'href' => route('master.ormawa.index'), 'active' => request()->routeIs('master.ormawa.*'), 'icon' => 'user'];
-        $items[] = ['label' => 'Kuota', 'href' => route('master.quotas.index'), 'active' => request()->routeIs('master.quotas.*'), 'icon' => 'semester'];
-        $items[] = ['label' => 'Karir', 'href' => route('careers.index'), 'active' => request()->routeIs('careers.*'), 'icon' => 'access'];
+        $items[] = ['label' => 'Master', 'href' => route('master-data.index', 'prodi'), 'active' => request()->is('master-data*') || request()->is('master/*') || request()->is('master-kuota-prestasi*'), 'icon' => 'semester'];
     }
 
     if (auth()->user()->hasAnyRole(['super user', 'admin', 'kabag'])) {
-        $items[] = ['label' => 'Press', 'href' => route('press-releases.index'), 'active' => request()->routeIs('press-releases.*'), 'icon' => 'grid'];
+        $items[] = ['label' => 'Publikasi', 'href' => route('publications.index', 'press-releases'), 'active' => request()->is('publikasi*') || request()->is('press-releases*') || request()->is('karir*'), 'icon' => 'access'];
     }
 
     if (auth()->user()->hasRole('super user')) {

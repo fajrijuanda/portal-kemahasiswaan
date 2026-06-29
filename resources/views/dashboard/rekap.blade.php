@@ -4,14 +4,14 @@
     @php
         $filterParams = array_filter(['semester_id' => $selectedSemester, 'prodi_id' => $selectedProdi]);
         $cardMeta = [
-            'Prestasi' => ['icon' => 'prestasi', 'tone' => 'blue', 'caption' => 'Capaian dan lomba mahasiswa', 'href' => route('records.index', array_merge(['module' => 'prestasi'], $filterParams))],
-            'Event/Reimbursement' => ['icon' => 'event', 'tone' => 'teal', 'caption' => 'Event, transport, dan fasilitas', 'href' => route('records.index', array_merge(['module' => 'event'], $filterParams))],
-            'Tracer Study Input' => ['icon' => 'tracer', 'tone' => 'violet', 'caption' => 'Input tracer yang terkumpul', 'href' => route('records.index', array_merge(['module' => 'tracer-study'], $filterParams))],
-            'Beasiswa' => ['icon' => 'beasiswa', 'tone' => 'emerald', 'caption' => 'Data penerima beasiswa', 'href' => route('records.index', array_merge(['module' => 'beasiswa'], $filterParams))],
-            'Humas Marketing' => ['icon' => 'grid', 'tone' => 'rose', 'caption' => 'Aktivitas promosi dan publikasi', 'href' => route('unit-activities.index', array_merge(['unit' => 'humas-marketing'], $filterParams))],
-            'Science Center' => ['icon' => 'prodi', 'tone' => 'cyan', 'caption' => 'Program science center', 'href' => route('unit-activities.index', array_merge(['unit' => 'science-center'], $filterParams))],
-            'Pengembangan Ormawa' => ['icon' => 'user', 'tone' => 'amber-soft', 'caption' => 'Kegiatan dan pembinaan ormawa', 'href' => route('unit-activities.index', array_merge(['unit' => 'pengembangan-ormawa'], $filterParams))],
-            'Alumni dan Pusat Karir' => ['icon' => 'access', 'tone' => 'slate', 'caption' => 'Alumni, karir, dan relasi industri', 'href' => route('unit-activities.index', array_merge(['unit' => 'alumni-pusat-karir'], $filterParams))],
+            'Prestasi' => ['icon' => 'prestasi', 'tone' => 'blue', 'caption' => 'Capaian dan lomba mahasiswa', 'href' => route('data.index', array_merge(['module' => 'prestasi'], $filterParams))],
+            'Event/Reimbursement' => ['icon' => 'event', 'tone' => 'teal', 'caption' => 'Event, transport, dan fasilitas', 'href' => route('data.index', array_merge(['module' => 'event'], $filterParams))],
+            'Tracer Study Input' => ['icon' => 'tracer', 'tone' => 'violet', 'caption' => 'Input tracer yang terkumpul', 'href' => route('data.index', array_merge(['module' => 'tracer-study'], $filterParams))],
+            'Beasiswa' => ['icon' => 'beasiswa', 'tone' => 'emerald', 'caption' => 'Data penerima beasiswa', 'href' => route('data.index', array_merge(['module' => 'beasiswa'], $filterParams))],
+            'Humas Marketing' => ['icon' => 'grid', 'tone' => 'rose', 'caption' => 'Aktivitas promosi dan publikasi', 'href' => route('unit-data.index', array_merge(['unit' => 'humas-marketing'], $filterParams))],
+            'Science Center' => ['icon' => 'prodi', 'tone' => 'cyan', 'caption' => 'Program science center', 'href' => route('unit-data.index', array_merge(['unit' => 'science-center'], $filterParams))],
+            'Pengembangan Ormawa' => ['icon' => 'user', 'tone' => 'amber-soft', 'caption' => 'Kegiatan dan pembinaan ormawa', 'href' => route('ormawa-admin.index', array_merge(['section' => 'kegiatan'], $filterParams))],
+            'Alumni dan Pusat Karir' => ['icon' => 'access', 'tone' => 'slate', 'caption' => 'Alumni, karir, dan relasi industri', 'href' => route('unit-data.index', array_merge(['unit' => 'alumni-pusat-karir'], $filterParams))],
         ];
         $totalRecords = collect($cards)->sum();
         $filledCards = collect($cards)->filter(fn ($value) => $value > 0)->count();

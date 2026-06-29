@@ -142,14 +142,27 @@ class MvpRevisionTest extends TestCase
         $ormawaUser = $this->userWithRole('ormawa', ['prodi_id' => $setup['prodi']->id]);
         Ormawa::create(['user_id' => $ormawaUser->id, 'nama' => 'HIMA Test', 'status' => 'Aktif']);
 
-        $this->actingAs($admin)->get(route('master.simple.index', 'competitions'))->assertOk();
-        $this->actingAs($admin)->get(route('master.ormawa.index'))->assertOk();
-        $this->actingAs($admin)->get(route('master.quotas.index'))->assertOk();
-        $this->actingAs($admin)->get(route('careers.index'))->assertOk();
-        $this->actingAs($kabag)->get(route('press-releases.index'))->assertOk();
+        $this->actingAs($admin)->get(route('data.index', 'prestasi'))->assertOk();
+        $this->actingAs($admin)->get(route('unit-data.index', 'humas-marketing'))->assertOk();
+        $this->actingAs($admin)->get(route('ormawa-admin.index', 'data-ormawa'))->assertOk();
+        $this->actingAs($admin)->get(route('master-data.index', 'competitions'))->assertOk();
+        $this->actingAs($admin)->get(route('master-data.index', 'quotas'))->assertOk();
+        $this->actingAs($admin)->get(route('publications.index', 'careers'))->assertOk();
+        $this->actingAs($kabag)->get(route('publications.index', 'press-releases'))->assertOk();
         $this->actingAs($student)->get(route('student.submissions'))->assertOk();
         $this->actingAs($ormawaUser)->get(route('ormawa.panel'))->assertOk();
         $this->get(route('public.index'))->assertOk();
+    }
+
+    public function test_legacy_routes_redirect_to_group_pages(): void
+    {
+        $this->setupAcademicData();
+        $admin = $this->userWithRole('admin');
+
+        $this->actingAs($admin)->get('/prestasi')->assertRedirect(route('data.index', 'prestasi'));
+        $this->actingAs($admin)->get('/event')->assertRedirect(route('data.index', 'event'));
+        $this->actingAs($admin)->get('/master-ormawa')->assertRedirect(route('ormawa-admin.index', 'data-ormawa'));
+        $this->actingAs($admin)->get('/karir')->assertRedirect(route('publications.index', 'careers'));
     }
 
     private function setupAcademicData(): array

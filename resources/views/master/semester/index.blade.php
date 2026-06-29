@@ -4,6 +4,10 @@
         <p class="ubp-subtitle">Atur semester aktif dan periode akademik.</p>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <div class="ubp-stat-grid">
         <article class="ubp-stat-card tone-violet">
             <div><small>Total Semester</small><strong>{{ number_format($semesters->total()) }}</strong><em>Periode akademik</em></div>
@@ -170,4 +174,8 @@
             </div>
         </div>
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

@@ -6,6 +6,16 @@
         </div>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell
+            :eyebrow="$sectionShell['eyebrow']"
+            :title="$sectionShell['title']"
+            :subtitle="$sectionShell['subtitle']"
+            :items="$sectionShell['items']"
+            :stats="$sectionShell['stats']"
+        >
+    @endisset
+
     <x-ui.table-shell class="ubp-table-shell-omnia" title="Daftar Ormawa" subtitle="Klik overview untuk melihat profil dan ringkasan kegiatan.">
         <x-slot:toolbar>
             <button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#ormawaCreateModal">+ Tambah Ormawa</button>
@@ -57,4 +67,8 @@
         </div>
         @include('master.ormawa.partials.form-modal', ['id' => 'ormawaEditModal'.$ormawa->id, 'title' => 'Edit Ormawa', 'action' => route('master.ormawa.update', $ormawa), 'method' => 'PUT', 'ormawa' => $ormawa])
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

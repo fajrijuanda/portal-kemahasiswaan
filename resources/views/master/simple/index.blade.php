@@ -6,6 +6,10 @@
         </div>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <x-ui.table-shell class="ubp-table-shell-omnia" :title="$config['title']" subtitle="Data master aktif akan muncul sebagai dropdown pada form.">
         <x-slot:toolbar>
             <button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#masterCreateModal">+ Tambah Data</button>
@@ -63,4 +67,8 @@
             </div>
         </div>
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>

@@ -6,6 +6,10 @@
         </div>
     </x-slot>
 
+    @isset($sectionShell)
+        <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
+    @endisset
+
     <x-ui.table-shell class="ubp-table-shell-omnia" title="Kuota Prestasi" subtitle="Slot terpakai dihitung dari prestasi berstatus Terverifikasi.">
         <x-slot:toolbar>
             <button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#quotaCreateModal">+ Tambah Kuota</button>
@@ -37,4 +41,8 @@
     @foreach($quotas as $quota)
         @include('master.quotas.partials.form-modal', ['id' => 'quotaEditModal'.$quota->id, 'title' => 'Edit Kuota', 'action' => route('master.quotas.update', $quota), 'method' => 'PUT', 'quota' => $quota])
     @endforeach
+
+    @isset($sectionShell)
+        </x-ui.section-shell>
+    @endisset
 </x-app-layout>
