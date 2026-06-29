@@ -1,5 +1,9 @@
 {
     "version": 2,
+    "framework": null,
+    "outputDirectory": ".",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.8.0"
@@ -9,6 +13,10 @@
         {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
+        },
+        {
+            "src": "/images/(.*)",
+            "dest": "/public/images/$1"
         },
         {
             "src": "/favicon.ico",
@@ -36,6 +44,5 @@
         "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr",
         "QUEUE_CONNECTION": "sync"
-    },
-    "buildCommand": "npm install && npm run build"
+    }
 }
