@@ -15,6 +15,7 @@ use App\Models\ScholarshipType;
 use App\Models\Semester;
 use App\Models\TracerStudy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class RecordController extends Controller
@@ -131,7 +132,7 @@ class RecordController extends Controller
             'records' => $query->paginate(request('limit', 10))->withQueryString(),
             'semesters' => Semester::orderByDesc('id')->get(),
             'prodis' => Prodi::orderBy('nama')->get(),
-            'achievementQuotas' => $module === 'prestasi'
+            'achievementQuotas' => $module === 'prestasi' && Schema::hasTable('achievement_quotas')
                 ? AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get()
                 : collect(),
             'sectionShell' => [
@@ -299,15 +300,37 @@ class RecordController extends Controller
         $config = $this->modules[$module];
 
         if ($module === 'prestasi') {
-            $config['fields']['competition_id']['options'] = Competition::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+            if (Schema::hasTable('competitions')) {
+                $config['fields']['competition_id']['options'] = Competition::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+            } else {
+                $config['with'] = array_values(array_diff($config['with'] ?? [], ['competition']));
+                unset($config['fields']['competition_id']);
+            }
         }
 
         if ($module === 'beasiswa') {
-            $config['fields']['scholarship_type_id']['options'] = ScholarshipType::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+            if (Schema::hasTable('scholarship_types')) {
+                $config['fields']['scholarship_type_id']['options'] = ScholarshipType::where('is_active', true)->orderBy('nama')->pluck('nama', 'id')->all();
+            } else {
+                $config['with'] = array_values(array_diff($config['with'] ?? [], ['scholarshipType']));
+                unset($config['fields']['scholarship_type_id']);
+            }
         }
 
         if ($module === 'event') {
-            $config['fields']['ormawa_id']['options'] = Ormawa::where('status', 'Aktif')->orderBy('nama')->pluck('nama', 'id')->all();
+            if (Schema::hasTable('ormawas')) {
+                $config['fields']['ormawa_id']['options'] = Ormawa::where('status', 'Aktif')->orderBy('nama')->pluck('nama', 'id')->all();
+            } else {
+                $config['with'] = array_values(array_diff($config['with'] ?? [], ['ormawa']));
+                unset($config['fields']['ormawa_id']);
+            }
+        }
+
+        $table = (new $config['model'])->getTable();
+        if (Schema::hasTable($table)) {
+            $config['fields'] = collect($config['fields'])
+                ->filter(fn ($field, $name) => Schema::hasColumn($table, $name))
+                ->all();
         }
 
         return $config;
