@@ -69,26 +69,6 @@
         </form>
     </section>
 
-    <section class="ubp-dashboard-launcher-panel">
-        <div class="ubp-panel-heading ubp-dashboard-section-heading">
-            <div>
-                <span>MENU PORTAL</span>
-                <h2>Akses cepat semua modul</h2>
-                <p>Pilih modul untuk membuka overview atau tabel sesuai lingkup layanan.</p>
-            </div>
-        </div>
-        <div class="ubp-dashboard-launcher-grid">
-            @foreach($dashboardMenu as $item)
-                <a class="ubp-dashboard-launcher tone-{{ $item['tone'] }}" href="{{ $item['href'] }}">
-                    <span><x-ui.app-icon :name="$item['icon']" /></span>
-                    <strong>{{ $item['label'] }}</strong>
-                    <small>{{ $item['desc'] }}</small>
-                    <em>{{ number_format($item['count']) }}</em>
-                </a>
-            @endforeach
-        </div>
-    </section>
-
     <section class="ubp-rekap-metric-grid">
         @foreach($cards as $label => $value)
             @php($meta = $cardMeta[$label] ?? ['icon' => 'grid', 'tone' => 'blue', 'caption' => 'Data kemahasiswaan', 'href' => '#'])
