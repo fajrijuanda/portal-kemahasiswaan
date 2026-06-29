@@ -135,13 +135,13 @@ class RecordController extends Controller
                 ? AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get()
                 : collect(),
             'sectionShell' => [
-                'eyebrow' => 'Data Layanan',
+                'eyebrow' => $this->dataSectionMeta($module)['eyebrow'],
                 'title' => $config['title'],
-                'subtitle' => 'Kelola modul layanan kemahasiswaan dari satu halaman dengan navigasi ringkas.',
+                'subtitle' => $this->dataSectionMeta($module)['subtitle'],
                 'items' => $this->dataSectionItems($module),
                 'stats' => [
                     ['label' => 'Total Data', 'value' => number_format($query->toBase()->getCountForPagination()), 'caption' => $config['title'], 'icon' => 'grid', 'tone' => 'blue'],
-                    ['label' => 'Modul', 'value' => '4', 'caption' => 'layanan aktif', 'icon' => 'semester', 'tone' => 'emerald'],
+                    ['label' => 'Lingkup', 'value' => count($this->dataSectionItems($module)), 'caption' => 'menu terkait', 'icon' => 'semester', 'tone' => 'emerald'],
                 ],
             ],
         ]);
@@ -384,14 +384,24 @@ class RecordController extends Controller
 
     private function dataSectionItems(string $activeModule): array
     {
-        $items = [
-            'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
-            'event' => ['label' => 'Event/Reimbursement', 'icon' => 'event'],
-            'tracer-study' => ['label' => 'Tracer Study', 'icon' => 'tracer'],
-            'beasiswa' => ['label' => 'Beasiswa', 'icon' => 'beasiswa'],
+        $groups = [
+            'prestasi' => [
+                'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
+                'event' => ['label' => 'Event/Reimburse', 'icon' => 'event'],
+            ],
+            'event' => [
+                'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
+                'event' => ['label' => 'Event/Reimburse', 'icon' => 'event'],
+            ],
+            'beasiswa' => [
+                'beasiswa' => ['label' => 'Beasiswa', 'icon' => 'beasiswa'],
+            ],
+            'tracer-study' => [
+                'tracer-study' => ['label' => 'Tracer Study', 'icon' => 'tracer'],
+            ],
         ];
 
-        return collect($items)->map(function ($item, $module) use ($activeModule) {
+        return collect($groups[$activeModule] ?? [])->map(function ($item, $module) use ($activeModule) {
             $config = $this->config($module);
             $model = $config['model'];
 
@@ -403,5 +413,27 @@ class RecordController extends Controller
                 'count' => $model::count(),
             ];
         })->values()->all();
+    }
+
+    private function dataSectionMeta(string $module): array
+    {
+        return match ($module) {
+            'prestasi', 'event' => [
+                'eyebrow' => 'Prestasi & Reimbursement',
+                'subtitle' => 'Kelola prestasi lomba, event, dan reimbursement mahasiswa dalam satu lingkup.',
+            ],
+            'beasiswa' => [
+                'eyebrow' => 'Beasiswa',
+                'subtitle' => 'Kelola penerima, jenis, nominal, dan status beasiswa mahasiswa.',
+            ],
+            'tracer-study' => [
+                'eyebrow' => 'Tracer Study',
+                'subtitle' => 'Pantau input tracer study dan progres tiap program studi.',
+            ],
+            default => [
+                'eyebrow' => 'Data Layanan',
+                'subtitle' => 'Kelola modul layanan kemahasiswaan dari satu halaman dengan navigasi ringkas.',
+            ],
+        };
     }
 }

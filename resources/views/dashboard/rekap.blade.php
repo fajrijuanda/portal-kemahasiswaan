@@ -63,7 +63,7 @@
             <div class="ubp-rekap-filter-actions">
                 <button class="ubp-btn ubp-btn-primary" type="submit">Filter</button>
                 @if($selectedSemester || $selectedProdi)
-                    <a href="{{ route('dashboard.rekap') }}" class="ubp-table-action">Reset</a>
+                    <a href="{{ route('dashboard') }}" class="ubp-table-action">Reset</a>
                 @endif
             </div>
         </form>

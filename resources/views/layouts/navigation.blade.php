@@ -1,12 +1,14 @@
 @php
     $items = [
-        ['label' => 'Home', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard'), 'icon' => 'home'],
-        ['label' => 'Rekap', 'href' => route('dashboard.rekap'), 'active' => request()->routeIs('dashboard.rekap'), 'icon' => 'grid'],
+        ['label' => 'Home', 'href' => route('home'), 'active' => request()->routeIs('home'), 'icon' => 'home'],
+        ['label' => 'Rekap', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard') || request()->routeIs('dashboard.rekap'), 'icon' => 'grid'],
     ];
 
     if (auth()->user()->hasAnyRole(['super user', 'admin', 'kaprodi', 'kabag', 'warek'])) {
         $items = array_merge($items, [
-            ['label' => 'Data Layanan', 'href' => route('data.index', 'prestasi'), 'active' => request()->is('data*') || request()->is('records/*') || request()->is('prestasi*') || request()->is('event*') || request()->is('tracer-study*') || request()->is('beasiswa*'), 'icon' => 'grid'],
+            ['label' => 'Prestasi', 'href' => route('data.index', 'prestasi'), 'active' => request()->is('data/prestasi*') || request()->is('data/event*') || request()->is('records/prestasi*') || request()->is('records/event*') || request()->is('prestasi*') || request()->is('event*'), 'icon' => 'prestasi'],
+            ['label' => 'Beasiswa', 'href' => route('data.index', 'beasiswa'), 'active' => request()->is('data/beasiswa*') || request()->is('records/beasiswa*') || request()->is('beasiswa*'), 'icon' => 'beasiswa'],
+            ['label' => 'Tracer', 'href' => route('data.index', 'tracer-study'), 'active' => request()->is('data/tracer-study*') || request()->is('records/tracer-study*') || request()->is('tracer-study*'), 'icon' => 'tracer'],
             ['label' => 'Unit', 'href' => route('unit-data.index', 'humas-marketing'), 'active' => request()->is('unit-data*') || request()->is('unit/humas-marketing*') || request()->is('unit/science-center*') || request()->is('unit/alumni-pusat-karir*'), 'icon' => 'prodi'],
             ['label' => 'Ormawa', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'active' => request()->is('ormawa-admin*') || request()->is('unit/pengembangan-ormawa*') || request()->is('master-ormawa*'), 'icon' => 'user'],
         ]);
@@ -34,7 +36,7 @@
 @endphp
 
 <aside class="ubp-sidebar" aria-label="Menu portal">
-    <a class="ubp-sidebar-logo" href="{{ route('dashboard') }}" aria-label="Portal Kemahasiswaan">
+    <a class="ubp-sidebar-logo" href="{{ route('home') }}" aria-label="Portal Kemahasiswaan">
         <img src="{{ asset('images/logo-ubp.png') }}" alt="Logo UBP Karawang">
     </a>
 

@@ -21,15 +21,16 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('home');
 });
 
 Route::get('/publik', [PublicPortalController::class, 'index'])->name('public.index');
 Route::get('/publik/press-release/{pressRelease}', [PublicPortalController::class, 'pressRelease'])->name('public.press.show');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/rekap', [DashboardController::class, 'rekap'])->name('dashboard.rekap');
+    Route::get('/home', [DashboardController::class, 'index'])->name('home');
+    Route::get('/dashboard', [DashboardController::class, 'rekap'])->name('dashboard');
+    Route::get('/dashboard/rekap', fn () => redirect()->route('dashboard', request()->query()))->name('dashboard.rekap');
     Route::get('/dashboard/charts/prestasi-by-semester', [DashboardController::class, 'prestasiBySemester'])->name('charts.prestasi.semester');
     Route::get('/dashboard/charts/prestasi-by-prodi', [DashboardController::class, 'prestasiByProdi'])->name('charts.prestasi.prodi');
     Route::get('/dashboard/charts/claims', [DashboardController::class, 'claims'])->name('charts.claims');

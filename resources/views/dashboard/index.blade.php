@@ -3,20 +3,17 @@
 
     @php
         $services = [
-            ['title' => 'Dashboard Rekap', 'count' => count($cards), 'desc' => 'Ringkasan data dan grafik layanan.', 'href' => route('dashboard.rekap'), 'icon' => 'grid', 'tone' => 'cyan'],
-            ['title' => 'Prestasi Mahasiswa', 'count' => $cards['Prestasi'] ?? 0, 'desc' => 'Input prestasi nasional dan internasional.', 'href' => route('data.index', 'prestasi'), 'icon' => 'prestasi', 'tone' => 'blue'],
-            ['title' => 'Event Reimbursement', 'count' => $cards['Event/Reimbursement'] ?? 0, 'desc' => 'Akomodasi, pendaftaran, transport, fasilitas.', 'href' => route('data.index', 'event'), 'icon' => 'event', 'tone' => 'teal'],
+            ['title' => 'Dashboard Rekap', 'count' => count($cards), 'desc' => 'Ringkasan data dan grafik kemahasiswaan.', 'href' => route('dashboard'), 'icon' => 'grid', 'tone' => 'cyan'],
+            ['title' => 'Prestasi & Reimburse', 'count' => ($cards['Prestasi'] ?? 0) + ($cards['Event/Reimbursement'] ?? 0), 'desc' => 'Prestasi lomba, event, dan reimbursement mahasiswa.', 'href' => route('data.index', 'prestasi'), 'icon' => 'prestasi', 'tone' => 'blue'],
+            ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('data.index', 'beasiswa'), 'icon' => 'beasiswa', 'tone' => 'pink'],
             ['title' => 'Tracer Study', 'count' => $cards['Tracer Study Input'] ?? 0, 'desc' => 'Monitoring input tracer sebelum yudisium.', 'href' => route('data.index', 'tracer-study'), 'icon' => 'tracer', 'tone' => 'violet'],
-            ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Rekap penerima dan status beasiswa.', 'href' => route('data.index', 'beasiswa'), 'icon' => 'beasiswa', 'tone' => 'pink'],
-            ['title' => 'Humas Marketing', 'count' => $cards['Humas Marketing'] ?? 0, 'desc' => 'Aktivitas promosi dan publikasi.', 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'grid', 'tone' => 'rose'],
-            ['title' => 'Science Center', 'count' => $cards['Science Center'] ?? 0, 'desc' => 'Program science center.', 'href' => route('unit-data.index', 'science-center'), 'icon' => 'prodi', 'tone' => 'cyan'],
-            ['title' => 'Pengembangan Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Kegiatan dan pembinaan ormawa.', 'href' => route('ormawa-admin.index', 'kegiatan'), 'icon' => 'user', 'tone' => 'amber'],
-            ['title' => 'Alumni dan Pusat Karir', 'count' => $cards['Alumni dan Pusat Karir'] ?? 0, 'desc' => 'Alumni, karir, dan relasi industri.', 'href' => route('unit-data.index', 'alumni-pusat-karir'), 'icon' => 'access', 'tone' => 'slate'],
+            ['title' => 'Unit Kemahasiswaan', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'desc' => 'Humas, Science Center, Alumni, dan Pusat Karir.', 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
+            ['title' => 'Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Data ormawa, kegiatan, proposal, dan reimbursement.', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
         ];
 
         if (auth()->user()->hasAnyRole(['super user', 'admin'])) {
             $services[] = ['title' => 'Master Data', 'count' => 5, 'desc' => 'Kelola prodi, semester, lomba, beasiswa, dan kuota.', 'href' => route('master-data.index', 'prodi'), 'icon' => 'semester', 'tone' => 'emerald'];
-            $services[] = ['title' => 'Publikasi Karir', 'count' => 2, 'desc' => 'Kelola press release, loker, dan job fair.', 'href' => route('publications.index', 'press-releases'), 'icon' => 'access', 'tone' => 'slate'];
+            $services[] = ['title' => 'Publikasi', 'count' => 2, 'desc' => 'Kelola press release, loker, dan job fair.', 'href' => route('publications.index', 'press-releases'), 'icon' => 'access', 'tone' => 'slate'];
         }
 
         if (auth()->user()->hasRole('super user')) {
@@ -30,21 +27,21 @@
             <div class="position-relative">
                 <span class="ubp-auth-eyebrow">PORTAL KEMAHASISWAAN</span>
                 <h1>Portal Kemahasiswaan.</h1>
-                <p>Kelola prestasi, layanan event reimbursement, tracer study, beasiswa, prodi, dan akses user dari satu portal.</p>
+                <p>Kelola rekap, prestasi, beasiswa, tracer study, unit, Ormawa, master data, dan publikasi dari satu portal.</p>
                 <a class="ubp-hero-action" href="#layanan">Buka katalog layanan <span>-&gt;</span></a>
             </div>
             <div class="ubp-hero-actions-grid">
                 <a href="{{ route('data.index', 'prestasi') }}">
                     <i><x-ui.app-icon name="prestasi" /></i>
-                    <strong>Input Data</strong>
-                    <small>Tambah prestasi, event, tracer, atau beasiswa.</small>
+                    <strong>Prestasi</strong>
+                    <small>Prestasi lomba dan reimbursement mahasiswa.</small>
                 </a>
                 <a href="{{ route('unit-data.index', 'humas-marketing') }}">
                     <i><x-ui.app-icon name="grid" /></i>
-                    <strong>Unit Khusus</strong>
-                    <small>Input Humas, Science Center, Ormawa, atau Alumni.</small>
+                    <strong>Unit</strong>
+                    <small>Humas, Science Center, Alumni, dan karir.</small>
                 </a>
-                <a href="{{ route('dashboard.rekap') }}">
+                <a href="{{ route('dashboard') }}">
                     <i><x-ui.app-icon name="grid" /></i>
                     <strong>Lihat Rekap</strong>
                     <small>Buka grafik dan ringkasan kemahasiswaan.</small>
@@ -60,7 +57,7 @@
         </div>
 
         <div class="ubp-omnia-feature-stack">
-            <a href="{{ route('dashboard.rekap') }}" class="ubp-gradient-card cyan">
+            <a href="{{ route('dashboard') }}" class="ubp-gradient-card cyan">
                 <span><x-ui.app-icon name="grid" /></span>
                 <strong>Dashboard Rekap</strong>
                 <small>Data grafik kemahasiswaan</small>
@@ -68,8 +65,8 @@
             </a>
             <a href="{{ route('unit-data.index', 'alumni-pusat-karir') }}" class="ubp-gradient-card blue">
                 <span><x-ui.app-icon name="access" /></span>
-                <strong>Unit Data Baru</strong>
-                <small>Humas, science, ormawa, alumni, dan karir</small>
+                <strong>Unit Kemahasiswaan</strong>
+                <small>Humas, science, alumni, dan karir</small>
                 <em>CRUD Ready</em>
             </a>
         </div>
