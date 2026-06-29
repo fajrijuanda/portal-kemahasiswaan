@@ -3821,6 +3821,40 @@ textarea,
     color: var(--portal-primary);
 }
 
+.ubp-public-links a.active {
+    background: var(--portal-primary);
+    color: #fff;
+}
+
+.ubp-public-language {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    color: var(--portal-muted);
+    padding: 10px 8px;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.ubp-public-language i {
+    width: 16px;
+    height: 10px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #ef4444 0 50%, #fff 50% 100%);
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .08);
+}
+
+.ubp-public-language:first-of-type i {
+    background:
+        linear-gradient(90deg, rgba(37, 99, 235, .8) 0 42%, transparent 42%),
+        repeating-linear-gradient(180deg, #ef4444 0 1.5px, #fff 1.5px 3px);
+}
+
+.ubp-public-language.is-active {
+    color: var(--portal-text);
+}
+
 .ubp-public-login {
     border: 1px solid rgba(14, 165, 233, .28);
     background: var(--portal-primary);
@@ -3837,11 +3871,26 @@ textarea,
 .ubp-public-section,
 .ubp-public-split,
 .ubp-public-band,
-.ubp-public-footer {
+.ubp-public-footer,
+.ubp-public-page {
     width: calc(100% - 32px);
     max-width: 1560px;
     margin-right: auto;
     margin-left: auto;
+}
+
+.ubp-public-page {
+    padding-top: 28px;
+}
+
+.ubp-public-page-hero h1,
+.ubp-public-section-head h1 {
+    max-width: 980px;
+    margin: 6px 0 0;
+    color: var(--portal-text);
+    font-size: clamp(34px, 4.4vw, 62px);
+    font-weight: 950;
+    line-height: 1.02;
 }
 
 .ubp-public-hero {
@@ -4072,6 +4121,12 @@ textarea,
     gap: 12px;
 }
 
+.ubp-public-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
 .ubp-public-news-card {
     display: block;
     text-decoration: none;
@@ -4108,6 +4163,41 @@ textarea,
     font-size: 13px;
     font-weight: 950;
     text-decoration: none;
+}
+
+.ubp-public-link-card {
+    display: block;
+    border: 1px solid rgba(226, 232, 240, .95);
+    border-radius: 20px;
+    background: #fff;
+    padding: 20px;
+    color: inherit;
+    text-decoration: none;
+    box-shadow: 0 16px 46px rgba(15, 23, 42, .05);
+}
+
+.ubp-public-link-card:hover {
+    border-color: rgba(14, 165, 233, .36);
+    transform: translateY(-2px);
+}
+
+.ubp-public-link-card strong,
+.ubp-public-link-card small {
+    display: block;
+}
+
+.ubp-public-link-card strong {
+    color: var(--portal-text);
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.ubp-public-link-card small {
+    margin-top: 8px;
+    color: var(--portal-muted);
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.65;
 }
 
 .ubp-public-empty {
@@ -4175,7 +4265,8 @@ textarea,
 
     .ubp-public-service-grid,
     .ubp-public-career-grid,
-    .ubp-public-faq-grid {
+    .ubp-public-faq-grid,
+    .ubp-public-news-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -4201,14 +4292,16 @@ textarea,
     .ubp-public-section,
     .ubp-public-split,
     .ubp-public-band,
-    .ubp-public-footer {
+    .ubp-public-footer,
+    .ubp-public-page {
         width: calc(100% - 20px);
     }
 
     .ubp-public-statline,
     .ubp-public-service-grid,
     .ubp-public-career-grid,
-    .ubp-public-faq-grid {
+    .ubp-public-faq-grid,
+    .ubp-public-news-grid {
         grid-template-columns: 1fr;
     }
 

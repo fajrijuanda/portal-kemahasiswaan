@@ -23,19 +23,7 @@
         ];
     @endphp
 
-    <header class="ubp-public-nav">
-        <a class="ubp-public-brand" href="{{ route('public.index') }}">
-            <span><img src="{{ asset('images/logo-ubp.png') }}" alt="Logo UBP Karawang"></span>
-            <strong>Portal Kemahasiswaan<small>Universitas Buana Perjuangan Karawang</small></strong>
-        </a>
-        <nav class="ubp-public-links" aria-label="Navigasi publik">
-            <a href="#layanan">Layanan</a>
-            <a href="#publikasi">Publikasi</a>
-            <a href="#karir">Karir</a>
-            <a href="#faq">FAQ</a>
-        </nav>
-        <a class="ubp-public-login" href="{{ $loginUrl }}">{{ $loginLabel }}</a>
-    </header>
+    @include('public.partials.nav')
 
     <main>
         <section class="ubp-public-hero">
@@ -48,7 +36,7 @@
                 <p>Portal publik ini menjadi etalase informasi resmi kemahasiswaan. Mahasiswa, Ormawa, alumni, dan mitra dapat melihat publikasi terbaru, peluang karir, serta kanal layanan yang tersedia.</p>
                 <div class="ubp-public-actions">
                     <a class="ubp-btn ubp-btn-primary" href="{{ $loginUrl }}">{{ $loginLabel }} Panel</a>
-                    <a class="ubp-table-action" href="#publikasi">Lihat Publikasi</a>
+                    <a class="ubp-table-action" href="{{ route('public.news') }}">Lihat Berita</a>
                 </div>
                 <div class="ubp-public-statline">
                     @foreach($stats as $stat)

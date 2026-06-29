@@ -21,6 +21,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPortalController::class, 'index'])->name('public.index');
+Route::get('/profil', [PublicPortalController::class, 'profile'])->name('public.profile');
+Route::get('/layanan', [PublicPortalController::class, 'services'])->name('public.services');
+Route::get('/berita', [PublicPortalController::class, 'news'])->name('public.news');
+Route::get('/links', [PublicPortalController::class, 'links'])->name('public.links');
 Route::get('/publik', fn () => redirect()->route('public.index'));
 Route::get('/publik/press-release/{pressRelease}', [PublicPortalController::class, 'pressRelease'])->name('public.press.show');
 

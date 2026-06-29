@@ -6,9 +6,11 @@
     <title>{{ $pressRelease->title }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="portal-theme-scope">
-    <main class="ubp-portal-content ubp-portal-content-wide">
-        <a class="ubp-table-action mb-3 d-inline-flex" href="{{ route('public.index') }}">Kembali</a>
+<body class="portal-theme-scope ubp-public-body">
+    @include('public.partials.nav')
+
+    <main class="ubp-public-page">
+        <a class="ubp-table-action mb-3 d-inline-flex" href="{{ route('public.news') }}">Kembali ke Berita</a>
         <article class="ubp-table-shell">
             @if($pressRelease->cover_path)
                 <img src="{{ asset('storage/'.$pressRelease->cover_path) }}" alt="{{ $pressRelease->title }}" style="width:100%;max-height:360px;object-fit:cover;border-radius:18px;margin-bottom:24px;">

@@ -131,6 +131,17 @@ class MvpRevisionTest extends TestCase
             ->assertSee('Published Loker')
             ->assertDontSee('Draft Press')
             ->assertDontSee('Draft Job Fair');
+
+        $this->get(route('public.profile'))->assertOk()->assertSee('Profil');
+        $this->get(route('public.services'))->assertOk()->assertSee('Layanan');
+        $this->get(route('public.news'))
+            ->assertOk()
+            ->assertSee('Published Press')
+            ->assertDontSee('Draft Press');
+        $this->get(route('public.links'))
+            ->assertOk()
+            ->assertSee('Published Loker')
+            ->assertDontSee('Draft Job Fair');
     }
 
     public function test_new_mvp_pages_render_for_their_roles(): void
