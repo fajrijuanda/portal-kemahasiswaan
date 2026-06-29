@@ -44,7 +44,9 @@ class PublicationAdminController extends Controller
             ])->values()->all(),
             'stats' => [
                 ['label' => 'Press Release', 'value' => number_format(PressRelease::count()), 'caption' => 'konten', 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Press Published', 'value' => number_format(PressRelease::where('status', 'Published')->count()), 'caption' => 'tampil publik', 'icon' => 'event', 'tone' => 'emerald'],
                 ['label' => 'Karir', 'value' => number_format(CareerPost::count()), 'caption' => 'loker/job fair', 'icon' => 'access', 'tone' => 'emerald'],
+                ['label' => 'Karir Published', 'value' => number_format(CareerPost::where('status', 'Published')->count()), 'caption' => 'tampil publik', 'icon' => 'prestasi', 'tone' => 'teal'],
             ],
         ];
     }

@@ -3,7 +3,7 @@
 
     @php
         $services = [
-            ['title' => 'Dashboard Rekap', 'count' => count($cards), 'desc' => 'Ringkasan data dan grafik kemahasiswaan.', 'href' => route('dashboard'), 'icon' => 'grid', 'tone' => 'cyan'],
+            ['title' => 'Dashboard', 'count' => count($cards), 'desc' => 'Ringkasan data dan grafik kemahasiswaan.', 'href' => route('dashboard'), 'icon' => 'grid', 'tone' => 'cyan'],
             ['title' => 'Prestasi', 'count' => $cards['Prestasi'] ?? 0, 'desc' => 'Prestasi lomba dan verifikasi capaian mahasiswa.', 'href' => route('prestasi.index'), 'icon' => 'prestasi', 'tone' => 'blue'],
             ['title' => 'Event & Reimburse', 'count' => $cards['Event/Reimbursement'] ?? 0, 'desc' => 'Event kegiatan dan pengajuan reimbursement.', 'href' => route('event.index'), 'icon' => 'event', 'tone' => 'teal'],
             ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
@@ -44,7 +44,7 @@
                 </a>
                 <a href="{{ route('dashboard') }}">
                     <i><x-ui.app-icon name="grid" /></i>
-                    <strong>Lihat Rekap</strong>
+                    <strong>Dashboard</strong>
                     <small>Buka grafik dan ringkasan kemahasiswaan.</small>
                 </a>
                 @if(auth()->user()->hasRole('super user'))
@@ -60,7 +60,7 @@
         <div class="ubp-omnia-feature-stack">
             <a href="{{ route('dashboard') }}" class="ubp-gradient-card cyan">
                 <span><x-ui.app-icon name="grid" /></span>
-                <strong>Dashboard Rekap</strong>
+                <strong>Dashboard</strong>
                 <small>Data grafik kemahasiswaan</small>
                 <em>Unlocked</em>
             </a>

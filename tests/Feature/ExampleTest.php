@@ -29,6 +29,6 @@ class ExampleTest extends TestCase
         $this->actingAs($admin)
             ->get('/dashboard')
             ->assertOk()
-            ->assertSee('Ringkasan Data Kemahasiswaan');
+            ->assertSee('Pusat Monitoring Kemahasiswaan');
     }
 }

@@ -1,7 +1,7 @@
 @php
     $items = [
         ['label' => 'Home', 'href' => route('home'), 'active' => request()->routeIs('home'), 'icon' => 'home'],
-        ['label' => 'Rekap', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard') || request()->routeIs('dashboard.rekap'), 'icon' => 'grid'],
+        ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard') || request()->routeIs('dashboard.rekap'), 'icon' => 'grid'],
     ];
 
     if (auth()->user()->hasAnyRole(['super user', 'admin', 'kaprodi', 'kabag', 'warek'])) {

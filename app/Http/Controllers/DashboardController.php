@@ -44,6 +44,7 @@ class DashboardController extends Controller
             'selectedSemester' => $semesterId,
             'selectedProdi' => $prodiId,
             'cards' => $this->summaryCards($request),
+            'dashboardMenu' => $this->dashboardMenu($request),
             'achievementQuotas' => $this->achievementQuotas(),
         ]);
     }
@@ -253,6 +254,35 @@ class DashboardController extends Controller
         }
 
         return AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get();
+    }
+
+    private function dashboardMenu(Request $request): array
+    {
+        $cards = $this->summaryCards($request);
+        $user = $request->user();
+        $items = [
+            ['label' => 'Prestasi', 'desc' => 'Prestasi lomba mahasiswa', 'count' => $cards['Prestasi'] ?? 0, 'href' => route('prestasi.index'), 'icon' => 'prestasi', 'tone' => 'blue'],
+            ['label' => 'Event', 'desc' => 'Kegiatan mahasiswa', 'count' => $cards['Event/Reimbursement'] ?? 0, 'href' => route('event.index'), 'icon' => 'event', 'tone' => 'teal'],
+            ['label' => 'Reimburse', 'desc' => 'Pengajuan biaya kegiatan', 'count' => $cards['Event/Reimbursement'] ?? 0, 'href' => route('reimburse.table'), 'icon' => 'beasiswa', 'tone' => 'emerald'],
+            ['label' => 'Beasiswa', 'desc' => 'Penerima dan pengajuan', 'count' => $cards['Beasiswa'] ?? 0, 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
+            ['label' => 'Tracer', 'desc' => 'Progress input tracer', 'count' => $cards['Tracer Study Input'] ?? 0, 'href' => route('tracer.index'), 'icon' => 'tracer', 'tone' => 'violet'],
+            ['label' => 'Unit', 'desc' => 'Humas, science, alumni', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'href' => route('unit-data.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
+            ['label' => 'Ormawa', 'desc' => 'Kegiatan dan proposal', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
+        ];
+
+        if ($user->hasAnyRole(['super user', 'admin'])) {
+            $items[] = ['label' => 'Master', 'desc' => 'Prodi, semester, kuota', 'count' => 5, 'href' => route('master-data.index', 'prodi'), 'icon' => 'semester', 'tone' => 'slate'];
+        }
+
+        if ($user->hasAnyRole(['super user', 'admin', 'kabag'])) {
+            $items[] = ['label' => 'Publikasi', 'desc' => 'Press release dan karir', 'count' => 2, 'href' => route('publications.index', 'press-releases'), 'icon' => 'access', 'tone' => 'rose'];
+        }
+
+        if ($user->hasRole('super user')) {
+            $items[] = ['label' => 'User', 'desc' => 'Akun dan role portal', 'count' => 0, 'href' => route('users.index'), 'icon' => 'user', 'tone' => 'blue'];
+        }
+
+        return $items;
     }
 
     private function applyFilters(Builder $query, ?int $semesterId, ?int $prodiId): Builder

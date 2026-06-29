@@ -68,6 +68,7 @@ class MasterDataController extends Controller
             ])->values()->all(),
             'stats' => [
                 ['label' => 'Prodi', 'value' => number_format(Prodi::count()), 'caption' => 'program studi', 'icon' => 'prodi', 'tone' => 'emerald'],
+                ['label' => 'Semester', 'value' => number_format(Semester::count()), 'caption' => 'periode akademik', 'icon' => 'semester', 'tone' => 'slate'],
                 ['label' => 'Lomba', 'value' => number_format(Competition::count()), 'caption' => 'master lomba', 'icon' => 'prestasi', 'tone' => 'blue'],
                 ['label' => 'Kuota', 'value' => number_format(AchievementQuota::count()), 'caption' => 'slot prodi', 'icon' => 'semester', 'tone' => 'violet'],
             ],

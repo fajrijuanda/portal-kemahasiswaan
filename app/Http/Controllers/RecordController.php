@@ -179,10 +179,7 @@ class RecordController extends Controller
                 'title' => $config['title'],
                 'subtitle' => $this->dataSectionMeta($module)['subtitle'],
                 'items' => $this->dataSectionItems($module),
-                'stats' => [
-                    ['label' => 'Total Data', 'value' => number_format($query->toBase()->getCountForPagination()), 'caption' => $config['title'], 'icon' => 'grid', 'tone' => 'blue'],
-                    ['label' => 'Lingkup', 'value' => count($this->dataSectionItems($module)), 'caption' => 'tabel terkait', 'icon' => 'semester', 'tone' => 'emerald'],
-                ],
+                'stats' => $this->recordStats($module, clone $query, $request),
             ],
         ]);
     }
@@ -563,5 +560,61 @@ class RecordController extends Controller
         $config = $this->config($module);
 
         return $config['model']::count();
+    }
+
+    private function recordStats(string $module, \Illuminate\Database\Eloquent\Builder $query, Request $request): array
+    {
+        $total = (clone $query)->count();
+        $shownScope = $request->filled('semester_id') || $request->filled('prodi_id') || $request->filled('q') || $request->user()->hasRole('kaprodi');
+        $scopeCaption = $shownScope ? 'terfilter' : 'semua data';
+
+        return match ($module) {
+            'prestasi' => [
+                ['label' => 'Total Prestasi', 'value' => number_format($total), 'caption' => $scopeCaption, 'icon' => 'prestasi', 'tone' => 'blue'],
+                ['label' => 'Terverifikasi', 'value' => number_format((clone $query)->where('status', 'Terverifikasi')->count()), 'caption' => 'siap rekap', 'icon' => 'event', 'tone' => 'emerald'],
+                ['label' => 'Diajukan/Draft', 'value' => number_format((clone $query)->whereIn('status', ['Diajukan', 'Draft'])->count()), 'caption' => 'perlu review', 'icon' => 'grid', 'tone' => 'amber'],
+                ['label' => 'Kuota Tercatat', 'value' => number_format(Schema::hasTable('achievement_quotas') ? AchievementQuota::count() : 0), 'caption' => 'slot prodi', 'icon' => 'semester', 'tone' => 'violet'],
+            ],
+            'event' => [
+                ['label' => 'Total Event', 'value' => number_format($total), 'caption' => $scopeCaption, 'icon' => 'event', 'tone' => 'teal'],
+                ['label' => 'Diajukan', 'value' => number_format((clone $query)->where('status', 'Diajukan')->count()), 'caption' => 'menunggu proses', 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Disetujui', 'value' => number_format((clone $query)->where('status', 'Disetujui')->count()), 'caption' => 'selesai review', 'icon' => 'prestasi', 'tone' => 'emerald'],
+                ['label' => 'Semester', 'value' => $request->filled('semester_id') ? '1' : 'All', 'caption' => $scopeCaption, 'icon' => 'semester', 'tone' => 'slate'],
+            ],
+            'reimburse' => [
+                ['label' => 'Total Reimburse', 'value' => number_format($total), 'caption' => $scopeCaption, 'icon' => 'beasiswa', 'tone' => 'emerald'],
+                ['label' => 'Nominal', 'value' => 'Rp'.number_format((float) (clone $query)->sum('nominal'), 0, ',', '.'), 'caption' => 'total pengajuan', 'icon' => 'event', 'tone' => 'blue'],
+                ['label' => 'Disetujui', 'value' => number_format((clone $query)->where('status', 'Disetujui')->count()), 'caption' => 'sudah selesai', 'icon' => 'prestasi', 'tone' => 'teal'],
+                ['label' => 'Diajukan/Diproses', 'value' => number_format((clone $query)->whereIn('status', ['Diajukan', 'Diproses'])->count()), 'caption' => 'perlu review', 'icon' => 'grid', 'tone' => 'amber'],
+            ],
+            'beasiswa' => [
+                ['label' => 'Total Penerima', 'value' => number_format($total), 'caption' => $scopeCaption, 'icon' => 'beasiswa', 'tone' => 'pink'],
+                ['label' => 'Nominal', 'value' => 'Rp'.number_format((float) (clone $query)->sum('nominal'), 0, ',', '.'), 'caption' => 'total bantuan', 'icon' => 'grid', 'tone' => 'emerald'],
+                ['label' => 'Aktif', 'value' => number_format((clone $query)->where('status', 'Aktif')->count()), 'caption' => 'berjalan', 'icon' => 'event', 'tone' => 'blue'],
+                ['label' => 'Diajukan/Ditolak', 'value' => number_format((clone $query)->whereIn('status', ['Diajukan', 'Ditolak'])->count()), 'caption' => 'status review', 'icon' => 'semester', 'tone' => 'amber'],
+            ],
+            'tracer-study' => [
+                ['label' => 'Total Mahasiswa', 'value' => number_format((clone $query)->sum('jumlah_mahasiswa')), 'caption' => $scopeCaption, 'icon' => 'tracer', 'tone' => 'violet'],
+                ['label' => 'Sudah Input', 'value' => number_format((clone $query)->sum('jumlah_input')), 'caption' => 'respon masuk', 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Persentase', 'value' => $this->tracerPercentage(clone $query), 'caption' => 'input tracer', 'icon' => 'prestasi', 'tone' => 'emerald'],
+                ['label' => 'Prodi Scope', 'value' => $request->user()->hasRole('kaprodi') || $request->filled('prodi_id') ? '1' : 'All', 'caption' => $scopeCaption, 'icon' => 'prodi', 'tone' => 'slate'],
+            ],
+            default => [
+                ['label' => 'Total Data', 'value' => number_format($total), 'caption' => $scopeCaption, 'icon' => 'grid', 'tone' => 'blue'],
+                ['label' => 'Ditampilkan', 'value' => number_format($total), 'caption' => 'hasil filter', 'icon' => 'event', 'tone' => 'emerald'],
+                ['label' => 'Semester', 'value' => $request->filled('semester_id') ? '1' : 'All', 'caption' => $scopeCaption, 'icon' => 'semester', 'tone' => 'violet'],
+                ['label' => 'Prodi', 'value' => $request->filled('prodi_id') ? '1' : 'All', 'caption' => $scopeCaption, 'icon' => 'prodi', 'tone' => 'slate'],
+            ],
+        };
+    }
+
+    private function tracerPercentage(\Illuminate\Database\Eloquent\Builder $query): string
+    {
+        $total = (clone $query)->sum('jumlah_mahasiswa');
+        if ((int) $total === 0) {
+            return '0%';
+        }
+
+        return number_format(((clone $query)->sum('jumlah_input') / $total) * 100, 1).'%';
     }
 }

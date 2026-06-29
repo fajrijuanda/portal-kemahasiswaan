@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="pageTitle">Dashboard Rekap</x-slot>
+    <x-slot name="pageTitle">Dashboard</x-slot>
 
     @php
         $filterParams = array_filter(['semester_id' => $selectedSemester, 'prodi_id' => $selectedProdi]);
@@ -19,11 +19,11 @@
         $selectedProdiName = $selectedProdi ? optional($prodis->firstWhere('id', $selectedProdi))->nama : 'Semua Prodi';
     @endphp
 
-    <section class="ubp-rekap-dashboard-hero">
+    <section class="ubp-dashboard-hero">
         <div class="ubp-rekap-hero-main">
-            <span class="ubp-rekap-eyebrow">Dashboard Rekap</span>
-            <h2>Ringkasan Data Kemahasiswaan</h2>
-            <p>Pantau seluruh layanan dari satu layar: data utama, unit khusus, progres input, dan grafik yang langsung mengikuti filter semester serta prodi.</p>
+            <span class="ubp-rekap-eyebrow">Dashboard</span>
+            <h2>Pusat Monitoring Kemahasiswaan</h2>
+            <p>Pantau semua layanan baru dari satu layar: prestasi, event, reimbursement, beasiswa, tracer, unit, Ormawa, master data, dan publikasi.</p>
 
             <div class="ubp-rekap-hero-stats">
                 <span><strong>{{ number_format($totalRecords) }}</strong><small>Total data</small></span>
@@ -32,11 +32,11 @@
             </div>
         </div>
 
-        <form class="ubp-rekap-filter-card" method="GET">
+        <form class="ubp-rekap-filter-card ubp-dashboard-filter-card" method="GET">
             <div class="ubp-rekap-filter-title">
                 <span><x-ui.app-icon name="grid" /></span>
                 <div>
-                    <strong>Filter Rekap</strong>
+                    <strong>Filter Dashboard</strong>
                     <small>{{ $selectedProdiName }}</small>
                 </div>
             </div>
@@ -67,6 +67,26 @@
                 @endif
             </div>
         </form>
+    </section>
+
+    <section class="ubp-dashboard-launcher-panel">
+        <div class="ubp-panel-heading ubp-dashboard-section-heading">
+            <div>
+                <span>MENU PORTAL</span>
+                <h2>Akses cepat semua modul</h2>
+                <p>Pilih modul untuk membuka overview atau tabel sesuai lingkup layanan.</p>
+            </div>
+        </div>
+        <div class="ubp-dashboard-launcher-grid">
+            @foreach($dashboardMenu as $item)
+                <a class="ubp-dashboard-launcher tone-{{ $item['tone'] }}" href="{{ $item['href'] }}">
+                    <span><x-ui.app-icon :name="$item['icon']" /></span>
+                    <strong>{{ $item['label'] }}</strong>
+                    <small>{{ $item['desc'] }}</small>
+                    <em>{{ number_format($item['count']) }}</em>
+                </a>
+            @endforeach
+        </div>
     </section>
 
     <section class="ubp-rekap-metric-grid">

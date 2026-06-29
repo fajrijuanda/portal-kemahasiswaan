@@ -9,6 +9,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="portal-theme-scope" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div class="ubp-cursor-ring" aria-hidden="true"></div>
         <div class="ubp-app-shell">
             <div class="ubp-color-strip"></div>
             @include('layouts.navigation')

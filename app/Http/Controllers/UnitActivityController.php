@@ -66,8 +66,10 @@ class UnitActivityController extends Controller
                 'subtitle' => 'Kelola data unit layanan khusus dari satu halaman ringkas.',
                 'items' => $this->unitSectionItems($unit),
                 'stats' => [
-                    ['label' => 'Total Data', 'value' => number_format((clone $baseQuery)->count()), 'caption' => $config['title'], 'icon' => $config['icon'], 'tone' => $config['tone']],
-                    ['label' => 'Selesai', 'value' => number_format((clone $baseQuery)->where('status', 'Selesai')->count()), 'caption' => 'aktivitas tuntas', 'icon' => 'event', 'tone' => 'emerald'],
+                    ['label' => 'Total Aktivitas', 'value' => number_format((clone $baseQuery)->count()), 'caption' => $config['title'], 'icon' => $config['icon'], 'tone' => $config['tone']],
+                    ['label' => 'Berjalan', 'value' => number_format((clone $baseQuery)->where('status', 'Berjalan')->count()), 'caption' => 'aktif', 'icon' => 'event', 'tone' => 'blue'],
+                    ['label' => 'Selesai', 'value' => number_format((clone $baseQuery)->where('status', 'Selesai')->count()), 'caption' => 'aktivitas tuntas', 'icon' => 'prestasi', 'tone' => 'emerald'],
+                    ['label' => 'Draft/Tertunda', 'value' => number_format((clone $baseQuery)->whereIn('status', ['Draft', 'Tertunda'])->count()), 'caption' => 'perlu tindak lanjut', 'icon' => 'grid', 'tone' => 'amber'],
                 ],
             ],
         ]);

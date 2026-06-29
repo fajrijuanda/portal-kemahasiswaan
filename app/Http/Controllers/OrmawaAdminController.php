@@ -102,6 +102,7 @@ class OrmawaAdminController extends Controller
             ])->values()->all(),
             'stats' => [
                 ['label' => 'Ormawa', 'value' => number_format(Ormawa::count()), 'caption' => 'terdaftar', 'icon' => 'user', 'tone' => 'amber'],
+                ['label' => 'Kegiatan', 'value' => number_format(UnitActivity::where('unit', 'pengembangan-ormawa')->count()), 'caption' => 'aktivitas', 'icon' => 'event', 'tone' => 'teal'],
                 ['label' => 'Proposal', 'value' => number_format(OrmawaProposal::count()), 'caption' => 'pengajuan', 'icon' => 'grid', 'tone' => 'blue'],
                 ['label' => 'Reimbursement', 'value' => number_format(Event::whereNotNull('ormawa_id')->count()), 'caption' => 'ormawa', 'icon' => 'beasiswa', 'tone' => 'emerald'],
             ],
