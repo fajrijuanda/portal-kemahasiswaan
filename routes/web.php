@@ -23,11 +23,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPortalController::class, 'index'])->name('public.index');
 
-Route::get('/seed-dummy-data', function () {
-    Artisan::call('db:seed', ['--class' => 'DummyDataSeeder']);
-    return 'Dummy data seeded successfully! You can now remove this route.';
-});
-
 Route::get('/profil', [PublicPortalController::class, 'profile'])->name('public.profile');
 Route::get('/layanan', [PublicPortalController::class, 'services'])->name('public.services');
 Route::get('/layanan/{service}', [PublicPortalController::class, 'serviceDetail'])->name('public.services.show');
