@@ -32,13 +32,26 @@
 
         <x-slot:controls>
             <form method="GET" class="ubp-record-table-controls">
-                <div class="ubp-record-search d-none d-md-flex" style="opacity: 0; pointer-events: none;"><input></div>
+                <label class="ubp-record-search">
+                    <x-ui.app-icon name="grid" />
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari prodi, kode, atau fakultas...">
+                </label>
+                <select name="fakultas" class="form-select ubp-control">
+                    <option value="">Semua fakultas</option>
+                    @foreach($faculties as $faculty)
+                        <option value="{{ $faculty }}" @selected(request('fakultas') === $faculty)>{{ $faculty }}</option>
+                    @endforeach
+                </select>
                 <select name="limit" class="form-select ubp-control" onchange="this.form.submit()">
                     <option value="10" @selected(request('limit', 10) == 10)>10 / hal</option>
                     <option value="25" @selected(request('limit') == 25)>25 / hal</option>
                     <option value="50" @selected(request('limit') == 50)>50 / hal</option>
                     <option value="100" @selected(request('limit') == 100)>100 / hal</option>
                 </select>
+                <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter</button>
+                @if(request()->hasAny(['q', 'fakultas']))
+                    <a class="ubp-table-action" href="{{ route('master-data.index', 'prodi') }}">Reset</a>
+                @endif
             </form>
         </x-slot:controls>
 

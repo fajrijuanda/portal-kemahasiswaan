@@ -27,27 +27,28 @@ class MasterDataController extends Controller
 
         return match ($section) {
             'prodi' => view('master.prodi.index', [
-                'prodis' => $this->hasTable('prodis') ? Prodi::orderBy('nama')->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+                'prodis' => $this->hasTable('prodis') ? $this->prodiQuery()->paginate($this->limit())->withQueryString() : $this->emptyPaginator(),
+                'faculties' => $this->hasTable('prodis') ? Prodi::query()->whereNotNull('fakultas')->where('fakultas', '!=', '')->distinct()->orderBy('fakultas')->pluck('fakultas') : collect(),
                 'sectionShell' => $this->sectionShell($section, 'Master Prodi', 'Kelola data program studi.'),
             ]),
             'semester' => view('master.semester.index', [
-                'semesters' => $this->hasTable('semesters') ? Semester::orderByDesc('id')->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+                'semesters' => $this->hasTable('semesters') ? $this->semesterQuery()->paginate($this->limit())->withQueryString() : $this->emptyPaginator(),
                 'sectionShell' => $this->sectionShell($section, 'Master Semester', 'Kelola periode akademik.'),
             ]),
             'competitions' => view('master.simple.index', [
                 'master' => 'competitions',
                 'config' => ['title' => 'Master Lomba', 'model' => Competition::class],
-                'records' => $this->hasTable('competitions') ? Competition::orderBy('nama')->paginate(request('limit', 25))->withQueryString() : $this->emptyPaginator(25),
+                'records' => $this->hasTable('competitions') ? $this->simpleMasterQuery(Competition::class)->paginate($this->limit(25))->withQueryString() : $this->emptyPaginator(25),
                 'sectionShell' => $this->sectionShell($section, 'Master Lomba', 'Kelola 23 nama lomba dan daftar lomba aktif.'),
             ]),
             'scholarship-types' => view('master.simple.index', [
                 'master' => 'scholarship-types',
                 'config' => ['title' => 'Jenis Beasiswa', 'model' => ScholarshipType::class],
-                'records' => $this->hasTable('scholarship_types') ? ScholarshipType::orderBy('nama')->paginate(request('limit', 25))->withQueryString() : $this->emptyPaginator(25),
+                'records' => $this->hasTable('scholarship_types') ? $this->simpleMasterQuery(ScholarshipType::class)->paginate($this->limit(25))->withQueryString() : $this->emptyPaginator(25),
                 'sectionShell' => $this->sectionShell($section, 'Jenis Beasiswa', 'Kelola pilihan beasiswa untuk form pengajuan.'),
             ]),
             'quotas' => view('master.quotas.index', [
-                'quotas' => $this->hasTable('achievement_quotas') ? AchievementQuota::with(['semester', 'prodi'])->latest()->paginate(request('limit', 10))->withQueryString() : $this->emptyPaginator(),
+                'quotas' => $this->hasTable('achievement_quotas') ? $this->quotaQuery()->paginate($this->limit())->withQueryString() : $this->emptyPaginator(),
                 'semesters' => $this->hasTable('semesters') ? Semester::orderByDesc('id')->get() : collect(),
                 'prodis' => $this->hasTable('prodis') ? Prodi::orderBy('nama')->get() : collect(),
                 'sectionShell' => $this->sectionShell($section, 'Kuota Prestasi', 'Atur slot dukungan prestasi per prodi dan semester.'),
@@ -93,13 +94,63 @@ class MasterDataController extends Controller
         return Schema::hasTable($table);
     }
 
+    private function prodiQuery()
+    {
+        return Prodi::query()
+            ->when(request('q'), fn ($query, $search) => $query->where(function ($query) use ($search) {
+                $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('kode', 'like', "%{$search}%")
+                    ->orWhere('fakultas', 'like', "%{$search}%");
+            }))
+            ->when(request('fakultas'), fn ($query, $faculty) => $query->where('fakultas', $faculty))
+            ->orderBy('nama');
+    }
+
+    private function semesterQuery()
+    {
+        return Semester::query()
+            ->when(request('q'), fn ($query, $search) => $query->where(function ($query) use ($search) {
+                $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('tahun_akademik', 'like', "%{$search}%")
+                    ->orWhere('periode', 'like', "%{$search}%");
+            }))
+            ->when(request('periode'), fn ($query, $periode) => $query->where('periode', $periode))
+            ->when(request('status') !== null && request('status') !== '', fn ($query) => $query->where('is_active', request('status') === 'active'))
+            ->orderByDesc('id');
+    }
+
+    private function simpleMasterQuery(string $model)
+    {
+        return $model::query()
+            ->when(request('q'), fn ($query, $search) => $query->where('nama', 'like', "%{$search}%"))
+            ->when(request('status') !== null && request('status') !== '', fn ($query) => $query->where('is_active', request('status') === 'active'))
+            ->orderBy('nama');
+    }
+
+    private function quotaQuery()
+    {
+        return AchievementQuota::with(['semester', 'prodi'])
+            ->when(request('q'), fn ($query, $search) => $query->where(function ($query) use ($search) {
+                $query->whereHas('semester', fn ($semester) => $semester->where('nama', 'like', "%{$search}%")->orWhere('tahun_akademik', 'like', "%{$search}%"))
+                    ->orWhereHas('prodi', fn ($prodi) => $prodi->where('nama', 'like', "%{$search}%")->orWhere('kode', 'like', "%{$search}%"));
+            }))
+            ->when(request('semester_id'), fn ($query, $semesterId) => $query->where('semester_id', $semesterId))
+            ->when(request('prodi_id'), fn ($query, $prodiId) => $query->where('prodi_id', $prodiId))
+            ->latest();
+    }
+
     private function countModel(string $table, string $model): int
     {
         return $this->hasTable($table) ? $model::count() : 0;
     }
 
+    private function limit(int $default = 10): int
+    {
+        return in_array((int) request('limit', $default), [10, 25, 50, 100], true) ? (int) request('limit', $default) : $default;
+    }
+
     private function emptyPaginator(?int $perPage = null): LengthAwarePaginator
     {
-        return new LengthAwarePaginator(collect(), 0, $perPage ?? request('limit', 10), 1, ['path' => request()->url()]);
+        return new LengthAwarePaginator(collect(), 0, $perPage ?? $this->limit(), 1, ['path' => request()->url()]);
     }
 }

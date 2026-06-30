@@ -184,6 +184,36 @@ class MvpRevisionTest extends TestCase
         $this->actingAs($admin)->get('/karir')->assertRedirect(route('publications.index', 'careers'));
     }
 
+    public function test_master_pages_support_search_and_filters(): void
+    {
+        $setup = $this->setupAcademicData();
+        $admin = $this->userWithRole('admin');
+        Prodi::create(['nama' => 'Akuntansi', 'kode' => 'AKT', 'fakultas' => 'Ekonomi dan Bisnis']);
+        Semester::create(['nama' => 'Genap 2026/2027', 'tahun_akademik' => '2026/2027', 'periode' => 'Genap', 'is_active' => false]);
+        ScholarshipType::create(['nama' => 'Beasiswa Riset Khusus', 'is_active' => true]);
+        ScholarshipType::create(['nama' => 'Draft Bantuan', 'is_active' => false]);
+        AchievementQuota::create(['semester_id' => $setup['semester']->id, 'prodi_id' => $setup['prodi']->id, 'slot_prestasi' => 4]);
+
+        $this->actingAs($admin)->get(route('master-data.index', ['section' => 'prodi', 'q' => 'Akuntansi']))
+            ->assertOk()
+            ->assertSee('Akuntansi')
+            ->assertDontSee('Teknik Informatika');
+
+        $this->actingAs($admin)->get(route('master-data.index', ['section' => 'semester', 'periode' => 'Genap']))
+            ->assertOk()
+            ->assertSee('Genap 2026/2027')
+            ->assertDontSee('<td data-label="Nama"><span class="ubp-table-primary">Ganjil 2026/2027</span></td>', false);
+
+        $this->actingAs($admin)->get(route('master-data.index', ['section' => 'scholarship-types', 'status' => 'active']))
+            ->assertOk()
+            ->assertSee('Beasiswa Riset Khusus')
+            ->assertDontSee('Draft Bantuan');
+
+        $this->actingAs($admin)->get(route('master-data.index', ['section' => 'quotas', 'prodi_id' => $setup['prodi']->id]))
+            ->assertOk()
+            ->assertSee('Teknik Informatika');
+    }
+
     private function setupAcademicData(): array
     {
         $prodi = Prodi::create(['nama' => 'Teknik Informatika', 'kode' => 'TI']);

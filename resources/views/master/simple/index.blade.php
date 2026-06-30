@@ -17,6 +17,30 @@
             <button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#masterCreateModal">+ Tambah Data</button>
         </x-slot:toolbar>
 
+        <x-slot:controls>
+            <form method="GET" class="ubp-record-table-controls">
+                <label class="ubp-record-search">
+                    <x-ui.app-icon name="grid" />
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari nama data master...">
+                </label>
+                <select name="status" class="form-select ubp-control">
+                    <option value="">Semua status</option>
+                    <option value="active" @selected(request('status') === 'active')>Aktif</option>
+                    <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
+                </select>
+                <select name="limit" class="form-select ubp-control" onchange="this.form.submit()">
+                    <option value="10" @selected(request('limit') == 10)>10 / hal</option>
+                    <option value="25" @selected(request('limit', 25) == 25)>25 / hal</option>
+                    <option value="50" @selected(request('limit') == 50)>50 / hal</option>
+                    <option value="100" @selected(request('limit') == 100)>100 / hal</option>
+                </select>
+                <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter</button>
+                @if(request()->hasAny(['q', 'status']))
+                    <a class="ubp-table-action" href="{{ route('master-data.index', $master) }}">Reset</a>
+                @endif
+            </form>
+        </x-slot:controls>
+
         <table class="table align-middle ubp-table ubp-data-table">
             <thead><tr><th>Nama</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
             <tbody>
