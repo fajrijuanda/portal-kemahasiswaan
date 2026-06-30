@@ -36,7 +36,7 @@
                                 <div class="min-w-0">
                                     <strong class="d-block">{{ auth()->user()->name }}</strong>
                                     <small class="text-muted d-block text-truncate">{{ auth()->user()->email }}</small>
-                                    <span class="ubp-role-pill">{{ auth()->user()->roles->first()?->name ?? 'user' }}</span>
+                                    <x-ui.role-badge :role="auth()->user()->roles->first()?->name ?? 'user'" />
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>

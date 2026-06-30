@@ -1019,6 +1019,11 @@ textarea,
     background: var(--portal-primary-soft);
 }
 
+.ubp-sidebar-item.active {
+    background: #e0f4ff;
+    box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .10), 0 12px 28px rgba(14, 165, 233, .10);
+}
+
 .ubp-sidebar-item.active::before {
     content: "";
     position: absolute;
@@ -1051,6 +1056,11 @@ textarea,
 .ubp-sidebar-item:hover .ubp-sidebar-icon {
     background: #fff;
     box-shadow: 0 10px 24px rgba(14, 165, 233, .14);
+}
+
+.ubp-sidebar-item.active .ubp-sidebar-icon {
+    color: var(--portal-primary);
+    box-shadow: 0 10px 24px rgba(14, 165, 233, .18);
 }
 
 .ubp-portal-area {
@@ -1175,6 +1185,43 @@ textarea,
     font-size: 10px;
     font-weight: 950;
 }
+
+.ubp-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    border-radius: 999px;
+    padding: 5px 9px 5px 6px;
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .36);
+}
+
+.ubp-role-badge i {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .72);
+}
+
+.ubp-role-badge .ubp-svg-icon {
+    width: 13px;
+    height: 13px;
+}
+
+.ubp-role-badge-violet { color: #6d28d9; background: #ede9fe; }
+.ubp-role-badge-blue { color: #0369a1; background: #e0f2fe; }
+.ubp-role-badge-rose { color: #be123c; background: #ffe4e6; }
+.ubp-role-badge-emerald { color: #047857; background: #d1fae5; }
+.ubp-role-badge-amber { color: #b45309; background: #fef3c7; }
+.ubp-role-badge-cyan { color: #0e7490; background: #cffafe; }
+.ubp-role-badge-orange { color: #c2410c; background: #ffedd5; }
+.ubp-role-badge-slate { color: #475569; background: #e2e8f0; }
 
 .ubp-page-header,
 .ubp-portal-content {

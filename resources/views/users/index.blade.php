@@ -69,7 +69,7 @@
                     <tr>
                         <td data-label="Nama"><span class="ubp-table-primary">{{ $user->name }}</span></td>
                         <td data-label="Email">{{ $user->email }}</td>
-                        <td data-label="Role"><x-ui.status-badge :status="ucfirst($user->roles->first()?->name ?? 'user')" /></td>
+                        <td data-label="Role"><x-ui.role-badge :role="$user->roles->first()?->name ?? 'user'" /></td>
                         <td data-label="Prodi">{{ $user->prodi?->nama ?? '-' }}</td>
                         <td data-label="NIM">{{ $user->nim ?: '-' }}</td>
                         <td class="text-end" data-label="Aksi">

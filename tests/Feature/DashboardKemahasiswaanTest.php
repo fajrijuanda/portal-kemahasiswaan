@@ -88,6 +88,9 @@ class DashboardKemahasiswaanTest extends TestCase
             ->get('/management-user')
             ->assertOk()
             ->assertSee('Management User')
-            ->assertSee('Tambah User');
+            ->assertSee('Tambah User')
+            ->assertSee('ubp-role-badge-violet', false)
+            ->assertSee('ubp-role-badge-blue', false)
+            ->assertSee('ubp-role-badge-emerald', false);
     }
 }
