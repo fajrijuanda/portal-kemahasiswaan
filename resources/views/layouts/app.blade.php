@@ -23,7 +23,7 @@
                         </span>
                     </div>
                     <div class="ubp-header-search">
-                        <span>/</span>
+                        <span class="text-muted" style="width: 18px; height: 18px; display: inline-flex;"><x-ui.app-icon name="search" /></span>
                         <input type="search" placeholder="Search portal..." aria-label="Search portal">
                     </div>
                     <div class="dropdown ms-auto">
