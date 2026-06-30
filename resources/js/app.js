@@ -31,5 +31,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('[data-rich-editor]').forEach((editor) => {
+        const area = editor.querySelector('[data-editor-area]');
+        const input = editor.querySelector('[data-editor-input]');
+        const form = editor.closest('form');
+
+        if (!area || !input || !form) {
+            return;
+        }
+
+        const sync = () => {
+            input.value = area.innerHTML.trim();
+            area.classList.toggle('is-empty', area.textContent.trim().length === 0);
+        };
+
+        editor.querySelectorAll('[data-editor-command]').forEach((button) => {
+            button.addEventListener('click', () => {
+                area.focus();
+                document.execCommand(button.dataset.editorCommand, false, button.dataset.editorValue || null);
+                sync();
+            });
+        });
+
+        const blockSelect = editor.querySelector('[data-editor-block]');
+        if (blockSelect) {
+            blockSelect.addEventListener('change', () => {
+                area.focus();
+                document.execCommand('formatBlock', false, blockSelect.value);
+                sync();
+                blockSelect.value = 'P';
+            });
+        }
+
+        const linkButton = editor.querySelector('[data-editor-link]');
+        if (linkButton) {
+            linkButton.addEventListener('click', () => {
+                area.focus();
+                const url = window.prompt('Masukkan URL link');
+                if (url) {
+                    document.execCommand('createLink', false, url);
+                    area.querySelectorAll('a').forEach((link) => {
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('rel', 'noreferrer');
+                    });
+                    sync();
+                }
+            });
+        }
+
+        area.addEventListener('input', sync);
+        area.addEventListener('blur', sync);
+        form.addEventListener('submit', sync);
+        sync();
+    });
 });
 // End of file

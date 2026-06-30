@@ -221,6 +221,38 @@ class MvpRevisionTest extends TestCase
             ->assertSee('Teknik Informatika');
     }
 
+    public function test_berita_uses_full_page_editor_and_sanitizes_content(): void
+    {
+        $admin = $this->userWithRole('admin');
+
+        $this->actingAs($admin)
+            ->get(route('press-releases.create'))
+            ->assertOk()
+            ->assertSee('Tulis naskah berita baru')
+            ->assertSee('data-rich-editor', false);
+
+        $this->actingAs($admin)
+            ->post(route('press-releases.store'), [
+                'title' => 'Berita Editor Lengkap',
+                'excerpt' => 'Ringkasan berita editor.',
+                'content' => '<h2 onclick="alert(1)">Subjudul</h2><p><strong>Isi berita</strong> dengan format.</p><script>alert(1)</script>',
+                'status' => 'Published',
+            ])
+            ->assertRedirect();
+
+        $record = PressRelease::where('title', 'Berita Editor Lengkap')->firstOrFail();
+        $this->assertStringContainsString('<h2>Subjudul</h2>', $record->content);
+        $this->assertStringContainsString('<strong>Isi berita</strong>', $record->content);
+        $this->assertStringNotContainsString('onclick', $record->content);
+        $this->assertStringNotContainsString('<script>', $record->content);
+
+        $this->actingAs($admin)
+            ->get(route('press-releases.edit', $record))
+            ->assertOk()
+            ->assertSee('Perbarui naskah berita')
+            ->assertSee('ubp-doc-toolbar', false);
+    }
+
     private function setupAcademicData(): array
     {
         $prodi = Prodi::create(['nama' => 'Teknik Informatika', 'kode' => 'TI']);

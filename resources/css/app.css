@@ -1316,6 +1316,273 @@ textarea,
     font-weight: 800;
 }
 
+.ubp-editor-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 18px;
+    align-items: start;
+}
+
+.ubp-editor-main,
+.ubp-editor-panel {
+    border: 1px solid var(--portal-border);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 18px 54px rgba(15, 23, 42, .06);
+}
+
+.ubp-editor-main {
+    overflow: hidden;
+}
+
+.ubp-editor-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--portal-border);
+    background: linear-gradient(135deg, #ffffff, #f0f9ff);
+}
+
+.ubp-editor-titlebar h2,
+.ubp-editor-panel h3 {
+    margin: 4px 0 0;
+    color: var(--portal-text);
+    font-size: 22px;
+    font-weight: 950;
+}
+
+.ubp-editor-field {
+    padding: 20px 24px 0;
+}
+
+.ubp-editor-title-input {
+    min-height: 54px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.ubp-doc-editor {
+    margin: 20px 24px 24px;
+    overflow: hidden;
+    border: 1px solid #dbe7f3;
+    border-radius: 18px;
+    background: #f8fafc;
+}
+
+.ubp-doc-toolbar {
+    position: sticky;
+    top: 74px;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    border-bottom: 1px solid #dbe7f3;
+    background: rgba(255, 255, 255, .96);
+    padding: 12px;
+    backdrop-filter: blur(12px);
+}
+
+.ubp-doc-toolbar button,
+.ubp-doc-select {
+    min-height: 34px;
+    border: 1px solid #dbe7f3;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--portal-text);
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.ubp-doc-toolbar button:hover,
+.ubp-doc-select:hover {
+    border-color: rgba(14, 165, 233, .38);
+    color: var(--portal-primary);
+    background: var(--portal-primary-soft);
+}
+
+.ubp-doc-divider {
+    width: 1px;
+    height: 26px;
+    background: #dbe7f3;
+}
+
+.ubp-doc-paper {
+    min-height: 620px;
+    margin: 18px auto;
+    width: min(100% - 36px, 860px);
+    border: 1px solid #e5edf6;
+    border-radius: 12px;
+    outline: 0;
+    background: #fff;
+    color: var(--portal-text);
+    padding: 42px 52px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.78;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .08);
+}
+
+.ubp-doc-paper.is-empty::before {
+    content: "Mulai tulis isi berita di sini...";
+    color: #94a3b8;
+}
+
+.ubp-doc-paper h2,
+.ubp-doc-paper h3,
+.ubp-doc-paper h4 {
+    margin: 1.2em 0 .45em;
+    color: var(--portal-text);
+    font-weight: 950;
+    line-height: 1.15;
+}
+
+.ubp-doc-paper h2 { font-size: 28px; }
+.ubp-doc-paper h3 { font-size: 23px; }
+.ubp-doc-paper h4 { font-size: 19px; }
+
+.ubp-doc-paper blockquote {
+    margin: 18px 0;
+    border-left: 4px solid var(--portal-primary);
+    border-radius: 12px;
+    background: #f0f9ff;
+    padding: 14px 18px;
+    color: #334155;
+}
+
+.ubp-doc-paper ul,
+.ubp-doc-paper ol,
+.ubp-public-article-content ul,
+.ubp-public-article-content ol {
+    padding-left: 1.4rem;
+}
+
+.ubp-doc-paper a,
+.ubp-public-article-content a {
+    color: var(--portal-primary);
+    font-weight: 900;
+}
+
+.ubp-editor-side {
+    position: sticky;
+    top: 92px;
+    display: grid;
+    gap: 14px;
+}
+
+.ubp-editor-panel {
+    padding: 18px;
+}
+
+.ubp-editor-meta {
+    margin-top: 14px;
+    border-radius: 14px;
+    background: #f8fafc;
+    padding: 12px;
+}
+
+.ubp-editor-meta strong,
+.ubp-editor-meta span,
+.ubp-editor-help {
+    display: block;
+}
+
+.ubp-editor-meta strong {
+    color: var(--portal-text);
+    font-size: 12px;
+    font-weight: 950;
+}
+
+.ubp-editor-meta span,
+.ubp-editor-help {
+    margin-top: 4px;
+    color: var(--portal-muted);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.ubp-editor-cover-preview {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--portal-border);
+    border-radius: 14px;
+    margin: 12px 0;
+}
+
+.ubp-editor-checklist {
+    display: grid;
+    gap: 9px;
+    margin: 12px 0 0;
+    padding-left: 1rem;
+    color: var(--portal-muted);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.55;
+}
+
+.ubp-editor-submit {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ubp-editor-submit .ubp-btn {
+    flex: 1;
+}
+
+.ubp-public-news-detail-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.ubp-public-article-cover {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    border: 1px solid var(--portal-border);
+    border-radius: 20px;
+}
+
+.ubp-public-article-content {
+    max-width: 860px;
+    margin-top: 32px;
+    color: var(--portal-text);
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.85;
+}
+
+.ubp-public-article-content h2,
+.ubp-public-article-content h3,
+.ubp-public-article-content h4 {
+    margin: 1.25em 0 .45em;
+    color: var(--portal-text);
+    font-weight: 950;
+    line-height: 1.15;
+}
+
+.ubp-public-article-content h2 { font-size: 30px; }
+.ubp-public-article-content h3 { font-size: 24px; }
+.ubp-public-article-content h4 { font-size: 20px; }
+
+.ubp-public-article-content blockquote {
+    margin: 18px 0;
+    border-left: 4px solid var(--portal-primary);
+    border-radius: 12px;
+    background: #f0f9ff;
+    padding: 14px 18px;
+}
+
+.ubp-public-article-content img {
+    max-width: 100%;
+    border-radius: 14px;
+}
+
 .ubp-page-header,
 .ubp-portal-content {
     width: calc(100% - 20px);
@@ -4711,6 +4978,14 @@ textarea,
 }
 
 @media (max-width: 1080px) {
+    .ubp-editor-page {
+        grid-template-columns: 1fr;
+    }
+
+    .ubp-editor-side {
+        position: static;
+    }
+
     .ubp-profile-grid {
         grid-template-columns: 1fr;
     }
@@ -4740,6 +5015,28 @@ textarea,
 }
 
 @media (max-width: 680px) {
+    .ubp-editor-titlebar,
+    .ubp-profile-danger-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ubp-editor-field {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .ubp-doc-editor {
+        margin-right: 14px;
+        margin-left: 14px;
+    }
+
+    .ubp-doc-paper {
+        width: calc(100% - 18px);
+        min-height: 440px;
+        padding: 26px 20px;
+    }
+
     .ubp-public-nav {
         padding: 12px;
     }

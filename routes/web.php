@@ -27,7 +27,8 @@ Route::get('/profil', [PublicPortalController::class, 'profile'])->name('public.
 Route::get('/layanan', [PublicPortalController::class, 'services'])->name('public.services');
 Route::get('/layanan/{service}', [PublicPortalController::class, 'serviceDetail'])->name('public.services.show');
 Route::get('/berita', [PublicPortalController::class, 'news'])->name('public.news');
-Route::get('/berita/{pressRelease:slug}', [PublicPortalController::class, 'pressRelease'])->name('public.news.show');
+Route::middleware(['auth', 'role:super user|admin|kabag'])->get('/berita/create', [PressReleaseController::class, 'create'])->name('press-releases.create');
+Route::get('/berita/{pressRelease:slug}', [PublicPortalController::class, 'pressRelease'])->where('pressRelease', '^(?!create$)[^/]+$')->name('public.news.show');
 Route::get('/links', [PublicPortalController::class, 'links'])->name('public.links');
 Route::get('/publik', fn () => redirect()->route('public.index'));
 Route::get('/publik/press-release/{pressRelease}', [PublicPortalController::class, 'pressRelease'])->name('public.press.show');
@@ -102,6 +103,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::get('/ormawa', [OrmawaAdminController::class, 'overview'])->name('ormawa.overview');
+        Route::get('/ormawa/{section}', fn (string $section) => redirect()->route('ormawa.index', array_merge(['section' => $section], request()->query())));
         Route::get('/ormawa-data/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa.index');
     });
 
@@ -120,6 +122,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:super user|admin')->group(function () {
         Route::get('/master', [MasterDataController::class, 'overview'])->name('master.overview');
         Route::get('/master-data/{section?}', fn (?string $section = 'prodi') => redirect()->route('master-data.index', array_merge(['section' => $section], request()->query())));
+        Route::get('/master-kuota-prestasi', fn () => redirect()->route('master-data.index', array_merge(['section' => 'quotas'], request()->query())));
 
         Route::get('/master/prodi', [MasterDataController::class, 'index'])->defaults('section', 'prodi')->name('master.prodi.index');
         Route::get('/master/semester', [MasterDataController::class, 'index'])->defaults('section', 'semester')->name('master.semester.index');
@@ -147,9 +150,15 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:super user|admin|kabag')->group(function () {
         Route::get('/publikasi', [PublicationAdminController::class, 'overview'])->name('publications.overview');
+        Route::get('/publikasi/{section}', fn (string $section) => redirect()->route('publications.index', array_merge(['section' => match ($section) {
+            'press-releases' => 'berita',
+            'karir' => 'careers',
+            default => $section,
+        }], request()->query())));
         Route::get('/publikasi-data/{section?}', [PublicationAdminController::class, 'index'])->name('publications.index');
         Route::get('/press-releases', fn () => redirect()->route('publications.index', 'berita'))->name('press-releases.index');
         Route::post('/press-releases', [PressReleaseController::class, 'store'])->name('press-releases.store');
+        Route::get('/berita/{pressRelease}/edit', [PressReleaseController::class, 'edit'])->name('press-releases.edit');
         Route::put('/press-releases/{pressRelease}', [PressReleaseController::class, 'update'])->name('press-releases.update');
         Route::delete('/press-releases/{pressRelease}', [PressReleaseController::class, 'destroy'])->name('press-releases.destroy');
     });

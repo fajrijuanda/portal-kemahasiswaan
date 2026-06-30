@@ -18,6 +18,7 @@ class MasterDataController extends Controller
         'semester' => ['label' => 'Semester', 'icon' => 'semester'],
         'competitions' => ['label' => 'Lomba', 'icon' => 'prestasi'],
         'scholarship-types' => ['label' => 'Jenis Beasiswa', 'icon' => 'beasiswa'],
+        'quotas' => ['label' => 'Kuota Prestasi', 'icon' => 'semester'],
     ];
 
     public function overview()
@@ -30,9 +31,9 @@ class MasterDataController extends Controller
                 'label' => $item['label'],
                 'module' => $section,
                 'icon' => $item['icon'],
-                'tone' => match($section) { 'prodi' => 'emerald', 'semester' => 'slate', 'competitions' => 'blue', 'scholarship-types' => 'amber' },
+                'tone' => match($section) { 'prodi' => 'emerald', 'semester' => 'slate', 'competitions' => 'blue', 'scholarship-types' => 'amber', 'quotas' => 'violet' },
                 'href' => route('master-data.index', $section),
-                'description' => match($section) { 'prodi' => 'Kelola data program studi.', 'semester' => 'Kelola periode akademik.', 'competitions' => 'Master data nama lomba.', 'scholarship-types' => 'Jenis beasiswa.' },
+                'description' => match($section) { 'prodi' => 'Kelola data program studi.', 'semester' => 'Kelola periode akademik.', 'competitions' => 'Master data nama lomba.', 'scholarship-types' => 'Jenis beasiswa.', 'quotas' => 'Slot dukungan prestasi per prodi.' },
             ])->values()->all(),
         ];
         
@@ -74,6 +75,12 @@ class MasterDataController extends Controller
                 'records' => $this->hasTable('scholarship_types') ? $this->simpleMasterQuery(ScholarshipType::class)->paginate($this->limit(25))->withQueryString() : $this->emptyPaginator(25),
                 'sectionShell' => $this->sectionShell($section, 'Jenis Beasiswa', 'Kelola pilihan beasiswa untuk form pengajuan.'),
             ]),
+            'quotas' => view('master.quotas.index', [
+                'quotas' => $this->hasTable('achievement_quotas') ? $this->quotaQuery()->paginate($this->limit())->withQueryString() : $this->emptyPaginator(),
+                'prodis' => $this->hasTable('prodis') ? Prodi::query()->orderBy('nama')->get() : collect(),
+                'semesters' => $this->hasTable('semesters') ? Semester::query()->orderByDesc('id')->get() : collect(),
+                'sectionShell' => $this->sectionShell($section, 'Kuota Prestasi', 'Kelola slot dukungan prestasi per prodi dan semester.'),
+            ]),
         };
     }
 
@@ -94,6 +101,7 @@ class MasterDataController extends Controller
                 ['label' => 'Prodi', 'value' => number_format($this->countModel('prodis', Prodi::class)), 'caption' => 'program studi', 'icon' => 'prodi', 'tone' => 'emerald'],
                 ['label' => 'Semester', 'value' => number_format($this->countModel('semesters', Semester::class)), 'caption' => 'periode akademik', 'icon' => 'semester', 'tone' => 'slate'],
                 ['label' => 'Lomba', 'value' => number_format($this->countModel('competitions', Competition::class)), 'caption' => 'master lomba', 'icon' => 'prestasi', 'tone' => 'blue'],
+                ['label' => 'Kuota', 'value' => number_format($this->countModel('achievement_quotas', AchievementQuota::class)), 'caption' => 'slot prodi', 'icon' => 'semester', 'tone' => 'violet'],
             ],
         ];
     }
@@ -105,6 +113,7 @@ class MasterDataController extends Controller
             'semester' => $this->countModel('semesters', Semester::class),
             'competitions' => $this->countModel('competitions', Competition::class),
             'scholarship-types' => $this->countModel('scholarship_types', ScholarshipType::class),
+            'quotas' => $this->countModel('achievement_quotas', AchievementQuota::class),
         };
     }
 
@@ -144,6 +153,19 @@ class MasterDataController extends Controller
             ->when(request('q'), fn ($query, $search) => $query->where('nama', 'like', "%{$search}%"))
             ->when(request('status') !== null && request('status') !== '', fn ($query) => $query->where('is_active', request('status') === 'active'))
             ->orderBy('nama');
+    }
+
+    private function quotaQuery()
+    {
+        return AchievementQuota::query()
+            ->with(['semester', 'prodi'])
+            ->when(request('q'), fn ($query, $search) => $query->where(function ($query) use ($search) {
+                $query->whereHas('prodi', fn ($query) => $query->where('nama', 'like', "%{$search}%")->orWhere('kode', 'like', "%{$search}%"))
+                    ->orWhereHas('semester', fn ($query) => $query->where('nama', 'like', "%{$search}%")->orWhere('tahun_akademik', 'like', "%{$search}%"));
+            }))
+            ->when(request('prodi_id'), fn ($query, $prodiId) => $query->where('prodi_id', $prodiId))
+            ->when(request('semester_id'), fn ($query, $semesterId) => $query->where('semester_id', $semesterId))
+            ->latest('id');
     }
 
 

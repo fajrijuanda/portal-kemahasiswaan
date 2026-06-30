@@ -16,6 +16,28 @@ class PressReleaseController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('content.press-releases.form', [
+            'record' => null,
+            'title' => 'Tambah Berita',
+            'subtitle' => 'Tulis berita dengan editor lengkap seperti dokumen.',
+            'action' => route('press-releases.store'),
+            'method' => null,
+        ]);
+    }
+
+    public function edit(PressRelease $pressRelease)
+    {
+        return view('content.press-releases.form', [
+            'record' => $pressRelease,
+            'title' => 'Edit Berita',
+            'subtitle' => 'Perbarui judul, ringkasan, cover, status, dan isi berita.',
+            'action' => route('press-releases.update', $pressRelease),
+            'method' => 'PUT',
+        ]);
+    }
+
     public function store(Request $request)
     {
         $data = $this->validated($request);
@@ -23,7 +45,7 @@ class PressReleaseController extends Controller
         $data['created_by'] = $request->user()->id;
         PressRelease::create($data);
 
-        return back()->with('status', 'Berita berhasil ditambahkan.');
+        return redirect()->route('publications.index', 'berita')->with('status', 'Berita berhasil ditambahkan.');
     }
 
     public function update(Request $request, PressRelease $pressRelease)
@@ -59,6 +81,8 @@ class PressReleaseController extends Controller
     private function prepare(Request $request, array &$data, ?PressRelease $record = null): void
     {
         $data['slug'] = $this->uniqueSlug($data['title'], $record?->id);
+        $data['content'] = $this->sanitizeContent($data['content'] ?? '');
+        $data['excerpt'] = trim(strip_tags($data['excerpt'] ?? ''));
         $data['published_at'] = $data['status'] === 'Published' ? now() : null;
         unset($data['cover_path']);
 
@@ -68,6 +92,16 @@ class PressReleaseController extends Controller
             }
             $data['cover_path'] = $request->file('cover_path')->store('press-releases', 'public');
         }
+    }
+
+    private function sanitizeContent(string $content): string
+    {
+        $allowed = '<p><br><strong><b><em><i><u><s><h2><h3><h4><blockquote><ol><ul><li><a><hr><pre><code><div><span>';
+        $content = strip_tags($content, $allowed);
+        $content = preg_replace('/\s(on\w+|style)\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i', '', $content);
+        $content = preg_replace('/href\s*=\s*("|\')\s*javascript:[^"\']*("|\')/i', 'href="#"', $content);
+
+        return trim($content);
     }
 
     private function uniqueSlug(string $title, ?int $ignoreId = null): string
