@@ -74,7 +74,7 @@
 
 
 
-    <section class="ubp-chart-grid ubp-rekap-chart-grid">
+    <section class="ubp-chart-grid ubp-rekap-chart-grid" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
         @foreach([
             ['prestasiSemester', 'Prestasi by Semester', 'semester', route('charts.prestasi.semester')],
             ['prestasiProdi', 'Prestasi by Prodi', 'prodi', route('charts.prestasi.prodi')],
