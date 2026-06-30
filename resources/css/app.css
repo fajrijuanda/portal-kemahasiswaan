@@ -4402,7 +4402,8 @@ textarea,
 
 .ubp-public-service-card:nth-child(even),
 .ubp-public-news-card:nth-child(even),
-.ubp-public-career-card:nth-child(even) {
+.ubp-public-career-card:nth-child(even),
+.ubp-public-faq article:nth-child(even) {
     background: #172033;
     color: #ffffff;
     border-color: #172033;
@@ -4410,19 +4411,22 @@ textarea,
 
 .ubp-public-service-card:nth-child(even):hover,
 .ubp-public-news-card:nth-child(even):hover,
-.ubp-public-career-card:nth-child(even):hover {
+.ubp-public-career-card:nth-child(even):hover,
+.ubp-public-faq article:nth-child(even):hover {
     box-shadow: 6px 6px 0px rgba(14, 165, 233, .8);
 }
 
 .ubp-public-service-card:nth-child(even) strong,
 .ubp-public-news-card:nth-child(even) strong,
-.ubp-public-career-card:nth-child(even) strong {
+.ubp-public-career-card:nth-child(even) strong,
+.ubp-public-faq article:nth-child(even) strong {
     color: #ffffff;
 }
 
 .ubp-public-service-card:nth-child(even) small,
 .ubp-public-news-card:nth-child(even) small,
-.ubp-public-career-card:nth-child(even) small {
+.ubp-public-career-card:nth-child(even) small,
+.ubp-public-faq article:nth-child(even) small {
     color: #cbd5e1;
 }
 
