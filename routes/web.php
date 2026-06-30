@@ -18,9 +18,16 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentSubmissionController;
 use App\Http\Controllers\UnitActivityController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPortalController::class, 'index'])->name('public.index');
+
+Route::get('/seed-dummy-data', function () {
+    Artisan::call('db:seed', ['--class' => 'DummyDataSeeder']);
+    return 'Dummy data seeded successfully! You can now remove this route.';
+});
+
 Route::get('/profil', [PublicPortalController::class, 'profile'])->name('public.profile');
 Route::get('/layanan', [PublicPortalController::class, 'services'])->name('public.services');
 Route::get('/layanan/{service}', [PublicPortalController::class, 'serviceDetail'])->name('public.services.show');
@@ -83,6 +90,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [RecordController::class, 'destroy'])->name('destroy');
         });
 
+        Route::get('/unit', [UnitActivityController::class, 'overview'])->name('unit.overview');
         Route::get('/unit-data/{unit}', fn (string $unit) => redirect()->route('unit-activities.index', array_merge(['unit' => $unit], request()->query())))->name('unit-data.index');
 
         Route::prefix('unit/{unit}')->name('unit-activities.')->group(function () {
@@ -96,8 +104,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{activity}', [UnitActivityController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get('/ormawa/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
-        Route::get('/ormawa-admin/{section?}', fn (?string $section = 'data-ormawa') => redirect()->route('ormawa-admin.index', array_merge(['section' => $section], request()->query())));
+        Route::get('/ormawa', [OrmawaAdminController::class, 'overview'])->name('ormawa.overview');
+        Route::get('/ormawa-admin/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('student.')->group(function () {
@@ -113,7 +121,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:super user|admin')->group(function () {
-        Route::get('/master', [MasterDataController::class, 'index'])->defaults('section', 'prodi')->name('master-data.home');
+        Route::get('/master', [MasterDataController::class, 'overview'])->name('master.overview');
         Route::get('/master-data/{section?}', fn (?string $section = 'prodi') => redirect()->route('master-data.index', array_merge(['section' => $section], request()->query())));
 
         Route::get('/master/prodi', [MasterDataController::class, 'index'])->defaults('section', 'prodi')->name('master.prodi.index');
@@ -147,7 +155,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:super user|admin|kabag')->group(function () {
-        Route::get('/publikasi/{section?}', [PublicationAdminController::class, 'index'])->name('publications.index');
+        Route::get('/publikasi', [PublicationAdminController::class, 'overview'])->name('publications.overview');
+        Route::get('/publikasi-data/{section?}', [PublicationAdminController::class, 'index'])->name('publications.index');
         Route::get('/press-releases', fn () => redirect()->route('publications.index', 'berita'))->name('press-releases.index');
         Route::post('/press-releases', [PressReleaseController::class, 'store'])->name('press-releases.store');
         Route::put('/press-releases/{pressRelease}', [PressReleaseController::class, 'update'])->name('press-releases.update');

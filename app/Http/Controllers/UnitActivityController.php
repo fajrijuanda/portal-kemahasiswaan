@@ -39,6 +39,34 @@ class UnitActivityController extends Controller
         ],
     ];
 
+    public function overview()
+    {
+        $overview = [
+            'eyebrow' => 'Unit Data',
+            'title' => 'Layanan Unit Kegiatan',
+            'subtitle' => 'Pilih unit kegiatan untuk mengelola data aktivitasnya.',
+            'items' => collect($this->units)->except('pengembangan-ormawa')->map(fn ($config, $unit) => [
+                'label' => $config['title'],
+                'module' => $unit,
+                'icon' => $config['icon'],
+                'tone' => $config['tone'],
+                'href' => route('unit-activities.index', $unit),
+                'description' => $config['subtitle'],
+            ])->values()->all(),
+        ];
+
+        return view('records.overview', [
+            'overview' => $overview,
+            'stats' => collect($overview['items'])->map(fn ($item) => [
+                'label' => $item['label'],
+                'value' => number_format($this->hasTable('unit_activities') ? UnitActivity::where('unit', $item['module'])->count() : 0),
+                'caption' => 'aktivitas',
+                'icon' => $item['icon'],
+                'tone' => $item['tone'],
+            ])->values()->all(),
+        ]);
+    }
+
     public function index(Request $request, string $unit)
     {
         $config = $this->config($unit);

@@ -21,6 +21,34 @@ class OrmawaAdminController extends Controller
         'reimbursement' => ['label' => 'Reimbursement', 'icon' => 'beasiswa'],
     ];
 
+    public function overview()
+    {
+        $overview = [
+            'eyebrow' => 'Ormawa Admin',
+            'title' => 'Administrasi Ormawa',
+            'subtitle' => 'Pilih tabel administrasi organisasi mahasiswa.',
+            'items' => collect($this->sections)->map(fn ($item, $section) => [
+                'label' => $item['label'],
+                'module' => $section,
+                'icon' => $item['icon'],
+                'tone' => match($section) { 'data-ormawa' => 'amber', 'kegiatan' => 'teal', 'proposal' => 'blue', 'reimbursement' => 'emerald' },
+                'href' => route('ormawa-admin.index', $section),
+                'description' => match($section) { 'data-ormawa' => 'Kelola profil, akun, dan overview ormawa.', 'kegiatan' => 'Pembinaan dan pengembangan ormawa.', 'proposal' => 'Pantau pengajuan proposal.', 'reimbursement' => 'Pantau pengajuan reimbursement.' },
+            ])->values()->all(),
+        ];
+        
+        return view('records.overview', [
+            'overview' => $overview,
+            'stats' => collect($overview['items'])->map(fn ($item) => [
+                'label' => $item['label'],
+                'value' => number_format($this->count($item['module'])),
+                'caption' => 'data',
+                'icon' => $item['icon'],
+                'tone' => $item['tone'],
+            ])->values()->all(),
+        ]);
+    }
+
     public function index(string $section = 'data-ormawa')
     {
         abort_unless(isset($this->sections[$section]), 404);

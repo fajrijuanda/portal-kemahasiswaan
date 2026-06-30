@@ -14,6 +14,34 @@ class PublicationAdminController extends Controller
         'careers' => ['label' => 'Karir', 'icon' => 'access'],
     ];
 
+    public function overview()
+    {
+        $overview = [
+            'eyebrow' => 'Publikasi',
+            'title' => 'Publikasi Portal',
+            'subtitle' => 'Pilih tabel publikasi yang akan dikelola.',
+            'items' => collect($this->sections)->map(fn ($item, $section) => [
+                'label' => $item['label'],
+                'module' => $section,
+                'icon' => $item['icon'],
+                'tone' => match($section) { 'berita' => 'blue', 'careers' => 'emerald' },
+                'href' => route('publications.index', $section),
+                'description' => match($section) { 'berita' => 'Publikasi berita kegiatan.', 'careers' => 'Lowongan kerja dan job fair.' },
+            ])->filter(fn ($item) => $item['module'] !== 'careers' || request()->user()->hasAnyRole(['super user', 'admin']))->values()->all(),
+        ];
+        
+        return view('records.overview', [
+            'overview' => $overview,
+            'stats' => collect($overview['items'])->map(fn ($item) => [
+                'label' => $item['label'],
+                'value' => number_format($item['module'] === 'berita' ? $this->countModel('press_releases', PressRelease::class) : $this->countModel('career_posts', CareerPost::class)),
+                'caption' => 'konten',
+                'icon' => $item['icon'],
+                'tone' => $item['tone'],
+            ])->values()->all(),
+        ]);
+    }
+
     public function index(string $section = 'berita')
     {
         if ($section === 'press-releases') {

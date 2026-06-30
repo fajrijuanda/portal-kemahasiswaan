@@ -21,6 +21,34 @@ class MasterDataController extends Controller
         'quotas' => ['label' => 'Kuota Prestasi', 'icon' => 'grid'],
     ];
 
+    public function overview()
+    {
+        $overview = [
+            'eyebrow' => 'Master Data',
+            'title' => 'Kelola Master Data',
+            'subtitle' => 'Pilih tabel data master yang ingin dikelola.',
+            'items' => collect($this->sections)->map(fn ($item, $section) => [
+                'label' => $item['label'],
+                'module' => $section,
+                'icon' => $item['icon'],
+                'tone' => match($section) { 'prodi' => 'emerald', 'semester' => 'slate', 'competitions' => 'blue', 'scholarship-types' => 'amber', 'quotas' => 'violet' },
+                'href' => route('master-data.index', $section),
+                'description' => match($section) { 'prodi' => 'Kelola data program studi.', 'semester' => 'Kelola periode akademik.', 'competitions' => 'Master data nama lomba.', 'scholarship-types' => 'Jenis beasiswa.', 'quotas' => 'Slot dukungan prestasi per prodi.' },
+            ])->values()->all(),
+        ];
+        
+        return view('records.overview', [
+            'overview' => $overview,
+            'stats' => collect($overview['items'])->map(fn ($item) => [
+                'label' => $item['label'],
+                'value' => number_format($this->count($item['module'])),
+                'caption' => 'data',
+                'icon' => $item['icon'],
+                'tone' => $item['tone'],
+            ])->values()->all(),
+        ]);
+    }
+
     public function index(string $section = 'prodi')
     {
         abort_unless(isset($this->sections[$section]), 404);

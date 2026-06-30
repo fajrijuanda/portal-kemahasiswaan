@@ -1,7 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="ubp-title">Profil Akun</h1>
-        <p class="ubp-subtitle">Kelola identitas, email, password, dan keamanan akun portal.</p>
+        <section class="ubp-section-hero">
+            <span class="ubp-auth-eyebrow">Pengaturan</span>
+            <h1 class="ubp-title">Profil Akun</h1>
+            <p class="ubp-subtitle">Kelola identitas, email, password, dan keamanan akun portal.</p>
+        </section>
     </x-slot>
 
     <div class="ubp-stat-grid">

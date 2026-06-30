@@ -1,7 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="ubp-title">Management User</h1>
-        <p class="ubp-subtitle">Khusus super user untuk mengelola akun, role, prodi, dan password pengguna portal.</p>
+        <section class="ubp-section-hero">
+            <span class="ubp-auth-eyebrow">Management</span>
+            <h1 class="ubp-title">Management User</h1>
+            <p class="ubp-subtitle">Khusus super user untuk mengelola akun, role, prodi, dan password pengguna portal.</p>
+        </section>
     </x-slot>
 
     <div class="ubp-stat-grid">

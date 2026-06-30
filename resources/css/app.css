@@ -4364,11 +4364,12 @@ textarea,
 .ubp-public-career-card,
 .ubp-public-empty,
 .ubp-public-faq article {
-    border: 1px solid rgba(226, 232, 240, .95);
+    border: 1.5px solid var(--portal-text);
     border-radius: 20px;
     background: #fff;
-    padding: 20px;
-    box-shadow: 0 16px 46px rgba(15, 23, 42, .05);
+    padding: 24px;
+    box-shadow: none;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
 .ubp-public-service-card {
@@ -4397,10 +4398,10 @@ textarea,
 }
 
 .ubp-public-service-card.is-simple:hover {
-    border-color: rgba(14, 165, 233, .34);
+    border-color: var(--portal-primary);
     color: inherit;
-    transform: translateY(-2px);
-    box-shadow: 0 20px 54px rgba(15, 23, 42, .08);
+    transform: translateY(-4px) translateX(-4px);
+    box-shadow: 6px 6px 0px rgba(14, 165, 233, .25);
 }
 
 .ubp-public-service-card.is-simple i {
@@ -4494,8 +4495,9 @@ textarea,
 }
 
 .ubp-public-news-card:hover {
-    border-color: rgba(14, 165, 233, .36);
-    transform: translateY(-2px);
+    border-color: var(--portal-primary);
+    transform: translateY(-4px) translateX(-4px);
+    box-shadow: 6px 6px 0px rgba(14, 165, 233, .25);
 }
 
 .ubp-public-news-card span,
@@ -4526,20 +4528,28 @@ textarea,
     text-decoration: none;
 }
 
+.ubp-public-career-card:hover {
+    border-color: var(--portal-primary);
+    transform: translateY(-4px) translateX(-4px);
+    box-shadow: 6px 6px 0px rgba(14, 165, 233, .25);
+}
+
 .ubp-public-link-card {
     display: block;
-    border: 1px solid rgba(226, 232, 240, .95);
+    border: 1.5px solid var(--portal-text);
     border-radius: 20px;
     background: #fff;
-    padding: 20px;
+    padding: 24px;
     color: inherit;
     text-decoration: none;
-    box-shadow: 0 16px 46px rgba(15, 23, 42, .05);
+    box-shadow: none;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
 .ubp-public-link-card:hover {
-    border-color: rgba(14, 165, 233, .36);
-    transform: translateY(-2px);
+    border-color: var(--portal-primary);
+    transform: translateY(-4px) translateX(-4px);
+    box-shadow: 6px 6px 0px rgba(14, 165, 233, .25);
 }
 
 .ubp-public-link-card strong,
