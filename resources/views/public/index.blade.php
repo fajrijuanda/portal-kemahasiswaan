@@ -63,7 +63,7 @@
 
         <section id="layanan" class="ubp-public-section">
             <div class="ubp-public-section-head">
-                <h2>Layanan</h2>
+                <h2 class="ubp-highlight">Layanan</h2>
             </div>
             <div class="ubp-public-service-grid">
                 @foreach($services as $service)
@@ -77,7 +77,7 @@
 
         <section id="publikasi" class="ubp-public-section">
             <div class="ubp-public-section-head">
-                <h2>Berita</h2>
+                <h2 class="ubp-highlight">Berita</h2>
             </div>
             <div class="ubp-public-news-grid">
                 @forelse($pressReleases as $item)
@@ -97,7 +97,7 @@
 
         <section id="karir" class="ubp-public-section">
             <div class="ubp-public-section-head">
-                <h2>Karir</h2>
+                <h2 class="ubp-highlight">Karir</h2>
             </div>
             <div class="ubp-public-career-grid">
                 @forelse($careerPosts as $item)
@@ -131,7 +131,7 @@
 
         <section id="faq" class="ubp-public-section ubp-public-faq">
             <div class="ubp-public-section-head">
-                <h2>FAQ</h2>
+                <h2 class="ubp-highlight">FAQ</h2>
             </div>
             <div class="ubp-public-faq-grid">
                 <article><strong>Apakah halaman ini perlu login?</strong><small>Tidak. Halaman publik bisa dibuka langsung dari route `/`.</small></article>
