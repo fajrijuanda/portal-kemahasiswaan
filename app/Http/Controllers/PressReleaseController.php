@@ -23,7 +23,7 @@ class PressReleaseController extends Controller
         $data['created_by'] = $request->user()->id;
         PressRelease::create($data);
 
-        return back()->with('status', 'Press release berhasil ditambahkan.');
+        return back()->with('status', 'Berita berhasil ditambahkan.');
     }
 
     public function update(Request $request, PressRelease $pressRelease)
@@ -32,7 +32,7 @@ class PressReleaseController extends Controller
         $this->prepare($request, $data, $pressRelease);
         $pressRelease->update($data);
 
-        return back()->with('status', 'Press release berhasil diperbarui.');
+        return back()->with('status', 'Berita berhasil diperbarui.');
     }
 
     public function destroy(PressRelease $pressRelease)
@@ -42,7 +42,7 @@ class PressReleaseController extends Controller
         }
         $pressRelease->delete();
 
-        return back()->with('status', 'Press release berhasil dihapus.');
+        return back()->with('status', 'Berita berhasil dihapus.');
     }
 
     private function validated(Request $request, ?int $id = null): array

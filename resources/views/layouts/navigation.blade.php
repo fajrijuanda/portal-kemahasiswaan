@@ -28,7 +28,7 @@
     }
 
     if (auth()->user()->hasAnyRole(['super user', 'admin', 'kabag'])) {
-        $items[] = ['label' => 'Publikasi', 'href' => route('publications.index', 'press-releases'), 'active' => request()->is('publikasi*') || request()->is('press-releases*') || request()->is('karir*'), 'icon' => 'access'];
+        $items[] = ['label' => 'Publikasi', 'href' => route('publications.index', 'berita'), 'active' => request()->is('publikasi*') || request()->is('press-releases*') || request()->is('karir*'), 'icon' => 'access'];
     }
 
     if (auth()->user()->hasRole('super user')) {

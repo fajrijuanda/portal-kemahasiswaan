@@ -14,7 +14,7 @@
 
         if (auth()->user()->hasAnyRole(['super user', 'admin'])) {
             $services[] = ['title' => 'Master Data', 'count' => 5, 'desc' => 'Kelola prodi, semester, lomba, beasiswa, dan kuota.', 'href' => route('master-data.index', 'prodi'), 'icon' => 'semester', 'tone' => 'emerald'];
-            $services[] = ['title' => 'Publikasi', 'count' => 2, 'desc' => 'Kelola press release, loker, dan job fair.', 'href' => route('publications.index', 'press-releases'), 'icon' => 'access', 'tone' => 'slate'];
+            $services[] = ['title' => 'Publikasi', 'count' => 2, 'desc' => 'Kelola berita, loker, dan job fair.', 'href' => route('publications.index', 'berita'), 'icon' => 'access', 'tone' => 'slate'];
         }
 
         if (auth()->user()->hasRole('super user')) {

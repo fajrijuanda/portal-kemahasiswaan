@@ -34,7 +34,7 @@
             </div>
             <div class="ubp-public-news-list">
                 <article class="ubp-public-news-card"><span>01</span><strong>Transparansi proses</strong><small>Status pengajuan mahasiswa dan Ormawa ditata dari Diajukan, Diproses, sampai Disetujui atau Ditolak.</small></article>
-                <article class="ubp-public-news-card"><span>02</span><strong>Publikasi resmi</strong><small>Press release, loker, dan job fair published dapat dibaca tanpa login melalui halaman publik.</small></article>
+                <article class="ubp-public-news-card"><span>02</span><strong>Publikasi resmi</strong><small>Berita, loker, dan job fair published dapat dibaca tanpa login melalui halaman publik.</small></article>
                 <article class="ubp-public-news-card"><span>03</span><strong>Data rekap pimpinan</strong><small>Dashboard internal membantu admin dan pimpinan memantau perkembangan layanan kemahasiswaan.</small></article>
             </div>
         </section>

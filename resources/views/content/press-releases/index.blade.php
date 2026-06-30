@@ -2,7 +2,7 @@
     @unless(isset($sectionShell))
         <x-slot name="header">
             <div>
-                <h1 class="ubp-title">Press Release</h1>
+                <h1 class="ubp-title">Berita</h1>
                 <p class="ubp-subtitle">Kabag dapat membuat dan mempublikasikan berita untuk halaman publik.</p>
             </div>
         </x-slot>
@@ -12,8 +12,8 @@
         <x-ui.section-shell :eyebrow="$sectionShell['eyebrow']" :title="$sectionShell['title']" :subtitle="$sectionShell['subtitle']" :items="$sectionShell['items']" :stats="$sectionShell['stats']">
     @endisset
 
-    <x-ui.table-shell class="ubp-table-shell-omnia" title="Daftar Press Release" subtitle="Status Published akan tampil di halaman publik.">
-        <x-slot:toolbar><button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#pressCreateModal">+ Tambah Press Release</button></x-slot:toolbar>
+    <x-ui.table-shell class="ubp-table-shell-omnia" title="Daftar Berita" subtitle="Status Published akan tampil di halaman publik.">
+        <x-slot:toolbar><button class="ubp-btn ubp-btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#pressCreateModal">+ Tambah Berita</button></x-slot:toolbar>
         <table class="table align-middle ubp-table ubp-data-table">
             <thead><tr><th>Judul</th><th>Status</th><th>Published</th><th>Pembuat</th><th class="text-end">Aksi</th></tr></thead>
             <tbody>
@@ -25,20 +25,20 @@
                         <td>{{ $record->creator?->name ?? '-' }}</td>
                         <td class="text-end">
                             <button class="ubp-table-action ubp-table-action-primary" type="button" data-bs-toggle="modal" data-bs-target="#pressEditModal{{ $record->id }}">Edit</button>
-                            <button class="ubp-table-action ubp-table-action-danger" type="button" onclick="triggerDeleteModal(`{{ route('press-releases.destroy', $record) }}`, `Hapus press release ini?`)">Hapus</button>
+                            <button class="ubp-table-action ubp-table-action-danger" type="button" onclick="triggerDeleteModal(`{{ route('press-releases.destroy', $record) }}`, `Hapus berita ini?`)">Hapus</button>
                         </td>
                     </tr>
                 @empty
-                    <x-ui.table-empty-row :colspan="5" title="Belum ada press release" message="Tambahkan konten pertama." />
+                    <x-ui.table-empty-row :colspan="5" title="Belum ada berita" message="Tambahkan konten pertama." />
                 @endforelse
             </tbody>
         </table>
         <x-slot:pagination>{{ $records->links() }}</x-slot:pagination>
     </x-ui.table-shell>
 
-    @include('content.press-releases.partials.form-modal', ['id' => 'pressCreateModal', 'title' => 'Tambah Press Release', 'action' => route('press-releases.store'), 'method' => null, 'record' => null])
+    @include('content.press-releases.partials.form-modal', ['id' => 'pressCreateModal', 'title' => 'Tambah Berita', 'action' => route('press-releases.store'), 'method' => null, 'record' => null])
     @foreach($records as $record)
-        @include('content.press-releases.partials.form-modal', ['id' => 'pressEditModal'.$record->id, 'title' => 'Edit Press Release', 'action' => route('press-releases.update', $record), 'method' => 'PUT', 'record' => $record])
+        @include('content.press-releases.partials.form-modal', ['id' => 'pressEditModal'.$record->id, 'title' => 'Edit Berita', 'action' => route('press-releases.update', $record), 'method' => 'PUT', 'record' => $record])
     @endforeach
 
     @isset($sectionShell)

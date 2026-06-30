@@ -10,12 +10,6 @@
     @php
         $loginUrl = auth()->check() ? route('home') : route('login');
         $loginLabel = auth()->check() ? 'Masuk Portal' : 'Login';
-        $services = [
-            ['title' => 'Prestasi Mahasiswa', 'desc' => 'Informasi prestasi, lomba, dan capaian mahasiswa lintas prodi.', 'icon' => 'prestasi'],
-            ['title' => 'Beasiswa', 'desc' => 'Kanal informasi jenis beasiswa dan pengajuan dukungan mahasiswa.', 'icon' => 'beasiswa'],
-            ['title' => 'Ormawa', 'desc' => 'Ruang informasi organisasi mahasiswa, kegiatan, dan pengajuan proposal.', 'icon' => 'user'],
-            ['title' => 'Karir & Alumni', 'desc' => 'Lowongan kerja, job fair, tracer study, dan jejaring alumni.', 'icon' => 'access'],
-        ];
         $stats = [
             ['value' => '12+', 'label' => 'Layanan'],
             ['value' => '4', 'label' => 'Unit Aktif'],
@@ -54,32 +48,31 @@
             </div>
             <div class="ubp-public-service-grid">
                 @foreach($services as $service)
-                    <article class="ubp-public-service-card">
+                    <a class="ubp-public-service-card is-simple tone-{{ $service['tone'] }}" href="{{ route('public.services.show', $service['slug']) }}">
                         <i><x-ui.app-icon :name="$service['icon']" /></i>
                         <strong>{{ $service['title'] }}</strong>
-                        <small>{{ $service['desc'] }}</small>
-                    </article>
+                    </a>
                 @endforeach
             </div>
         </section>
 
         <section id="publikasi" class="ubp-public-split">
             <div class="ubp-public-feature">
-                <span>Press Release</span>
+                <span>Berita</span>
                 <h2>Kabar terbaru kemahasiswaan.</h2>
                 <p>Berita dan pengumuman yang sudah dipublikasikan oleh bagian terkait akan tampil di sini.</p>
             </div>
             <div class="ubp-public-news-list">
                 @forelse($pressReleases as $item)
-                    <a class="ubp-public-news-card" href="{{ route('public.press.show', $item) }}">
+                    <a class="ubp-public-news-card" href="{{ route('public.news.show', $item) }}">
                         <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
                         <strong>{{ $item->title }}</strong>
                         <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 128) }}</small>
                     </a>
                 @empty
                     <article class="ubp-public-empty">
-                        <strong>Belum ada press release published.</strong>
-                        <small>Konten publik akan tampil setelah kabag/admin mempublikasikan press release.</small>
+                        <strong>Belum ada berita published.</strong>
+                        <small>Konten publik akan tampil setelah kabag/admin mempublikasikan berita.</small>
                     </article>
                 @endforelse
             </div>
@@ -129,7 +122,7 @@
             <div class="ubp-public-faq-grid">
                 <article><strong>Apakah halaman ini perlu login?</strong><small>Tidak. Halaman publik bisa dibuka langsung dari route `/`.</small></article>
                 <article><strong>Di mana mengajukan beasiswa atau proposal?</strong><small>Pengajuan dilakukan lewat panel sesuai role setelah login.</small></article>
-                <article><strong>Siapa yang mengelola publikasi?</strong><small>Press release, loker, dan job fair dikelola admin/kabag melalui portal internal.</small></article>
+                <article><strong>Siapa yang mengelola publikasi?</strong><small>Berita, loker, dan job fair dikelola admin/kabag melalui portal internal.</small></article>
             </div>
         </section>
     </main>

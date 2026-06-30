@@ -5,7 +5,7 @@
         ['label' => 'Beranda', 'route' => 'public.index', 'active' => ['public.index']],
         ['label' => 'Profil', 'route' => 'public.profile', 'active' => ['public.profile']],
         ['label' => 'Layanan', 'route' => 'public.services', 'active' => ['public.services']],
-        ['label' => 'Berita', 'route' => 'public.news', 'active' => ['public.news', 'public.press.show']],
+        ['label' => 'Berita', 'route' => 'public.news', 'active' => ['public.news', 'public.news.show', 'public.press.show']],
         ['label' => 'Links', 'route' => 'public.links', 'active' => ['public.links']],
     ];
 @endphp

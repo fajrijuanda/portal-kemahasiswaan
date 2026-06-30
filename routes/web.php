@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PublicPortalController::class, 'index'])->name('public.index');
 Route::get('/profil', [PublicPortalController::class, 'profile'])->name('public.profile');
 Route::get('/layanan', [PublicPortalController::class, 'services'])->name('public.services');
+Route::get('/layanan/{service}', [PublicPortalController::class, 'serviceDetail'])->name('public.services.show');
 Route::get('/berita', [PublicPortalController::class, 'news'])->name('public.news');
+Route::get('/berita/{pressRelease:slug}', [PublicPortalController::class, 'pressRelease'])->name('public.news.show');
 Route::get('/links', [PublicPortalController::class, 'links'])->name('public.links');
 Route::get('/publik', fn () => redirect()->route('public.index'));
 Route::get('/publik/press-release/{pressRelease}', [PublicPortalController::class, 'pressRelease'])->name('public.press.show');
@@ -146,7 +148,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:super user|admin|kabag')->group(function () {
         Route::get('/publikasi/{section?}', [PublicationAdminController::class, 'index'])->name('publications.index');
-        Route::get('/press-releases', fn () => redirect()->route('publications.index', 'press-releases'))->name('press-releases.index');
+        Route::get('/press-releases', fn () => redirect()->route('publications.index', 'berita'))->name('press-releases.index');
         Route::post('/press-releases', [PressReleaseController::class, 'store'])->name('press-releases.store');
         Route::put('/press-releases/{pressRelease}', [PressReleaseController::class, 'update'])->name('press-releases.update');
         Route::delete('/press-releases/{pressRelease}', [PressReleaseController::class, 'destroy'])->name('press-releases.destroy');

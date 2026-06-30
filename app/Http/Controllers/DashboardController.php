@@ -275,7 +275,7 @@ class DashboardController extends Controller
         }
 
         if ($user->hasAnyRole(['super user', 'admin', 'kabag'])) {
-            $items[] = ['label' => 'Publikasi', 'desc' => 'Press release dan karir', 'count' => 2, 'href' => route('publications.index', 'press-releases'), 'icon' => 'access', 'tone' => 'rose'];
+            $items[] = ['label' => 'Publikasi', 'desc' => 'Berita dan karir', 'count' => 2, 'href' => route('publications.index', 'berita'), 'icon' => 'access', 'tone' => 'rose'];
         }
 
         if ($user->hasRole('super user')) {

@@ -194,7 +194,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Mahasiswa UBP Raih Prestasi Nasional',
             'slug' => 'mahasiswa-ubp-raih-prestasi-nasional',
             'excerpt' => 'Rangkuman prestasi mahasiswa yang dipublikasikan oleh bagian kemahasiswaan.',
-            'content' => 'Konten press release dapat diperbarui oleh kabag melalui panel admin.',
+            'content' => 'Konten berita dapat diperbarui oleh kabag melalui panel admin.',
             'status' => 'Published',
             'published_at' => now(),
             'created_by' => $admin->id,

@@ -14,13 +14,13 @@
             <div class="ubp-public-section-head">
                 <div>
                     <span>Berita</span>
-                    <h1>Press release dan informasi resmi kemahasiswaan.</h1>
+                    <h1>Berita dan informasi resmi kemahasiswaan.</h1>
                     <p>Berita yang tampil di halaman ini adalah konten berstatus published dari admin atau kepala bagian terkait.</p>
                 </div>
             </div>
             <div class="ubp-public-news-grid">
                 @forelse($pressReleases as $item)
-                    <a class="ubp-public-news-card" href="{{ route('public.press.show', $item) }}">
+                    <a class="ubp-public-news-card" href="{{ route('public.news.show', $item) }}">
                         <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
                         <strong>{{ $item->title }}</strong>
                         <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 150) }}</small>
@@ -28,7 +28,7 @@
                 @empty
                     <article class="ubp-public-empty">
                         <strong>Belum ada berita published.</strong>
-                        <small>Press release akan tampil setelah dipublikasikan oleh admin atau kabag.</small>
+                        <small>Berita akan tampil setelah dipublikasikan oleh admin atau kabag.</small>
                     </article>
                 @endforelse
             </div>
@@ -37,7 +37,7 @@
 
     <footer class="ubp-public-footer">
         <strong>Portal Kemahasiswaan UBP Karawang</strong>
-        <span>Berita dan press release resmi.</span>
+        <span>Berita resmi kemahasiswaan.</span>
     </footer>
 </body>
 </html>

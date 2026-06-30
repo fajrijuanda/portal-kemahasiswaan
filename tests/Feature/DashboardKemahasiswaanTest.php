@@ -92,5 +92,12 @@ class DashboardKemahasiswaanTest extends TestCase
             ->assertSee('ubp-role-badge-violet', false)
             ->assertSee('ubp-role-badge-blue', false)
             ->assertSee('ubp-role-badge-emerald', false);
+
+        $this->actingAs($superUser)
+            ->get('/profile')
+            ->assertOk()
+            ->assertSee('Profil Akun')
+            ->assertSee('Informasi Profil')
+            ->assertSee('Update Password');
     }
 }

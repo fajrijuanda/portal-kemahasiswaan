@@ -13,7 +13,7 @@
         $links = [
             ['label' => 'Login Portal', 'desc' => 'Masuk ke panel internal sesuai role akun.', 'url' => auth()->check() ? route('home') : route('login')],
             ['label' => 'Layanan Kemahasiswaan', 'desc' => 'Buka katalog layanan publik kemahasiswaan.', 'url' => route('public.services')],
-            ['label' => 'Berita Kemahasiswaan', 'desc' => 'Lihat press release resmi yang sudah published.', 'url' => route('public.news')],
+            ['label' => 'Berita Kemahasiswaan', 'desc' => 'Lihat berita resmi yang sudah published.', 'url' => route('public.news')],
         ];
     @endphp
 

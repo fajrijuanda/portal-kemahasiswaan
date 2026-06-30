@@ -138,6 +138,12 @@ class MvpRevisionTest extends TestCase
             ->assertOk()
             ->assertSee('Published Press')
             ->assertDontSee('Draft Press');
+        $this->get(route('public.news.show', 'published-press'))
+            ->assertOk()
+            ->assertSee('Published Press');
+        $this->get(route('public.services.show', 'prestasi-mahasiswa'))
+            ->assertOk()
+            ->assertSee('Prestasi Mahasiswa');
         $this->get(route('public.links'))
             ->assertOk()
             ->assertSee('Published Loker')
@@ -163,7 +169,7 @@ class MvpRevisionTest extends TestCase
         $this->actingAs($admin)->get(route('master-data.index', 'competitions'))->assertOk();
         $this->actingAs($admin)->get(route('master-data.index', 'quotas'))->assertOk();
         $this->actingAs($admin)->get(route('publications.index', 'careers'))->assertOk();
-        $this->actingAs($kabag)->get(route('publications.index', 'press-releases'))->assertOk();
+        $this->actingAs($kabag)->get(route('publications.index', 'berita'))->assertOk();
         $this->actingAs($student)->get(route('student.submissions'))->assertOk();
         $this->actingAs($ormawaUser)->get(route('ormawa.panel'))->assertOk();
         $this->get(route('public.index'))->assertOk();
@@ -182,6 +188,7 @@ class MvpRevisionTest extends TestCase
         $this->actingAs($admin)->get('/master-data/prodi')->assertRedirect(route('master-data.index', 'prodi'));
         $this->actingAs($admin)->get('/master-ormawa')->assertRedirect(route('ormawa-admin.index', 'data-ormawa'));
         $this->actingAs($admin)->get('/karir')->assertRedirect(route('publications.index', 'careers'));
+        $this->actingAs($admin)->get('/publikasi/press-releases')->assertRedirect(route('publications.index', 'berita'));
     }
 
     public function test_master_pages_support_search_and_filters(): void
