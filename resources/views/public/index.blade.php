@@ -20,23 +20,44 @@
     @include('public.partials.nav')
 
     <main>
-        <section class="ubp-public-hero">
-            <div class="ubp-public-hero-media">
-                <img src="{{ asset('images/logo-ubp.png') }}" alt="Logo UBP Karawang">
+        <section class="ubp-landing-hero">
+            {{-- Decorative floating shapes --}}
+            <div class="ubp-landing-orb ubp-landing-orb--1"></div>
+            <div class="ubp-landing-orb ubp-landing-orb--2"></div>
+            <div class="ubp-landing-orb ubp-landing-orb--3"></div>
+            <div class="ubp-landing-grid-bg"></div>
+
+            <div class="ubp-landing-hero-inner">
+                <div class="ubp-landing-badge">
+                    <span class="ubp-landing-badge-dot"></span>
+                    Portal Kemahasiswaan — UBP Karawang
+                </div>
+
+                <h1 class="ubp-landing-heading">
+                    Wujudkan <span class="ubp-landing-gradient-text">Prestasi</span> &
+                    <span class="ubp-landing-gradient-text">Karir</span> Terbaikmu
+                </h1>
+
+                <p class="ubp-landing-sub">
+                    Akses layanan beasiswa, organisasi, publikasi, dan karir dalam satu portal terpadu.
+                </p>
+
+                <div class="ubp-landing-cta">
+                    <a class="ubp-landing-btn-primary" href="{{ $loginUrl }}">
+                        <span>{{ $loginLabel }} Panel</span>
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a class="ubp-landing-btn-ghost" href="{{ route('public.news') }}">Lihat Berita</a>
+                </div>
             </div>
-            <div class="ubp-public-hero-copy">
-                <span class="ubp-auth-eyebrow">Kemahasiswaan UBP Karawang</span>
-                <h1>Layanan kemahasiswaan terpadu untuk prestasi, organisasi, beasiswa, dan karir.</h1>
-                <p>Portal publik ini menjadi etalase informasi resmi kemahasiswaan. Mahasiswa, Ormawa, alumni, dan mitra dapat melihat publikasi terbaru, peluang karir, serta kanal layanan yang tersedia.</p>
-                <div class="ubp-public-actions">
-                    <a class="ubp-btn ubp-btn-primary" href="{{ $loginUrl }}">{{ $loginLabel }} Panel</a>
-                    <a class="ubp-table-action" href="{{ route('public.news') }}">Lihat Berita</a>
-                </div>
-                <div class="ubp-public-statline">
-                    @foreach($stats as $stat)
-                        <span><strong>{{ $stat['value'] }}</strong><small>{{ $stat['label'] }}</small></span>
-                    @endforeach
-                </div>
+
+            <div class="ubp-landing-stats">
+                @foreach($stats as $stat)
+                    <div class="ubp-landing-stat">
+                        <strong>{{ $stat['value'] }}</strong>
+                        <small>{{ $stat['label'] }}</small>
+                    </div>
+                @endforeach
             </div>
         </section>
 
