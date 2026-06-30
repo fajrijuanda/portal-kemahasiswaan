@@ -14,7 +14,7 @@
             <div class="ubp-public-section-head">
                 <div>
                     <span>Profil</span>
-                    <h1>Direktorat layanan kemahasiswaan, organisasi, karir, dan alumni.</h1>
+                    <h1>Layanan kemahasiswaan, organisasi, karir, dan alumni.</h1>
                     <p>Halaman ini memperkenalkan lingkup kerja kemahasiswaan UBP Karawang sebagai pusat layanan prestasi, beasiswa, Ormawa, tracer study, publikasi, dan karir.</p>
                 </div>
             </div>
