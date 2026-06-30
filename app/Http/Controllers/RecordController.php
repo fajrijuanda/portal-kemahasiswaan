@@ -43,6 +43,15 @@ class RecordController extends Controller
                 'catatan' => ['label' => 'Catatan', 'type' => 'textarea'],
             ],
         ],
+        'kuota-prestasi' => [
+            'title' => 'Kuota Prestasi Prodi',
+            'model' => AchievementQuota::class,
+            'with' => ['semester', 'prodi'],
+            'fields' => [
+                'slot_prestasi' => ['label' => 'Total Slot Prestasi', 'type' => 'number', 'required' => true],
+                'terpakai' => ['label' => 'Terpakai (Dihitung Otomatis)', 'type' => 'number'],
+            ],
+        ],
         'event' => [
             'title' => 'Event Kegiatan',
             'model' => Event::class,
@@ -446,6 +455,7 @@ class RecordController extends Controller
         $groups = [
             'prestasi' => [
                 'prestasi' => ['label' => 'Prestasi', 'icon' => 'prestasi'],
+                'kuota-prestasi' => ['label' => 'Kuota Prestasi', 'icon' => 'semester'],
             ],
             'event' => [
                 'event' => ['label' => 'Event', 'icon' => 'event'],
@@ -512,6 +522,7 @@ class RecordController extends Controller
                 'subtitle' => 'Pilih tabel prestasi yang ingin dibuka. Halaman ini menjadi overview sebelum masuk ke data detail.',
                 'items' => [
                     ['label' => 'Prestasi Mahasiswa', 'module' => 'prestasi', 'icon' => 'prestasi', 'tone' => 'blue', 'href' => route('prestasi.table'), 'description' => 'Data lomba, kategori, scope, juara, dan verifikasi prestasi.'],
+                    ['label' => 'Kuota Prestasi', 'module' => 'kuota-prestasi', 'icon' => 'semester', 'tone' => 'violet', 'href' => route('data.index', 'kuota-prestasi'), 'description' => 'Manajemen slot dukungan dan pemakaian prestasi per prodi.'],
                 ],
             ],
             'event' => [
@@ -547,6 +558,7 @@ class RecordController extends Controller
     {
         return match ($module) {
             'prestasi' => 'prestasi.table',
+            'kuota-prestasi' => 'kuota-prestasi.table',
             'event' => 'event.table',
             'reimburse' => 'reimburse.table',
             'beasiswa' => 'beasiswa.table',

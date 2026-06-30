@@ -61,24 +61,7 @@
         </article>
     </div>
 
-    @if($module === 'prestasi' && $achievementQuotas->isNotEmpty())
-        <x-ui.table-shell class="mb-4" title="Kuota Prestasi Prodi" subtitle="Slot dukungan dan pemakaian prestasi terverifikasi.">
-            <table class="table align-middle ubp-table ubp-data-table">
-                <thead><tr><th>Semester</th><th>Prodi</th><th>Slot</th><th>Terpakai</th><th>Sisa</th></tr></thead>
-                <tbody>
-                    @foreach($achievementQuotas as $quota)
-                        <tr>
-                            <td>{{ $quota->semester?->nama ?? '-' }}</td>
-                            <td>{{ $quota->prodi?->nama ?? '-' }}</td>
-                            <td>{{ $quota->slot_prestasi }}</td>
-                            <td>{{ $quota->terpakai }}</td>
-                            <td>{{ max(0, $quota->slot_prestasi - $quota->terpakai) }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </x-ui.table-shell>
-    @endif
+
 
     <x-ui.table-shell class="ubp-table-shell-omnia" :title="'Daftar '.$config['title']" subtitle="Data terbaru tersaji dalam format ringkas untuk verifikasi cepat.">
         <x-slot:toolbar>

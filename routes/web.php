@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:super user|admin|kaprodi|kabag|warek')->group(function () {
         Route::get('/prestasi', [RecordController::class, 'overview'])->defaults('group', 'prestasi')->name('prestasi.index');
         Route::get('/prestasi/mahasiswa', [RecordController::class, 'index'])->defaults('module', 'prestasi')->name('prestasi.table');
+        Route::get('/prestasi/kuota', [RecordController::class, 'index'])->defaults('module', 'kuota-prestasi')->name('kuota-prestasi.table');
         Route::get('/event', [RecordController::class, 'overview'])->defaults('group', 'event')->name('event.index');
         Route::get('/event/kegiatan', [RecordController::class, 'index'])->defaults('module', 'event')->name('event.table');
         Route::get('/event/reimburse', [RecordController::class, 'index'])->defaults('module', 'reimburse')->name('reimburse.table');
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/tracer-study', fn () => redirect()->route('tracer.index'))->name('tracer-study.index');
         Route::get('/data/{module}', fn (string $module) => redirect()->route(match ($module) {
             'prestasi' => 'prestasi.table',
+            'kuota-prestasi' => 'kuota-prestasi.table',
             'event' => 'event.table',
             'reimburse' => 'reimburse.table',
             'beasiswa' => 'beasiswa.table',
@@ -65,7 +67,7 @@ Route::middleware('auth')->group(function () {
             default => 'prestasi.index',
         }, request()->query()))->name('data.index');
 
-        foreach (['prestasi', 'event', 'tracer-study', 'beasiswa'] as $module) {
+        foreach (['prestasi', 'kuota-prestasi', 'event', 'tracer-study', 'beasiswa'] as $module) {
             Route::get("/{$module}/create", fn () => redirect()->route('data.index', $module))->name($module.'.create');
             Route::post("/{$module}", [RecordController::class, 'store'])->defaults('module', $module)->name($module.'.store');
             Route::get("/{$module}/{id}/edit", fn () => redirect()->route('data.index', $module))->name($module.'.edit');
@@ -123,7 +125,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/master/semester', [MasterDataController::class, 'index'])->defaults('section', 'semester')->name('master.semester.index');
         Route::get('/master/competitions', [MasterDataController::class, 'index'])->defaults('section', 'competitions')->name('master.competitions.index');
         Route::get('/master/scholarship-types', [MasterDataController::class, 'index'])->defaults('section', 'scholarship-types')->name('master.scholarship-types.index');
-        Route::get('/master/quotas', [MasterDataController::class, 'index'])->defaults('section', 'quotas')->name('master.quotas.page');
         Route::get('/master/{section}', [MasterDataController::class, 'index'])->name('master-data.index');
 
         Route::post('/master/prodi', [ProdiController::class, 'store'])->name('master.prodi.store');
@@ -142,11 +143,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/master-ormawa', [OrmawaController::class, 'store'])->name('master.ormawa.store');
         Route::put('/master-ormawa/{ormawa}', [OrmawaController::class, 'update'])->name('master.ormawa.update');
         Route::delete('/master-ormawa/{ormawa}', [OrmawaController::class, 'destroy'])->name('master.ormawa.destroy');
-
-        Route::get('/master-kuota-prestasi', fn () => redirect()->route('master-data.index', 'quotas'))->name('master.quotas.index');
-        Route::post('/master-kuota-prestasi', [AchievementQuotaController::class, 'store'])->name('master.quotas.store');
-        Route::put('/master-kuota-prestasi/{quota}', [AchievementQuotaController::class, 'update'])->name('master.quotas.update');
-        Route::delete('/master-kuota-prestasi/{quota}', [AchievementQuotaController::class, 'destroy'])->name('master.quotas.destroy');
     });
 
     Route::middleware('role:super user|admin|kabag')->group(function () {

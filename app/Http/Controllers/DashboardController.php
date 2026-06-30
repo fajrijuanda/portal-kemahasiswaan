@@ -45,7 +45,6 @@ class DashboardController extends Controller
             'selectedProdi' => $prodiId,
             'cards' => $this->summaryCards($request),
             'dashboardMenu' => $this->dashboardMenu($request),
-            'achievementQuotas' => $this->achievementQuotas(),
         ]);
     }
 
@@ -247,14 +246,7 @@ class DashboardController extends Controller
         ];
     }
 
-    private function achievementQuotas()
-    {
-        if (! Schema::hasTable('achievement_quotas')) {
-            return collect();
-        }
 
-        return AchievementQuota::with(['semester', 'prodi'])->latest()->take(8)->get();
-    }
 
     private function dashboardMenu(Request $request): array
     {
