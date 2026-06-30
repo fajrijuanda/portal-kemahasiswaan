@@ -209,6 +209,19 @@ class RecordController extends Controller
             $data['prodi_id'] = $request->user()->prodi_id;
         }
 
+        if ($module === 'beasiswa' && isset($data['scholarship_type_id'])) {
+            $data['jenis_beasiswa'] = ScholarshipType::find($data['scholarship_type_id'])?->nama ?? ($data['jenis_beasiswa'] ?? 'Lainnya');
+        }
+
+        if ($module === 'kuota-prestasi') {
+            $record = AchievementQuota::updateOrCreate(
+                ['semester_id' => $data['semester_id'], 'prodi_id' => $data['prodi_id']],
+                collect($data)->except(['semester_id', 'prodi_id', 'created_by'])->all()
+            );
+
+            return redirect()->route($this->canonicalRoute($module))->with('status', $config['title'].' berhasil disimpan.');
+        }
+
         $record = $config['model']::create($data);
         $this->syncComputedFields($module, $record);
 
