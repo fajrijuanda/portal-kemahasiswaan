@@ -89,7 +89,7 @@ class DummyDataSeeder extends Seeder
                     'slug' => \Illuminate\Support\Str::slug($faker->sentence(4)) . '-' . uniqid(),
                     'content' => $faker->paragraphs(3, true),
                     'published_at' => tap($faker->dateTimeBetween('-1 month', 'now'))->setTime(0, 0, 0),
-                    'is_published' => true,
+                    'status' => 'Published',
                     'created_by' => $user->id,
                 ]);
             }
@@ -103,11 +103,10 @@ class DummyDataSeeder extends Seeder
                     'company' => $faker->company(),
                     'location' => $faker->city(),
                     'type' => $faker->randomElement($types),
-                    'description' => $faker->paragraphs(2, true),
-                    'requirements' => "1. Requirement 1\n2. Requirement 2\n3. Requirement 3",
+                    'content' => $faker->paragraphs(2, true) . "\n\n1. Requirement 1\n2. Requirement 2",
                     'deadline' => tap($faker->dateTimeBetween('now', '+2 months'))->setTime(0, 0, 0),
                     'external_url' => $faker->url(),
-                    'status' => 'Aktif',
+                    'status' => 'Published',
                     'created_by' => $user->id,
                 ]);
             }
