@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isClearable = firstOption && !el.hasAttribute('required');
 
         const plugins = ['dropdown_input'];
-        if (isClearable) {
-            plugins.push('clear_button');
-        }
 
         new TomSelect(el, {
             maxOptions: null,
