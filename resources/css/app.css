@@ -1318,21 +1318,23 @@ textarea,
 
 .ubp-editor-page {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 20px;
     align-items: start;
+    width: 100%;
 }
 
 .ubp-editor-main,
 .ubp-editor-panel {
     border: 1px solid var(--portal-border);
-    border-radius: 22px;
-    background: rgba(255, 255, 255, .94);
-    box-shadow: 0 18px 54px rgba(15, 23, 42, .06);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 18px 54px rgba(15, 23, 42, .055);
 }
 
 .ubp-editor-main {
     overflow: hidden;
+    min-width: 0;
 }
 
 .ubp-editor-titlebar {
@@ -1340,9 +1342,11 @@ textarea,
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 22px 24px;
+    padding: 22px 26px;
     border-bottom: 1px solid var(--portal-border);
-    background: linear-gradient(135deg, #ffffff, #f0f9ff);
+    background:
+        linear-gradient(135deg, rgba(14, 165, 233, .08), rgba(255, 255, 255, .86) 42%, rgba(16, 185, 129, .07)),
+        #fff;
 }
 
 .ubp-editor-titlebar h2,
@@ -1353,48 +1357,87 @@ textarea,
     font-weight: 950;
 }
 
-.ubp-editor-field {
+.ubp-editor-titlebar p {
+    max-width: 620px;
+    margin: 7px 0 0;
+    color: var(--portal-muted);
+    font-size: 13px;
+    font-weight: 760;
+    line-height: 1.55;
+}
+
+.ubp-editor-fields {
+    display: grid;
+    gap: 14px;
     padding: 20px 24px 0;
 }
 
-.ubp-editor-title-input {
-    min-height: 54px;
-    font-size: 20px;
+.ubp-editor-field {
+    border: 1px solid #e5edf6;
+    border-radius: 18px;
+    background: #fff;
+    padding: 16px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, .035);
+}
+
+.ubp-editor-field .form-label {
+    margin-bottom: 8px;
+    color: var(--portal-muted);
+    font-size: 12px;
     font-weight: 900;
 }
 
+.ubp-editor-title-input {
+    min-height: 58px;
+    border-color: transparent;
+    background: #f8fafc;
+    font-size: clamp(22px, 2.1vw, 30px);
+    font-weight: 950;
+    line-height: 1.12;
+}
+
+.ubp-editor-field textarea.ubp-control {
+    min-height: 96px;
+    border-color: transparent;
+    background: #f8fafc;
+    line-height: 1.65;
+}
+
 .ubp-doc-editor {
-    margin: 20px 24px 24px;
+    margin: 18px 24px 24px;
     overflow: hidden;
     border: 1px solid #dbe7f3;
-    border-radius: 18px;
-    background: #f8fafc;
+    border-radius: 20px;
+    background:
+        linear-gradient(90deg, rgba(14, 165, 233, .07), transparent 20%, transparent 80%, rgba(20, 184, 166, .06)),
+        #f8fafc;
 }
 
 .ubp-doc-toolbar {
     position: sticky;
-    top: 74px;
+    top: 0;
     z-index: 4;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     border-bottom: 1px solid #dbe7f3;
     background: rgba(255, 255, 255, .96);
-    padding: 12px;
+    padding: 10px 12px;
     backdrop-filter: blur(12px);
 }
 
 .ubp-doc-toolbar button,
 .ubp-doc-select {
-    min-height: 34px;
+    min-height: 32px;
     border: 1px solid #dbe7f3;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #fff;
     color: var(--portal-text);
-    padding: 0 10px;
-    font-size: 12px;
+    padding: 0 9px;
+    font-size: 11px;
     font-weight: 900;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, .035);
 }
 
 .ubp-doc-toolbar button:hover,
@@ -1406,24 +1449,31 @@ textarea,
 
 .ubp-doc-divider {
     width: 1px;
-    height: 26px;
+    height: 24px;
     background: #dbe7f3;
+    margin: 0 2px;
 }
 
 .ubp-doc-paper {
-    min-height: 620px;
-    margin: 18px auto;
-    width: min(100% - 36px, 860px);
+    min-height: 480px;
+    margin: 16px auto 18px;
+    width: min(100% - 32px, 980px);
     border: 1px solid #e5edf6;
-    border-radius: 12px;
+    border-radius: 18px;
     outline: 0;
     background: #fff;
     color: var(--portal-text);
-    padding: 42px 52px;
+    padding: clamp(28px, 3vw, 42px);
     font-size: 16px;
     font-weight: 600;
     line-height: 1.78;
-    box-shadow: 0 24px 70px rgba(15, 23, 42, .08);
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .075);
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.ubp-doc-paper:focus {
+    border-color: rgba(14, 165, 233, .5);
+    box-shadow: 0 22px 70px rgba(14, 165, 233, .14);
 }
 
 .ubp-doc-paper.is-empty::before {
@@ -1468,9 +1518,10 @@ textarea,
 
 .ubp-editor-side {
     position: sticky;
-    top: 92px;
+    top: 88px;
     display: grid;
-    gap: 14px;
+    gap: 12px;
+    min-width: 0;
 }
 
 .ubp-editor-panel {
@@ -1528,6 +1579,14 @@ textarea,
     display: flex;
     gap: 10px;
     align-items: center;
+    position: sticky;
+    bottom: 16px;
+    border: 1px solid var(--portal-border);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .94);
+    padding: 10px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, .08);
+    backdrop-filter: blur(14px);
 }
 
 .ubp-editor-submit .ubp-btn {

@@ -22,20 +22,23 @@
                 <div>
                     <span class="ubp-auth-eyebrow">Konten Berita</span>
                     <h2>{{ $record ? 'Perbarui naskah berita' : 'Tulis naskah berita baru' }}</h2>
+                    <p>Susun judul, ringkasan, dan isi berita dalam satu halaman editorial.</p>
                 </div>
                 <a class="ubp-table-action" href="{{ route('publications.index', 'berita') }}">Kembali</a>
             </div>
 
-            <div class="ubp-editor-field">
-                <label class="form-label" for="title">Judul</label>
-                <input id="title" name="title" class="form-control ubp-control ubp-editor-title-input" value="{{ old('title', $record?->title) }}" placeholder="Tulis judul berita..." required>
-                @error('title')<div class="ubp-form-error">{{ $message }}</div>@enderror
-            </div>
+            <div class="ubp-editor-fields">
+                <div class="ubp-editor-field">
+                    <label class="form-label" for="title">Judul</label>
+                    <input id="title" name="title" class="form-control ubp-control ubp-editor-title-input" value="{{ old('title', $record?->title) }}" placeholder="Tulis judul berita..." required>
+                    @error('title')<div class="ubp-form-error">{{ $message }}</div>@enderror
+                </div>
 
-            <div class="ubp-editor-field">
-                <label class="form-label" for="excerpt">Ringkasan</label>
-                <textarea id="excerpt" name="excerpt" class="form-control ubp-control" rows="3" placeholder="Ringkasan singkat yang tampil di kartu berita...">{{ old('excerpt', $record?->excerpt) }}</textarea>
-                @error('excerpt')<div class="ubp-form-error">{{ $message }}</div>@enderror
+                <div class="ubp-editor-field">
+                    <label class="form-label" for="excerpt">Ringkasan</label>
+                    <textarea id="excerpt" name="excerpt" class="form-control ubp-control" rows="3" placeholder="Ringkasan singkat yang tampil di kartu berita...">{{ old('excerpt', $record?->excerpt) }}</textarea>
+                    @error('excerpt')<div class="ubp-form-error">{{ $message }}</div>@enderror
+                </div>
             </div>
 
             <div class="ubp-doc-editor" data-rich-editor>
