@@ -19,71 +19,58 @@
         $selectedProdiName = $selectedProdi ? optional($prodis->firstWhere('id', $selectedProdi))->nama : 'Semua Prodi';
     @endphp
 
-    <section class="ubp-dashboard-hero">
-        <div class="ubp-rekap-hero-main">
-            <span class="ubp-rekap-eyebrow">Dashboard</span>
-            <h2>Pusat Monitoring Kemahasiswaan</h2>
-            <p>Pantau semua layanan baru dari satu layar: prestasi, event, reimbursement, beasiswa, tracer, unit, Ormawa, master data, dan publikasi.</p>
-
-            <div class="ubp-rekap-hero-stats">
-                <span><strong>{{ number_format($totalRecords) }}</strong><small>Total data</small></span>
-                <span><strong>{{ $filledCards }}/{{ count($cards) }}</strong><small>Modul terisi</small></span>
-                <span><strong>{{ $selectedSemesterName }}</strong><small>Semester</small></span>
+    <div class="ubp-table-shell mb-4">
+        <div class="ubp-table-toolbar">
+            <div>
+                <h2 class="ubp-table-title">Dashboard Monitoring</h2>
+                <p class="ubp-table-subtitle">Pantau seluruh modul layanan kemahasiswaan: prestasi, event, beasiswa, tracer, unit, dan publikasi.</p>
+            </div>
+            <div class="ubp-table-toolbar-actions">
+                <span class="ubp-badge ubp-badge-neutral">{{ number_format($totalRecords) }} Total Data</span>
+                <span class="ubp-badge ubp-badge-neutral">{{ $selectedSemesterName }}</span>
             </div>
         </div>
-
-        <form class="ubp-rekap-filter-card ubp-dashboard-filter-card" method="GET">
-            <div class="ubp-rekap-filter-title">
-                <span><x-ui.app-icon name="grid" /></span>
-                <div>
-                    <strong>Filter Dashboard</strong>
-                    <small>{{ $selectedProdiName }}</small>
+        <div class="ubp-table-controls" style="padding: 1rem 1.15rem; border-bottom: 1px solid var(--ubp-line); background: #f8fafc;">
+            <form class="ubp-table-action-group" method="GET">
+                <div class="d-flex align-items-center gap-2 me-3">
+                    <span class="text-muted"><x-ui.app-icon name="grid" /></span>
+                    <strong style="font-size: 0.9rem;">Filter:</strong>
                 </div>
-            </div>
-            <label>
-                <small>Semester</small>
-                <select name="semester_id" class="form-select ubp-control">
+                <select name="semester_id" class="form-select ubp-control w-auto">
                     <option value="">Semua Semester</option>
                     @foreach($semesters as $semester)
-                        <option value="{{ $semester->id }}" @selected($selectedSemester === $semester->id)>{{ $semester->nama }} - {{ $semester->tahun_akademik }}</option>
+                        <option value="{{ $semester->id }}" @selected($selectedSemester === $semester->id)>{{ $semester->nama }}</option>
                     @endforeach
                 </select>
-            </label>
-            @unless(auth()->user()->hasRole('kaprodi'))
-                <label>
-                    <small>Program Studi</small>
-                    <select name="prodi_id" class="form-select ubp-control">
+                @unless(auth()->user()->hasRole('kaprodi'))
+                    <select name="prodi_id" class="form-select ubp-control w-auto">
                         <option value="">Semua Prodi</option>
                         @foreach($prodis as $prodi)
                             <option value="{{ $prodi->id }}" @selected($selectedProdi === $prodi->id)>{{ $prodi->nama }}</option>
                         @endforeach
                     </select>
-                </label>
-            @endunless
-            <div class="ubp-rekap-filter-actions">
-                <button class="ubp-btn ubp-btn-primary" type="submit">Filter</button>
+                @endunless
+                <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter Data</button>
                 @if($selectedSemester || $selectedProdi)
                     <a href="{{ route('dashboard') }}" class="ubp-table-action">Reset</a>
                 @endif
-            </div>
-        </form>
-    </section>
+            </form>
+        </div>
+    </div>
 
-    <section class="ubp-rekap-metric-grid">
+    <div class="ubp-stat-grid mb-5" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
         @foreach($cards as $label => $value)
             @php($meta = $cardMeta[$label] ?? ['icon' => 'grid', 'tone' => 'blue', 'caption' => 'Data kemahasiswaan', 'href' => '#'])
-            <a href="{{ $meta['href'] }}" class="ubp-rekap-metric-card tone-{{ $meta['tone'] }}">
-                <div class="ubp-rekap-metric-icon"><x-ui.app-icon :name="$meta['icon']" /></div>
-                <div class="ubp-rekap-metric-copy">
+            <a href="{{ $meta['href'] }}" class="ubp-stat-card tone-{{ $meta['tone'] }}" style="text-decoration: none;">
+                <div>
                     <small>{{ $label }}</small>
                     <strong>{{ number_format($value) }}</strong>
-                    <p>{{ $meta['caption'] }}</p>
-                    <span class="ubp-metric-note">{{ $value > 0 ? 'Kelola data' : 'Input data' }}</span>
+                    <em style="background: rgba(255,255,255,0.4); color: inherit;">{{ $meta['caption'] }}</em>
                 </div>
-                <div class="ubp-rekap-mini-chart"><canvas data-summary-label="{{ $label }}"></canvas></div>
+                <span class="ubp-stat-icon"><x-ui.app-icon :name="$meta['icon']" /></span>
             </a>
         @endforeach
-    </section>
+    </div>
 
 
 
@@ -114,33 +101,6 @@
     <script>
         const query = new URLSearchParams(window.location.search);
         const colors = ['#0ea5e9', '#14b8a6', '#8b5cf6', '#10b981', '#ec4899', '#06b6d4', '#facc15', '#64748b'];
-
-        fetch('{{ route('charts.summary.cards') }}?' + query.toString(), {headers: {'Accept': 'application/json'}})
-            .then((response) => response.json())
-            .then((summaryCharts) => {
-                document.querySelectorAll('canvas[data-summary-label]').forEach((canvas, index) => {
-                    const payload = summaryCharts[canvas.dataset.summaryLabel];
-                    if (!payload) return;
-                    new Chart(canvas, {
-                        type: 'doughnut',
-                        data: {
-                            labels: payload.labels,
-                            datasets: [{
-                                data: payload.data,
-                                backgroundColor: [colors[index % colors.length], 'rgba(255,255,255,.54)'],
-                                borderColor: 'rgba(255,255,255,.78)',
-                                borderWidth: 1,
-                            }]
-                        },
-                        options: {
-                            maintainAspectRatio: false,
-                            responsive: true,
-                            cutout: '68%',
-                            plugins: { legend: { display: false }, tooltip: { enabled: true } }
-                        }
-                    });
-                });
-            });
 
         document.querySelectorAll('canvas[data-url]').forEach(async (canvas) => {
             const response = await fetch(canvas.dataset.url + '?' + query.toString(), {headers: {'Accept': 'application/json'}});
