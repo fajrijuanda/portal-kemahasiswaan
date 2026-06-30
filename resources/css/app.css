@@ -36,6 +36,26 @@ body {
         linear-gradient(180deg, #fbfeff 0%, var(--ubp-page) 100%);
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #7dd3fc; /* Light blue */
+    border-radius: 10px;
+    border: 3px solid #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ubp-blue);
+}
+
 button,
 input,
 select,
