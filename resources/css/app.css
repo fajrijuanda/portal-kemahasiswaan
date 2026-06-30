@@ -3522,6 +3522,38 @@ textarea,
     text-align: center;
 }
 
+/* TomSelect Clear Button (plugin) */
+.ts-wrapper.ubp-control .clear-button {
+    position: absolute;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, .12);
+    color: var(--portal-primary);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    opacity: .7;
+    transition: opacity .16s ease, background .16s ease;
+    z-index: 2;
+}
+
+.ts-wrapper.ubp-control .clear-button:hover {
+    opacity: 1;
+    background: rgba(14, 165, 233, .22);
+}
+
+.ts-wrapper.ubp-control.has-items .ts-control {
+    padding-right: 62px;
+}
+
 .ubp-profile-menu .dropdown-item {
     display: flex;
     align-items: center;

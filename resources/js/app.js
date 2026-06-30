@@ -13,9 +13,19 @@ Alpine.start();
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize custom modern select dropdowns
     document.querySelectorAll('select.ubp-control').forEach((el) => {
+        // Detect if this select has a clearable empty-value option (filter selects like "Semua semester")
+        const firstOption = el.querySelector('option[value=""]');
+        const isClearable = firstOption && !el.hasAttribute('required');
+
+        const plugins = ['dropdown_input'];
+        if (isClearable) {
+            plugins.push('clear_button');
+        }
+
         new TomSelect(el, {
             maxOptions: null,
-            plugins: ['dropdown_input'],
+            allowEmptyOption: !!isClearable,
+            plugins: plugins,
             render: {
                 no_results: function(data, escape) {
                     return '<div class="no-results">Tidak ada data ditemukan untuk "' + escape(data.input) + '"</div>';
