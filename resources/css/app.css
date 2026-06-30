@@ -4046,8 +4046,40 @@ textarea,
 .ubp-public-page {
     width: calc(100% - 32px);
     max-width: 1560px;
+    padding-right: 28px;
+    padding-left: 28px;
     margin-right: auto;
     margin-left: auto;
+}
+
+/* Public news card overrides for images */
+.ubp-public-news-card {
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.ubp-public-news-img {
+    width: 100%;
+    height: 180px;
+    border-bottom: 1.5px solid var(--portal-text);
+}
+
+.ubp-public-news-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ubp-public-news-body {
+    padding: 24px;
+    flex: 1;
+}
+
+.ubp-public-news-card:nth-child(even) .ubp-public-news-img {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .ubp-public-page {

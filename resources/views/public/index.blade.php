@@ -82,9 +82,20 @@
             <div class="ubp-public-news-grid">
                 @forelse($pressReleases as $item)
                     <a class="ubp-public-news-card" href="{{ route('public.news.show', $item) }}">
-                        <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
-                        <strong>{{ $item->title }}</strong>
-                        <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 128) }}</small>
+                        @if($item->cover_path)
+                            <div class="ubp-public-news-img">
+                                <img src="{{ asset('storage/'.$item->cover_path) }}" alt="{{ $item->title }}">
+                            </div>
+                        @else
+                            <div class="ubp-public-news-img" style="background: rgba(14, 165, 233, .10); display: grid; place-items: center; color: var(--portal-primary);">
+                                <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h8.5L20 9.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z"/><path d="M14 2v8h8"/></svg>
+                            </div>
+                        @endif
+                        <div class="ubp-public-news-body">
+                            <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
+                            <strong>{{ $item->title }}</strong>
+                            <small>{{ \Illuminate\Support\Str::limit($item->excerpt ?: $item->content, 128) }}</small>
+                        </div>
                     </a>
                 @empty
                     <article class="ubp-public-empty">
