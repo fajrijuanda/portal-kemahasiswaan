@@ -32,7 +32,7 @@ class OrmawaAdminController extends Controller
                 'module' => $section,
                 'icon' => $item['icon'],
                 'tone' => match($section) { 'data-ormawa' => 'amber', 'kegiatan' => 'teal', 'proposal' => 'blue', 'reimbursement' => 'emerald' },
-                'href' => route('ormawa-admin.index', $section),
+                'href' => route('ormawa.index', $section),
                 'description' => match($section) { 'data-ormawa' => 'Kelola profil, akun, dan overview ormawa.', 'kegiatan' => 'Pembinaan dan pengembangan ormawa.', 'proposal' => 'Pantau pengajuan proposal.', 'reimbursement' => 'Pantau pengajuan reimbursement.' },
             ])->values()->all(),
         ];
@@ -149,7 +149,7 @@ class OrmawaAdminController extends Controller
             'items' => collect($this->sections)->map(fn ($item, $section) => [
                 'label' => $item['label'],
                 'icon' => $item['icon'],
-                'href' => route('ormawa-admin.index', $section),
+                'href' => route('ormawa.index', $section),
                 'active' => $section === $active,
                 'count' => $this->count($section),
             ])->values()->all(),

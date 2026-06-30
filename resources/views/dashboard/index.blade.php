@@ -9,7 +9,7 @@
             ['title' => 'Beasiswa', 'count' => $cards['Beasiswa'] ?? 0, 'desc' => 'Penerima, jenis, nominal, dan status beasiswa.', 'href' => route('beasiswa.index'), 'icon' => 'beasiswa', 'tone' => 'pink'],
             ['title' => 'Tracer Study', 'count' => $cards['Tracer Study Input'] ?? 0, 'desc' => 'Monitoring input tracer sebelum yudisium.', 'href' => route('tracer.index'), 'icon' => 'tracer', 'tone' => 'violet'],
             ['title' => 'Unit Kemahasiswaan', 'count' => ($cards['Humas Marketing'] ?? 0) + ($cards['Science Center'] ?? 0) + ($cards['Alumni dan Pusat Karir'] ?? 0), 'desc' => 'Humas, Science Center, Alumni, dan Pusat Karir.', 'href' => route('unit-activities.index', 'humas-marketing'), 'icon' => 'prodi', 'tone' => 'cyan'],
-            ['title' => 'Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Data ormawa, kegiatan, proposal, dan reimbursement.', 'href' => route('ormawa-admin.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
+            ['title' => 'Ormawa', 'count' => $cards['Pengembangan Ormawa'] ?? 0, 'desc' => 'Data ormawa, kegiatan, proposal, dan reimbursement.', 'href' => route('ormawa.index', 'data-ormawa'), 'icon' => 'user', 'tone' => 'amber'],
         ];
 
         if (auth()->user()->hasAnyRole(['super user', 'admin'])) {

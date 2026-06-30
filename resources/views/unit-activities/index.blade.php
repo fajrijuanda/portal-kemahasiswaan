@@ -74,7 +74,7 @@
                 </select>
                 <button class="ubp-table-action ubp-table-action-primary" type="submit">Filter</button>
                 @if(request('q') || request('semester_id') || request('prodi_id'))
-                    <a href="{{ $unit === 'pengembangan-ormawa' ? route('ormawa-admin.index', 'kegiatan') : route('unit-activities.index', $unit) }}" class="ubp-table-action">Reset</a>
+                    <a href="{{ $unit === 'pengembangan-ormawa' ? route('ormawa.index', 'kegiatan') : route('unit-activities.index', $unit) }}" class="ubp-table-action">Reset</a>
                 @endif
             </form>
         </x-slot:controls>

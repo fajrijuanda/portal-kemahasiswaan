@@ -165,7 +165,7 @@ class MvpRevisionTest extends TestCase
         $this->actingAs($admin)->get(route('event.table'))->assertOk();
         $this->actingAs($admin)->get(route('reimburse.table'))->assertOk();
         $this->actingAs($admin)->get(route('unit-activities.index', 'humas-marketing'))->assertOk();
-        $this->actingAs($admin)->get(route('ormawa-admin.index', 'data-ormawa'))->assertOk();
+        $this->actingAs($admin)->get(route('ormawa.index', 'data-ormawa'))->assertOk();
         $this->actingAs($admin)->get(route('master-data.index', 'competitions'))->assertOk();
         $this->actingAs($admin)->get(route('master-data.index', 'quotas'))->assertOk();
         $this->actingAs($admin)->get(route('publications.index', 'careers'))->assertOk();
@@ -186,7 +186,7 @@ class MvpRevisionTest extends TestCase
         $this->actingAs($admin)->get('/data/event')->assertRedirect(route('event.table'));
         $this->actingAs($admin)->get('/unit-data/humas-marketing')->assertRedirect(route('unit-activities.index', 'humas-marketing'));
         $this->actingAs($admin)->get('/master-data/prodi')->assertRedirect(route('master-data.index', 'prodi'));
-        $this->actingAs($admin)->get('/master-ormawa')->assertRedirect(route('ormawa-admin.index', 'data-ormawa'));
+        $this->actingAs($admin)->get('/master-ormawa')->assertRedirect(route('ormawa.index', 'data-ormawa'));
         $this->actingAs($admin)->get('/karir')->assertRedirect(route('publications.index', 'careers'));
         $this->actingAs($admin)->get('/publikasi/press-releases')->assertRedirect(route('publications.index', 'berita'));
     }

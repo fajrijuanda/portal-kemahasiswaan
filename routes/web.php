@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('unit/{unit}')->name('unit-activities.')->group(function () {
             Route::get('/', function (string $unit) {
                 return $unit === 'pengembangan-ormawa'
-                    ? redirect()->route('ormawa-admin.index', 'data-ormawa')
+                    ? redirect()->route('ormawa.index', 'data-ormawa')
                     : app(UnitActivityController::class)->index(request(), $unit);
             })->name('index');
             Route::post('/', [UnitActivityController::class, 'store'])->name('store');
@@ -100,7 +100,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::get('/ormawa', [OrmawaAdminController::class, 'overview'])->name('ormawa.overview');
-        Route::get('/ormawa-admin/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa-admin.index');
+        Route::get('/ormawa-data/{section?}', [OrmawaAdminController::class, 'index'])->name('ormawa.index');
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('student.')->group(function () {
@@ -138,7 +138,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/master/{master}/{id}', [SimpleMasterController::class, 'update'])->name('master.simple.update');
         Route::delete('/master/{master}/{id}', [SimpleMasterController::class, 'destroy'])->name('master.simple.destroy');
 
-        Route::get('/master-ormawa', fn () => redirect()->route('ormawa-admin.index', 'data-ormawa'))->name('master.ormawa.index');
+        Route::get('/master-ormawa', fn () => redirect()->route('ormawa.index', 'data-ormawa'))->name('master.ormawa.index');
         Route::post('/master-ormawa', [OrmawaController::class, 'store'])->name('master.ormawa.store');
         Route::put('/master-ormawa/{ormawa}', [OrmawaController::class, 'update'])->name('master.ormawa.update');
         Route::delete('/master-ormawa/{ormawa}', [OrmawaController::class, 'destroy'])->name('master.ormawa.destroy');

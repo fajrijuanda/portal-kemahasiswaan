@@ -10,7 +10,7 @@
             'Beasiswa' => ['icon' => 'beasiswa', 'tone' => 'emerald', 'caption' => 'Data penerima beasiswa', 'href' => route('beasiswa.table', $filterParams)],
             'Humas Marketing' => ['icon' => 'grid', 'tone' => 'rose', 'caption' => 'Aktivitas promosi dan publikasi', 'href' => route('unit-activities.index', array_merge(['unit' => 'humas-marketing'], $filterParams))],
             'Science Center' => ['icon' => 'prodi', 'tone' => 'cyan', 'caption' => 'Program science center', 'href' => route('unit-activities.index', array_merge(['unit' => 'science-center'], $filterParams))],
-            'Pengembangan Ormawa' => ['icon' => 'user', 'tone' => 'amber-soft', 'caption' => 'Kegiatan dan pembinaan ormawa', 'href' => route('ormawa-admin.index', array_merge(['section' => 'kegiatan'], $filterParams))],
+            'Pengembangan Ormawa' => ['icon' => 'user', 'tone' => 'amber-soft', 'caption' => 'Kegiatan dan pembinaan ormawa', 'href' => route('ormawa.index', array_merge(['section' => 'kegiatan'], $filterParams))],
             'Alumni dan Pusat Karir' => ['icon' => 'access', 'tone' => 'slate', 'caption' => 'Alumni, karir, dan relasi industri', 'href' => route('unit-activities.index', array_merge(['unit' => 'alumni-pusat-karir'], $filterParams))],
         ];
         $totalRecords = collect($cards)->sum();

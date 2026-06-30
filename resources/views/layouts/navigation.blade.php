@@ -11,7 +11,7 @@
             ['label' => 'Beasiswa', 'href' => route('beasiswa.index'), 'active' => request()->is('beasiswa*') || request()->is('records/beasiswa*'), 'icon' => 'beasiswa'],
             ['label' => 'Tracer', 'href' => route('tracer.index'), 'active' => request()->is('tracer*') || request()->is('records/tracer-study*'), 'icon' => 'tracer'],
             ['label' => 'Unit', 'href' => route('unit.overview'), 'active' => request()->is('unit*') || request()->is('unit-data*'), 'icon' => 'prodi'],
-            ['label' => 'Ormawa', 'href' => route('ormawa.overview'), 'active' => request()->is('ormawa*') || request()->is('ormawa-admin*') || request()->is('master-ormawa*'), 'icon' => 'user'],
+            ['label' => 'Ormawa', 'href' => route('ormawa.overview'), 'active' => request()->is('ormawa*') || request()->is('ormawa-data*') || request()->is('master-ormawa*'), 'icon' => 'user'],
         ]);
     }
 

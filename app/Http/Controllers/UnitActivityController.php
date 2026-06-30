@@ -226,7 +226,7 @@ class UnitActivityController extends Controller
     private function indexUrl(string $unit): string
     {
         if ($unit === 'pengembangan-ormawa') {
-            return route('ormawa-admin.index', 'kegiatan');
+            return route('ormawa.index', 'kegiatan');
         }
 
         return route('unit-activities.index', $unit);

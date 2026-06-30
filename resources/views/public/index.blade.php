@@ -63,9 +63,7 @@
 
         <section id="layanan" class="ubp-public-section">
             <div class="ubp-public-section-head">
-                <span>Student Affairs Services</span>
-                <h2>Layanan utama kemahasiswaan</h2>
-                <p>Setiap layanan terhubung dengan workflow internal portal agar data, pengajuan, dan publikasi tetap rapi.</p>
+                <h2>Layanan</h2>
             </div>
             <div class="ubp-public-service-grid">
                 @foreach($services as $service)
@@ -77,13 +75,11 @@
             </div>
         </section>
 
-        <section id="publikasi" class="ubp-public-split">
-            <div class="ubp-public-feature">
-                <span>Berita</span>
-                <h2>Kabar terbaru kemahasiswaan</h2>
-                <p>Berita dan pengumuman yang sudah dipublikasikan oleh bagian terkait akan tampil di sini.</p>
+        <section id="publikasi" class="ubp-public-section">
+            <div class="ubp-public-section-head">
+                <h2>Berita</h2>
             </div>
-            <div class="ubp-public-news-list">
+            <div class="ubp-public-news-grid">
                 @forelse($pressReleases as $item)
                     <a class="ubp-public-news-card" href="{{ route('public.news.show', $item) }}">
                         <span>{{ $item->published_at?->format('d M Y') ?? $item->created_at?->format('d M Y') }}</span>
@@ -101,9 +97,7 @@
 
         <section id="karir" class="ubp-public-section">
             <div class="ubp-public-section-head">
-                <span>Career Center</span>
-                <h2>Lowongan kerja dan job fair</h2>
-                <p>Informasi karir yang dikurasi untuk mahasiswa dan alumni UBP Karawang.</p>
+                <h2>Karir</h2>
             </div>
             <div class="ubp-public-career-grid">
                 @forelse($careerPosts as $item)
@@ -137,8 +131,7 @@
 
         <section id="faq" class="ubp-public-section ubp-public-faq">
             <div class="ubp-public-section-head">
-                <span>FAQ</span>
-                <h2>Pertanyaan umum</h2>
+                <h2>FAQ</h2>
             </div>
             <div class="ubp-public-faq-grid">
                 <article><strong>Apakah halaman ini perlu login?</strong><small>Tidak. Halaman publik bisa dibuka langsung dari route `/`.</small></article>
