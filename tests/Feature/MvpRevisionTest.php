@@ -3,12 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\AchievementQuota;
-use App\Models\Beasiswa;
 use App\Models\CareerPost;
 use App\Models\Competition;
-use App\Models\Event;
 use App\Models\Ormawa;
-use App\Models\OrmawaProposal;
 use App\Models\PressRelease;
 use App\Models\Prestasi;
 use App\Models\Prodi;
@@ -235,22 +232,27 @@ class MvpRevisionTest extends TestCase
             ->post(route('press-releases.store'), [
                 'title' => 'Berita Editor Lengkap',
                 'excerpt' => 'Ringkasan berita editor.',
-                'content' => '<h2 onclick="alert(1)">Subjudul</h2><p><strong>Isi berita</strong> dengan format.</p><script>alert(1)</script>',
+                'content' => '<h2 onclick="alert(1)">Subjudul</h2><p style="text-align:center"><strong>Isi berita</strong> dengan format.</p><ul><li>Poin berita</li></ul><img src="data:image/png;base64,iVBORw0KGgo=" alt="Foto kegiatan" onerror="alert(1)"><img src="javascript:alert(1)" alt="Bad"><script>alert(1)</script>',
                 'status' => 'Published',
             ])
             ->assertRedirect();
 
         $record = PressRelease::where('title', 'Berita Editor Lengkap')->firstOrFail();
         $this->assertStringContainsString('<h2>Subjudul</h2>', $record->content);
-        $this->assertStringContainsString('<strong>Isi berita</strong>', $record->content);
+        $this->assertStringContainsString('<p style="text-align: center;"><strong>Isi berita</strong>', $record->content);
+        $this->assertStringContainsString('<ul><li>Poin berita</li></ul>', $record->content);
+        $this->assertStringContainsString('<img src="data:image/png;base64,iVBORw0KGgo=" alt="Foto kegiatan" loading="lazy">', $record->content);
         $this->assertStringNotContainsString('onclick', $record->content);
+        $this->assertStringNotContainsString('onerror', $record->content);
+        $this->assertStringNotContainsString('javascript:', $record->content);
         $this->assertStringNotContainsString('<script>', $record->content);
 
         $this->actingAs($admin)
             ->get(route('press-releases.edit', $record))
             ->assertOk()
             ->assertSee('Perbarui naskah berita')
-            ->assertSee('ubp-doc-toolbar', false);
+            ->assertSee('ubp-doc-toolbar', false)
+            ->assertSee('data-editor-image-trigger', false);
     }
 
     private function setupAcademicData(): array

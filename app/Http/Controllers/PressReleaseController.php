@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PressRelease;
+use App\Support\RichTextSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -96,12 +97,7 @@ class PressReleaseController extends Controller
 
     private function sanitizeContent(string $content): string
     {
-        $allowed = '<p><br><strong><b><em><i><u><s><h2><h3><h4><blockquote><ol><ul><li><a><hr><pre><code><div><span>';
-        $content = strip_tags($content, $allowed);
-        $content = preg_replace('/\s(on\w+|style)\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i', '', $content);
-        $content = preg_replace('/href\s*=\s*("|\')\s*javascript:[^"\']*("|\')/i', 'href="#"', $content);
-
-        return trim($content);
+        return RichTextSanitizer::clean($content);
     }
 
     private function uniqueSlug(string $title, ?int $ignoreId = null): string

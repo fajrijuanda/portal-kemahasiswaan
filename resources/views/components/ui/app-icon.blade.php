@@ -44,6 +44,52 @@
             <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
             <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             @break
+        @case('bullet-list')
+            <path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            @break
+        @case('ordered-list')
+            <path d="M10 6h10M10 12h10M10 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 5h1v5M4 10h2M4 14h2l-2 4h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            @break
+        @case('quote')
+            <path d="M7 7h4v4H9c0 2-1 3.3-3 4M15 7h4v4h-2c0 2-1 3.3-3 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            @break
+        @case('align-left')
+            <path d="M4 6h16M4 10h10M4 14h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('align-center')
+            <path d="M4 6h16M7 10h10M4 14h16M7 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('align-right')
+            <path d="M4 6h16M10 10h10M4 14h16M10 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('align-justify')
+            <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('link')
+            <path d="M10 13a5 5 0 0 0 7.1 0l1.9-1.9a5 5 0 0 0-7.1-7.1L10.8 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M14 11a5 5 0 0 0-7.1 0L5 12.9A5 5 0 0 0 12.1 20l1.1-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('image')
+            <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="m4 16 4-4 3 3 3-4 6 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8.5" cy="9" r="1.2" fill="currentColor"/>
+            @break
+        @case('horizontal-rule')
+            <path d="M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            @break
+        @case('clear-format')
+            <path d="M5 19h14M7 5h10M12 5l-4 10M12 5l4 10M10 15h4M17 14l4 4M21 14l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            @break
+        @case('undo')
+            <path d="M9 7 5 11l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 11h9a5 5 0 0 1 0 10h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
+        @case('redo')
+            <path d="m15 7 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 11h-9a5 5 0 0 0 0 10h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            @break
         @default
             <path d="M5 5h5v5H5V5ZM14 5h5v5h-5V5ZM5 14h5v5H5v-5ZM14 14h5v5h-5v-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
     @endswitch

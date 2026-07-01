@@ -1,9 +1,7 @@
 <x-app-layout>
     @php
         $editorContent = old('content', $record?->content ?: '<p></p>');
-        $editorContent = strip_tags($editorContent, '<p><br><strong><b><em><i><u><s><h2><h3><h4><blockquote><ol><ul><li><a><hr><pre><code><div><span>');
-        $editorContent = preg_replace('/\s(on\w+|style)\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i', '', $editorContent);
-        $editorContent = preg_replace('/href\s*=\s*("|\')\s*javascript:[^"\']*("|\')/i', 'href="#"', $editorContent);
+        $editorContent = \App\Support\RichTextSanitizer::clean($editorContent);
     @endphp
 
     <x-slot name="header">
@@ -48,26 +46,31 @@
                         <option value="H2">Heading 2</option>
                         <option value="H3">Heading 3</option>
                         <option value="H4">Heading 4</option>
+                        <option value="BLOCKQUOTE">Kutipan</option>
                         <option value="PRE">Kode</option>
                     </select>
-                    <button type="button" title="Bold" data-editor-command="bold"><strong>B</strong></button>
-                    <button type="button" title="Italic" data-editor-command="italic"><em>I</em></button>
-                    <button type="button" title="Underline" data-editor-command="underline"><u>U</u></button>
-                    <button type="button" title="Strikethrough" data-editor-command="strikeThrough"><s>S</s></button>
+                    <button type="button" title="Bold" aria-label="Bold" aria-pressed="false" data-editor-command="bold" data-editor-state="bold"><span class="ubp-doc-text-icon"><strong>B</strong></span></button>
+                    <button type="button" title="Italic" aria-label="Italic" aria-pressed="false" data-editor-command="italic" data-editor-state="italic"><span class="ubp-doc-text-icon"><em>I</em></span></button>
+                    <button type="button" title="Underline" aria-label="Underline" aria-pressed="false" data-editor-command="underline" data-editor-state="underline"><span class="ubp-doc-text-icon"><u>U</u></span></button>
+                    <button type="button" title="Strikethrough" aria-label="Strikethrough" aria-pressed="false" data-editor-command="strikeThrough" data-editor-state="strikeThrough"><span class="ubp-doc-text-icon"><s>S</s></span></button>
                     <span class="ubp-doc-divider"></span>
-                    <button type="button" title="Bullet list" data-editor-command="insertUnorderedList">Bullet</button>
-                    <button type="button" title="Numbered list" data-editor-command="insertOrderedList">1. List</button>
-                    <button type="button" title="Quote" data-editor-command="formatBlock" data-editor-value="BLOCKQUOTE">Quote</button>
+                    <button type="button" title="Bullet list" aria-label="Bullet list" aria-pressed="false" data-editor-command="insertUnorderedList" data-editor-state="insertUnorderedList"><x-ui.app-icon name="bullet-list" /></button>
+                    <button type="button" title="Numbered list" aria-label="Numbered list" aria-pressed="false" data-editor-command="insertOrderedList" data-editor-state="insertOrderedList"><x-ui.app-icon name="ordered-list" /></button>
+                    <button type="button" title="Quote" aria-label="Quote" aria-pressed="false" data-editor-command="formatBlock" data-editor-value="BLOCKQUOTE" data-editor-state="formatBlock"><x-ui.app-icon name="quote" /></button>
                     <span class="ubp-doc-divider"></span>
-                    <button type="button" title="Align left" data-editor-command="justifyLeft">Left</button>
-                    <button type="button" title="Align center" data-editor-command="justifyCenter">Center</button>
-                    <button type="button" title="Align right" data-editor-command="justifyRight">Right</button>
+                    <button type="button" title="Align left" aria-label="Align left" aria-pressed="false" data-editor-command="justifyLeft" data-editor-state="justifyLeft"><x-ui.app-icon name="align-left" /></button>
+                    <button type="button" title="Align center" aria-label="Align center" aria-pressed="false" data-editor-command="justifyCenter" data-editor-state="justifyCenter"><x-ui.app-icon name="align-center" /></button>
+                    <button type="button" title="Align right" aria-label="Align right" aria-pressed="false" data-editor-command="justifyRight" data-editor-state="justifyRight"><x-ui.app-icon name="align-right" /></button>
+                    <button type="button" title="Justify" aria-label="Justify" aria-pressed="false" data-editor-command="justifyFull" data-editor-state="justifyFull"><x-ui.app-icon name="align-justify" /></button>
                     <span class="ubp-doc-divider"></span>
-                    <button type="button" title="Link" data-editor-link>Link</button>
-                    <button type="button" title="Horizontal line" data-editor-command="insertHorizontalRule">Line</button>
-                    <button type="button" title="Clear format" data-editor-command="removeFormat">Clear</button>
-                    <button type="button" title="Undo" data-editor-command="undo">Undo</button>
-                    <button type="button" title="Redo" data-editor-command="redo">Redo</button>
+                    <button type="button" title="Link" aria-label="Link" data-editor-link><x-ui.app-icon name="link" /></button>
+                    <button type="button" title="Insert image" aria-label="Insert image" data-editor-image-trigger><x-ui.app-icon name="image" /></button>
+                    <button type="button" title="Horizontal line" aria-label="Horizontal line" data-editor-command="insertHorizontalRule"><x-ui.app-icon name="horizontal-rule" /></button>
+                    <button type="button" title="Clear format" aria-label="Clear format" data-editor-command="removeFormat"><x-ui.app-icon name="clear-format" /></button>
+                    <span class="ubp-doc-divider"></span>
+                    <button type="button" title="Undo" aria-label="Undo" data-editor-command="undo"><x-ui.app-icon name="undo" /></button>
+                    <button type="button" title="Redo" aria-label="Redo" data-editor-command="redo"><x-ui.app-icon name="redo" /></button>
+                    <input type="file" class="ubp-doc-hidden-file" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" data-editor-image-input>
                 </div>
 
                 <div class="ubp-doc-paper" contenteditable="true" data-editor-area aria-label="Isi berita">{!! $editorContent !!}</div>
